@@ -1,13 +1,25 @@
-from components import NLU
+from components import (
+    NLU,
+    DM,
+    NLG
+)
+
+
 
 class Chat():
 
     def __init__(self, config):
 
         self.RUNNING = True
-        self.config = config
 
-        self.nlu = NLU(self.config)
+        self.model = config['model']
+        self.nlu_prompt_path = config['nlu_prompt_path']
+        self.dm_prompt_path = config['dm_prompt_path']
+        self.nlg_prompt_path = config['nlg_prompt_path']
+
+        self.nlu = NLU(self.model)
+        self.dm = DM(self.config)
+        self.nlg = NLG(self.config)
 
     def run_chat(self):
 

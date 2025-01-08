@@ -1,4 +1,4 @@
-from utils.chat import Chat
+from chat import Chat
 import argparse
 
 def parse_args():
