@@ -12,7 +12,6 @@ class NLU():
     def __call__(self, user_input = " "):
         return self.query_model(user_input)
         
-
     def query_model(self, user_input: str):
 
         system= open(self.prompt_path, 'r').read()
@@ -20,12 +19,14 @@ class NLU():
         messages = [{
             'role': 'system',
             'content': system
-        }]
+        }] + self.history.get_history()
 
         messages.append({
             'role': 'user',
             'content': user_input
         })
+
+        self.history.add('user', user_input)
 
         response = ollama.chat(model=self.model, messages=messages)
 

@@ -12,5 +12,5 @@ Always provide the arguments in the correct syntax.
 Only return actions from this list!
 Do not use any if-statements, only answer with valid actions
 
-- request_info(slot) : request specific slots 
-- confirmation
+- request_info(slot) : request specific slots that miss
+- confirmation(): confirm all data and give an exercise

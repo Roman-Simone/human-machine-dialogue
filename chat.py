@@ -17,9 +17,9 @@ class Chat():
         self.dm_prompt_path = config['dm_prompt_path']
         self.nlg_prompt_path = config['nlg_prompt_path']
 
-        self.nlu = NLU(self.model)
-        self.dm = DM(self.config)
-        self.nlg = NLG(self.config)
+        self.nlu = NLU(self.model, self.nlu_prompt_path)
+        self.dm = DM(self.model, self.dm_prompt_path)
+        # self.nlg = NLG(self.config)
 
     def run_chat(self):
 
@@ -31,7 +31,11 @@ class Chat():
                 print("Exiting chat application.")
                 break
                 
-            meaning = self.nlu.query_model(model_name=self.config['model'], system_prompt=self.config['nlu_prompt_path'], user_input=user_input)
+            meaning = self.nlu.query_model(user_input=user_input)
 
             print(f"System: {meaning}")
+
+            nba = self.dm.query_model(nlu_input=meaning)
+
+            print(f"System: {nba}")
 
