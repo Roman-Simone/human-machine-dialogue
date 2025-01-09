@@ -10,10 +10,10 @@ class NLG():
         self.history = History()
     
 
-    def __call__(self, nlu_input = " "):
-        return self.query_model(nlu_input)
+    def __call__(self, nba_input = " "):
+        return self.query_model(nba_input)
         
-    def query_model(self, nlu_input: str):
+    def query_model(self, nba_input: str):
 
         system= open(self.prompt_path, 'r').read()
         
@@ -24,10 +24,10 @@ class NLG():
 
         messages.append({
             'role': 'system',
-            'content': nlu_input
+            'content': nba_input
         })
 
-        self.history.add('user', nlu_input)
+        self.history.add('user', nba_input)
 
         response = ollama.chat(model=self.model, messages=messages)
 
