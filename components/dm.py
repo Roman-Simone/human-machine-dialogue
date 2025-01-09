@@ -1,6 +1,11 @@
 import ollama
 from utils.history import History
 
+# class Statemanager():
+
+#     def __init__():
+
+
 class DM():
 
     def __init__(self, model, prompt_path):
