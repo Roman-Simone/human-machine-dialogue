@@ -19,7 +19,7 @@ class Chat():
 
         self.nlu = NLU(self.model, self.nlu_prompt_path)
         self.dm = DM(self.model, self.dm_prompt_path)
-        # self.nlg = NLG(self.config)
+        self.nlg = NLG(self.model, self.dm_prompt_path)
 
     def run_chat(self):
 
@@ -38,4 +38,6 @@ class Chat():
             nba = self.dm.query_model(nlu_input=meaning)
 
             print(f"System: {nba}")
+
+            response = self.nlg.query_model(nba_input=nba)
 
