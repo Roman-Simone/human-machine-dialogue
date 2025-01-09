@@ -13,6 +13,13 @@ def parse_args():
         help="Specify the model to be used for the chat application."
     )
     parser.add_argument(
+        "--prompt_pre_nlu",
+        type=str,
+        required=False,
+        default="prompts/pre_nlu_prompt.txt",
+        help="Specify the path to the pre NLU prompt."
+    )
+    parser.add_argument(
         "--prompt_nlu",
         type=str,
         required=False,
@@ -38,6 +45,7 @@ def parse_args():
 
     config = {
         "model": args.model,
+        "pre_nlu_prompt_path": args.prompt_pre_nlu,
         "nlu_prompt_path": args.prompt_nlu,
         "dm_prompt_path": args.prompt_dm,
         "nlg_prompt_path": args.prompt_nlg

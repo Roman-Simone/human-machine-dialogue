@@ -7,7 +7,7 @@ class PreNLU():
         
         self.model = model
         self.prompt_path = prompt_path
-        self.history = History()
+        # self.history = History()
 
     def __call__(self, user_input = " "):
         return self.query_model(user_input)
@@ -19,14 +19,14 @@ class PreNLU():
         messages = [{
             'role': 'system',
             'content': system
-        }] + self.history.get_history()
+        }] #+ self.history.get_history()
 
         messages.append({
             'role': 'user',
             'content': user_input
         })
 
-        self.history.add('user', user_input)
+        # self.history.add('user', user_input)
 
         response = ollama.chat(model=self.model, messages=messages)
 

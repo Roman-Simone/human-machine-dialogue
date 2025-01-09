@@ -19,7 +19,7 @@ class DM():
         messages = [{
             'role': 'system',
             'content': system
-        }] + self.history.get_history()
+        }] #+ self.history.get_history()
 
         messages.append({
             'role': 'system',

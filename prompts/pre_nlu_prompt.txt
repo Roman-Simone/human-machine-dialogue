@@ -6,3 +6,6 @@ Break the user input into multiple sentences based on the following intents:
 Only provide the sentences, without the intent in list separated by commas, as follows
 ["sentence1", "sentence2", ...]
 Only provide the list.
+Not invent!!!
+Not create other text!!!
+Don't generate other text, you only split the user input!!!
