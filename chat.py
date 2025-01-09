@@ -1,4 +1,5 @@
 from components import (
+    PreNLU,
     NLU,
     DM,
     NLG
@@ -17,6 +18,7 @@ class Chat():
         self.dm_prompt_path = config['dm_prompt_path']
         self.nlg_prompt_path = config['nlg_prompt_path']
 
+        self.pre_nlu = PreNLU(self.model, self.nlu_prompt_path)
         self.nlu = NLU(self.model, self.nlu_prompt_path)
         self.dm = DM(self.model, self.dm_prompt_path)
         self.nlg = NLG(self.model, self.nlg_prompt_path)
@@ -30,8 +32,12 @@ class Chat():
                 self.RUNNING = False
                 print("Exiting chat application.")
                 break
-                
-            meaning = self.nlu.query_model(user_input=user_input)
+            
+            user_input_pre_nlu = self.pre_nlu.query_model(user_input=user_input)
+
+            print(f"System pre_nlu: {user_input_pre_nlu}")
+
+            meaning = self.nlu.query_model(user_input=user_input_pre_nlu)
 
             print(f"System nlu: {meaning}")
 
