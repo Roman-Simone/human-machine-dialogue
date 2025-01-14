@@ -31,7 +31,7 @@ def main():
         reader = csv.reader(file)
         rows = list(reader)  # Read all rows into memory
 
-    # Iterate over rows and modify if needed
+
     for row in rows:
 
         if row[7] == "":
