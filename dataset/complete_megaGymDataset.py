@@ -3,31 +3,29 @@ import ollama
 import random
 
 PATH_DATASET = "dataset/megaGymDataset/megaGymDataset.csv"
-prompt_path = "dataset/complete_dataset_prompt.txt"
+PROMPT_PATH = "dataset/complete_dataset_prompt.txt"
 MODEL = "llama3"
 
 def query_model(user_input: str):
         
-    system= open(prompt_path, 'r').read()
+    system= open(PROMPT_PATH, 'r').read()
     
     messages = [{
         'role': 'system',
         'content': system
-    }] #+ self.history.get_history()
+    }]
 
     messages.append({
         'role': 'user',
         'content': user_input
     })
 
-    # self.history.add('user', user_input)
-
     response = ollama.chat(model=MODEL, messages=messages)
 
     return response['message']['content']
 
 
-if __name__ == "__main__":
+def main():
     # Read the file into memory
     with open(PATH_DATASET, "r") as file:
         reader = csv.reader(file)
@@ -64,3 +62,7 @@ if __name__ == "__main__":
         writer.writerows(rows)
 
     print("Processing complete. Updated rows have been written back to the file.")
+
+
+if __name__ == "__main__":
+    main()
