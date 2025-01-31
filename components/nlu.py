@@ -1,15 +1,15 @@
 import json
 import ollama
-# import logging
+import logging
 from copy import deepcopy
 from utils.history import History
 
-# logger = logging.getLogger(__name__)
 class NLU():
 
     def __init__(self, model, prompt_path):
         
         self.model = model
+        self.logger = logging.getLogger(__name__)
         self.prompt_path = prompt_path
         self.history = History()
     
@@ -17,9 +17,10 @@ class NLU():
 
         nlu_response = self.query_model(user_input)
 
-        
-
-        response = json.loads(nlu_response)
+        try:
+            response = json.loads(nlu_response)
+        except:
+            self.logger.error("Error parsing NLU response")
         
         nlu_cleaned_response = self.clean_response(response)
         
@@ -45,7 +46,7 @@ class NLU():
         messages = [{
             'role': 'system',
             'content': system
-        }] + self.history.get_history()
+        }] #+ self.history.get_history()
 
         messages.append({
             'role': 'user',

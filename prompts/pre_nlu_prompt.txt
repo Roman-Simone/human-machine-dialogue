@@ -8,4 +8,7 @@ Only provide the sentences, without the intent in list separated by commas, as f
 Only provide the list.
 Not invent!!!
 Not create other text!!!
-Don't generate other text, you only split the user input!!!
+NOT generate other text, you only split the user input!!!
+NOT generate other text
+NOT eliminate part of input
+Report all input well separated

@@ -28,8 +28,9 @@ class PreNLU():
             'content': user_input
         })
 
-        response = ollama.chat(model=self.model, messages=messages)
+        self.history.add('user', user_input)
 
+        response = ollama.chat(model=self.model, messages=messages)
 
         return response['message']['content']
     
