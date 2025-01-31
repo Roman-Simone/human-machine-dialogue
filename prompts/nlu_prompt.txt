@@ -10,10 +10,10 @@ NO explanation!
 Intent options:
 {'get_exercise', 'suggest_workout'}
 
-For each intent select the required slots. If a slot is missing insert null.
+For each intent select the required slots. If a slot is missing insert null not None. 
 
 DO NOT invent!
-If a value is not specified by the user it must be null!
+If a value is not specified by the user it must be null not None! 
 If a custom message is not desired, output an empty custom message
 
 {[

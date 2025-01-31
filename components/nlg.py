@@ -1,5 +1,9 @@
 import ollama
+# import logging
 from utils.history import History
+
+
+# logger = logging.getLogger(__name__)
 
 class NLG():
 

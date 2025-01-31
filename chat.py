@@ -1,3 +1,4 @@
+import logging
 from components import (
     PreNLU,
     NLU,
@@ -6,13 +7,12 @@ from components import (
 )
 
 
-
 class Chat():
 
     def __init__(self, config):
 
         self.RUNNING = True
-
+        self.logger = logging.getLogger(__name__)
         self.model = config['model']
         self.pre_nlu_prompt_path = config['pre_nlu_prompt_path']
         self.nlu_prompt_path = config['nlu_prompt_path']
@@ -31,22 +31,22 @@ class Chat():
             user_input = input("User: ")
             if user_input.lower() == "exit":
                 self.RUNNING = False
-                print("Exiting chat application.")
+                self.logger.info("Exiting chat")
                 break
             
-            user_input_pre_nlu = self.pre_nlu.query_model(user_input=user_input)
+            user_input_pre_nlu = self.pre_nlu(user_input)
 
-            print(f"System pre_nlu: {user_input_pre_nlu}")
+            self.logger.info(f"User pre_nlu:\n {user_input_pre_nlu}\n\n")
 
-            meaning = self.nlu.query_model(user_input=user_input_pre_nlu)
+            meaning = self.nlu(user_input_pre_nlu)
 
-            print(f"System nlu: {meaning}")
+            self.logger.info(f"User nlu:\n {meaning}\n\n")
 
-            nba = self.dm.query_model(nlu_input=meaning)
+            nba = self.dm(meaning)
 
-            print(f"System nba: {nba}")
+            self.logger.info(f"User nlu:\n {nba}\n\n")
 
-            response = self.nlg.query_model(nba_input=nba)
+            response = self.nlg(nba)
 
             print(f"System nlg: {response}")
 

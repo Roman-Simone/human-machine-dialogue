@@ -1,6 +1,10 @@
+import json
 import ollama
+# import logging
+from copy import deepcopy
 from utils.history import History
 
+# logger = logging.getLogger(__name__)
 class NLU():
 
     def __init__(self, model, prompt_path):
@@ -10,7 +14,29 @@ class NLU():
         self.history = History()
     
     def __call__(self, user_input = " "):
-        return self.query_model(user_input)
+
+        nlu_response = self.query_model(user_input)
+
+        
+
+        response = json.loads(nlu_response)
+        
+        nlu_cleaned_response = self.clean_response(response)
+        
+        return nlu_cleaned_response
+
+    def clean_response(self, response: dict) -> dict:
+            final_dict = deepcopy(response)
+            for key, value in response.items():
+                if value == None:
+                    del final_dict[key]
+                elif isinstance(value, dict):
+                    cleaned_dict = self.clean_response(deepcopy(value))
+                    if len(cleaned_dict) == 0:
+                        del final_dict[key]
+                    else:
+                        final_dict[key] = cleaned_dict
+            return final_dict
         
     def query_model(self, user_input: str):
 
@@ -19,7 +45,7 @@ class NLU():
         messages = [{
             'role': 'system',
             'content': system
-        }] #+ self.history.get_history()
+        }] + self.history.get_history()
 
         messages.append({
             'role': 'user',
