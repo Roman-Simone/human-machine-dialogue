@@ -15,22 +15,30 @@ class NLU():
     
     def __call__(self, user_input = " "):
 
+        ret_nlu_cleaned = []
+
         nlu_response = self.query_model(user_input)
 
         try:
-            response = json.loads(nlu_response)
+            nlu_response_json = json.loads(nlu_response)
         except:
             self.logger.error("Error parsing NLU response")
         
-        nlu_cleaned_response = self.clean_response(response)
+        if type(nlu_response_json) is list:
+            for intent in nlu_response_json:
+                nlu_cleaned_response = self.clean_response(intent)
+                ret_nlu_cleaned.append(nlu_cleaned_response)
+        elif type(nlu_response_json) is dict:
+            nlu_cleaned_response = self.clean_response(nlu_response_json)
+            ret_nlu_cleaned.append(nlu_cleaned_response)
         
-        return nlu_cleaned_response
+        return ret_nlu_cleaned
 
     def clean_response(self, response: dict) -> dict:
             final_dict = deepcopy(response)
             for key, value in response.items():
                 if value == None:
-                    del final_dict[key]
+                    final_dict[key] = "null"
                 elif isinstance(value, dict):
                     cleaned_dict = self.clean_response(deepcopy(value))
                     if len(cleaned_dict) == 0:

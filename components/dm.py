@@ -1,48 +1,63 @@
-import json
+
 import ollama
-# import logging
+import logging
 from utils.history import History
+from abc import ABC, abstractmethod
 
 
-# logger = logging.getLogger(__name__)
 
-class StateManager():
+# class StateManager():
 
-    def __init__(self, nlu_response: dict):
-        # self.intent = "get_exercise"
-        # fields = [
-        #     "type",
-        #     "body_part",
-        #     "equipment",
-        #     "level"
-        # ]
-        # self.state = {field: None for field in fields}
-        self.intent = None
-        for key, value in nlu_response.items():
-            if value is None:
-                continue
-            elif isinstance(value, str):
-                self.intent = value
-            elif isinstance(value, dict):
-                self.slots = value
+#     def __init__(self, nlu_response: dict):
+#         # self.intent = "get_exercise"
+#         # fields = [
+#         #     "type",
+#         #     "body_part",
+#         #     "equipment",
+#         #     "level"
+#         # ]
+#         # self.state = {field: None for field in fields}
+#         self.logger = logging.getLogger(__name__)
+#         self.intent = None
+#         for key, value in nlu_response.items():
+#             if value is None:
+#                 continue
+#             elif isinstance(value, str):
+#                 self.intent = value
+#             elif isinstance(value, dict):
+#                 self.slots = value
 
-    def update_state(self, nlu_response: dict):
-        for key, value in nlu_response.items():
-            if value is None:
-                continue
-            elif isinstance(value, str):
-                continue
-            elif isinstance(value, dict):
-                for slot_key, slot_value in value.items():
-                    if slot_value is not None and slot_value != "null" and slot_key in self.slots.keys():
-                        self.slots[slot_key] = slot_value
+#     def update_state(self, nlu_response: dict):
+#         for key, value in nlu_response.items():
+#             if value is None:
+#                 continue
+#             elif isinstance(value, str):
+#                 continue
+#             elif isinstance(value, dict):
+#                 for slot_key, slot_value in value.items():
+#                     if slot_value is not None and slot_value != "null" and slot_key in self.slots.keys():
+#                         self.slots[slot_key] = slot_value
 
-    def __str__(self) -> str:
-        return f"Intent: {self.intent}, Slots: {self.slots}"
+#     def __str__(self) -> str:
+#         return f"Intent: {self.intent}, Slots: {self.slots}"
     
 
+class StateManager(ABC):
 
-class exerciseST():
+    @abstractmethod
+    def __init__(self):
+        pass
+
+    @abstractmethod
+    def update_state(self, nlu_response: dict):
+        pass
+
+    # @abstractmethod
+    # def __str__(self):
+    #     pass
+
+
+class exerciseST(StateManager):
     def __init__(self):
         self.intent = "get_exercise"
         fields = [
@@ -52,6 +67,8 @@ class exerciseST():
             "level"
         ]
         self.slots = {field: None for field in fields}
+
+        self.logger = logging.getLogger(__name__)
 
     
     def get_string(self):
@@ -66,9 +83,7 @@ class exerciseST():
 
         return ret
 
-
-    
-    def update_state(self, nlu_response: dict) -> str:
+    def update_state(self, nlu_response: list) -> str:
 
         for key, value in nlu_response.items():
             if value is None:
@@ -123,23 +138,52 @@ class DM():
         
         self.model = model
         self.prompt_path = prompt_path
-        self.exerciseST = exerciseST()
+        self.state = []
         self.history = History()
 
-    def __call__(self, nlu_input = " "):
+    def __call__(self, nlu_input: list) -> str:
 
-        if self.exerciseST.intent == "get_exercise":
-            nlu_response = self.exerciseST.update_state(nlu_input)
-        elif self.exerciseST.intent == "suggest_workout":
-            nlu_response = self.exerciseST.update_state(nlu_input)
-        else:
-            raise ValueError("Invalid intent")
+        self.state = self.update_state(nlu_input)
 
-        nba = self.query_model(nlu_response)
+        # trasform state to string
+        state_str = ""
+        for state in self.state:
+            if state.intent == "get_exercise":
+                state_str += state.get_string()
+            elif state.intent == "get_workout":
+                state_str += state.get_string()
+            else:
+                state_str += "No state found"
+        
+        nba = self.query_model(state_str)
+
         return nba
     
+    def update_state(self, nlu_input: list):
+
+        flag_find = False
+        for intent in nlu_input:
+            for state in self.state:
+                if state.intent == "get_exercise":
+                    flag_find = True
+                    state.update_state(intent)
+                elif state.intent == "get_workout":
+                    flag_find = True
+                    state.update_state(intent)
         
-    def query_model(self, nlu_input: str):
+        if not flag_find:
+            for intent in nlu_input:
+                if intent["intent"] == "get_exercise":
+                    self.state.append(exerciseST())
+                    self.state[-1].update_state(intent)
+                elif intent["intent"] == "get_workout":
+                    self.state.append(workoutST())
+                    self.state[-1].update_state(intent)
+        
+        return self.state
+        
+        
+    def query_model(self, nlu_input: str) -> str:
 
         system= open(self.prompt_path, 'r').read()
         
