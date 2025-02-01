@@ -2,13 +2,12 @@ import logging
 import pandas as pd
 
 class ExerciseDataset:
-    def __init__(self, csv_file):
+    def __init__(self, csv_file="megaGymDataset/megaGymDataset.csv"):
         """
         Inizializza il dataset caricando il file CSV.
         """
         self.data = pd.read_csv(csv_file)
         self.logger = logging.getLogger(__name__)
-    
     
     def get_all_exercises(self):
         """Return all exercises."""
