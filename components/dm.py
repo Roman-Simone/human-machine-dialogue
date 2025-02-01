@@ -60,7 +60,6 @@ class exerciseST():
         
         return self.get_string()
 
-
 class workoutST():
     def __init__(self):
         self.intent = "get_workout"
@@ -115,6 +114,17 @@ class DM():
 
         self.state = self.update_state(nlu_input)
 
+        state_str = self.get_state_string()
+        
+        nba = self.query_model(state_str)
+
+        if "confirmation" in nba:
+            self.confirmation(nba)
+
+        return nba
+    
+
+    def get_state_string(self):
         # trasform state to string
         state_str = ""
         for state in self.state:
@@ -124,10 +134,8 @@ class DM():
                 state_str += state.get_string()
             else:
                 state_str += "No state found"
-        
-        nba = self.query_model(state_str)
-
-        return nba
+        return state_str
+    
     
     def update_state(self, nlu_input: list):
 

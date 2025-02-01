@@ -1,9 +1,6 @@
 import ollama
-# import logging
+import logging
 from utils.history import History
-
-
-# logger = logging.getLogger(__name__)
 
 class NLG():
 
@@ -12,10 +9,17 @@ class NLG():
         self.model = model
         self.prompt_path = prompt_path
         self.history = History()
+        self.logger = logging.getLogger(__name__)
     
 
     def __call__(self, nba_input = " "):
-        return self.query_model(nba_input)
+
+        # if "confirmation" in nba_input:
+        #     nba_input = nba_input.replace("confermation", "confirmation
+
+        action =  self.query_model(nba_input)
+
+        return action
         
     def query_model(self, nba_input: str):
 
@@ -36,3 +40,4 @@ class NLG():
         response = ollama.chat(model=self.model, messages=messages)
 
         return response['message']['content']
+    
