@@ -5,59 +5,22 @@ from utils.history import History
 from abc import ABC, abstractmethod
 
 
+# class StateManager(ABC):
 
-# class StateManager():
+#     @abstractmethod
+#     def __init__(self):
+#         pass
 
-#     def __init__(self, nlu_response: dict):
-#         # self.intent = "get_exercise"
-#         # fields = [
-#         #     "type",
-#         #     "body_part",
-#         #     "equipment",
-#         #     "level"
-#         # ]
-#         # self.state = {field: None for field in fields}
-#         self.logger = logging.getLogger(__name__)
-#         self.intent = None
-#         for key, value in nlu_response.items():
-#             if value is None:
-#                 continue
-#             elif isinstance(value, str):
-#                 self.intent = value
-#             elif isinstance(value, dict):
-#                 self.slots = value
-
+#     @abstractmethod
 #     def update_state(self, nlu_response: dict):
-#         for key, value in nlu_response.items():
-#             if value is None:
-#                 continue
-#             elif isinstance(value, str):
-#                 continue
-#             elif isinstance(value, dict):
-#                 for slot_key, slot_value in value.items():
-#                     if slot_value is not None and slot_value != "null" and slot_key in self.slots.keys():
-#                         self.slots[slot_key] = slot_value
+#         pass
 
-#     def __str__(self) -> str:
-#         return f"Intent: {self.intent}, Slots: {self.slots}"
-    
-
-class StateManager(ABC):
-
-    @abstractmethod
-    def __init__(self):
-        pass
-
-    @abstractmethod
-    def update_state(self, nlu_response: dict):
-        pass
-
-    # @abstractmethod
-    # def __str__(self):
-    #     pass
+#     @abstractmethod
+#     def get_string(self):
+#         pass
 
 
-class exerciseST(StateManager):
+class exerciseST():
     def __init__(self):
         self.intent = "get_exercise"
         fields = [
@@ -96,26 +59,36 @@ class exerciseST(StateManager):
                         self.slots[slot_key] = slot_value
         
         return self.get_string()
-    
 
 
 class workoutST():
     def __init__(self):
         self.intent = "get_workout"
         fields = [
-            "...",
+            "type",
+            "n_exercise",
+            "equipment" ,
+            "level"
         ]
         self.slots = {field: None for field in fields}
 
-    
-    def get_json(self):
-        return {
-            "intent": self.intent,
-            "slots": self.slots
-        }
+        self.logger = logging.getLogger(__name__)
 
     
-    def update_state(self, nlu_response: dict):
+    def get_string(self):
+        
+        ret = ""
+
+        ret += f"Intent: {self.intent},\n"
+        ret += "slots: {\n"
+        for key, value in self.slots.items():
+            ret += f"\t{key}: {value},\n"
+        ret += "}"
+
+        return ret
+
+    def update_state(self, nlu_response: list) -> str:
+
         for key, value in nlu_response.items():
             if value is None:
                 continue
@@ -126,10 +99,7 @@ class workoutST():
                     if slot_value is not None and slot_value != "null" and slot_key in self.slots.keys():
                         self.slots[slot_key] = slot_value
         
-        return self.get_json()
-
-
-
+        return self.get_string()
 
 
 class DM():
@@ -181,8 +151,8 @@ class DM():
                     self.state[-1].update_state(intent)
         
         return self.state
-        
-        
+
+
     def query_model(self, nlu_input: str) -> str:
 
         system= open(self.prompt_path, 'r').read()

@@ -35,7 +35,7 @@ This is the template of the json.
             }
     },
     {
-        "intent" : "suggest_workout",
+        "intent" : "get_workout",
         "slots" : {
             "type" : str,
             "n_exercise" : number,

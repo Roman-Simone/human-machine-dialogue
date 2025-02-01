@@ -13,6 +13,6 @@ Only return actions from this list!
 
 Do not use any if-statements, only answer with valid actions
 - request_info(slot) : request specific slot that miss. The argument is the name of the slot that miss. Request only slot that miss!!!
-- confirmation(intent): if all slots have been filled
+- confirmation(intent): if all slots have been filled for a intent
 
 If all slots are filled give confermation(intent)!!!
