@@ -1,3 +1,4 @@
+import yaml
 import ollama
 import logging
 from utils.history import History
@@ -12,11 +13,18 @@ class PreNLU():
         self.history = History()
 
     def __call__(self, user_input = " "):
-        return self.query_model(user_input)
+        
+        
+        pre_nlu = self.query_model(user_input)
+        return pre_nlu
     
+
     def query_model(self, user_input: str):
         
-        system= open(self.prompt_path, 'r').read()
+
+        system = yaml.safe_load(self.prompt_path)
+
+        system = system['pre_nlu']['prompt']
         
         messages = [{
             'role': 'system',

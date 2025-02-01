@@ -1,3 +1,4 @@
+import yaml
 import json
 import ollama
 import logging
@@ -49,7 +50,9 @@ class NLU():
         
     def query_model(self, user_input: str):
 
-        system= open(self.prompt_path, 'r').read()
+        system = yaml.safe_load(self.prompt_path)
+
+        system = system['nlu']['prompt']
         
         messages = [{
             'role': 'system',

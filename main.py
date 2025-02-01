@@ -27,14 +27,16 @@ def parse_args():
 
     parser.add_argument("--model", type=str, required=False, default="llama3",
                         help="Specify the model to use for chat.")
-    parser.add_argument("--prompt_pre_nlu", type=str, required=False, default="prompts/pre_nlu_prompt.txt",
-                        help="Specify the path to the pre NLU prompt.")
-    parser.add_argument("--prompt_nlu", type=str, required=False, default="prompts/nlu_prompt.txt",
-                        help="Specify the path to the NLU prompt.")
-    parser.add_argument("--prompt_dm", type=str, required=False, default="prompts/dm_prompt.txt",
-                        help="Specify the path to the DM prompt.")
-    parser.add_argument("--prompt_nlg", type=str, required=False, default="prompts/nlg_prompt.txt",
-                        help="Specify the path to the NLG prompt.")
+    # parser.add_argument("--prompt_pre_nlu", type=str, required=False, default="prompts/pre_nlu_prompt.txt",
+    #                     help="Specify the path to the pre NLU prompt.")
+    # parser.add_argument("--prompt_nlu", type=str, required=False, default="prompts/nlu_prompt.txt",
+    #                     help="Specify the path to the NLU prompt.")
+    # parser.add_argument("--prompt_dm", type=str, required=False, default="prompts/dm_prompt.txt",
+    #                     help="Specify the path to the DM prompt.")
+    # parser.add_argument("--prompt_nlg", type=str, required=False, default="prompts/nlg_prompt.txt",
+    #                     help="Specify the path to the NLG prompt.")
+    parser.add_argument("--prompts", type=str, required=False, default="prompts/prompts.yaml",
+                        help="Specify the path to prompts.")
     parser.add_argument("--enable_logging", type=bool, default=True,
                         help="Enable logging output. If not specified, logging will be disabled.")
     
@@ -42,10 +44,11 @@ def parse_args():
 
     config = {
         "model": args.model,
-        "pre_nlu_prompt_path": args.prompt_pre_nlu,
-        "nlu_prompt_path": args.prompt_nlu,
-        "dm_prompt_path": args.prompt_dm,
-        "nlg_prompt_path": args.prompt_nlg,
+        # "pre_nlu_prompt_path": args.prompt_pre_nlu,
+        # "nlu_prompt_path": args.prompt_nlu,
+        # "dm_prompt_path": args.prompt_dm,
+        # "nlg_prompt_path": args.prompt_nlg,
+        "prompts_path": args.prompts,
         "enable_logging": args.enable_logging
     }
 

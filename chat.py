@@ -14,15 +14,16 @@ class Chat():
         self.RUNNING = True
         self.logger = logging.getLogger(__name__)
         self.model = config['model']
-        self.pre_nlu_prompt_path = config['pre_nlu_prompt_path']
-        self.nlu_prompt_path = config['nlu_prompt_path']
-        self.dm_prompt_path = config['dm_prompt_path']
-        self.nlg_prompt_path = config['nlg_prompt_path']
+        self.prompts_path = config['prompts_path']
+        # self.pre_nlu_prompt_path = config['pre_nlu_prompt_path']
+        # self.nlu_prompt_path = config['nlu_prompt_path']
+        # self.dm_prompt_path = config['dm_prompt_path']
+        # self.nlg_prompt_path = config['nlg_prompt_path']
 
-        self.pre_nlu = PreNLU(self.model, self.pre_nlu_prompt_path)
-        self.nlu = NLU(self.model, self.nlu_prompt_path)
-        self.dm = DM(self.model, self.dm_prompt_path)
-        self.nlg = NLG(self.model, self.nlg_prompt_path)
+        self.pre_nlu = PreNLU(self.model, self.prompts_path)
+        self.nlu = NLU(self.model, self.prompts_path)
+        self.dm = DM(self.model, self.prompts_path)
+        self.nlg = NLG(self.model, self.prompts_path)
 
     def run_chat(self):
 

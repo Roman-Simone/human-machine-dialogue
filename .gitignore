@@ -2,6 +2,7 @@ venv
 env
 megaGymDataset
 *.pdf
+try.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

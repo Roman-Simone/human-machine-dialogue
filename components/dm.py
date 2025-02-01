@@ -1,4 +1,4 @@
-
+import yaml
 import ollama
 import logging
 from utils.history import History
@@ -184,7 +184,9 @@ class DM():
 
     def query_model(self, nlu_input: str) -> str:
 
-        system= open(self.prompt_path, 'r').read()
+        system = yaml.safe_load(self.prompt_path)
+
+        system = system['dm']['prompt']
         
         messages = [{
             'role': 'system',

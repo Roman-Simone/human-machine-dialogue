@@ -1,3 +1,4 @@
+import yaml
 import ollama
 import logging
 from utils.history import History
@@ -23,7 +24,9 @@ class NLG():
         
     def query_model(self, nba_input: str):
 
-        system= open(self.prompt_path, 'r').read()
+        system = yaml.safe_load(self.prompt_path)
+
+        system = system['nlg']['prompt']
         
         messages = [{
             'role': 'system',
