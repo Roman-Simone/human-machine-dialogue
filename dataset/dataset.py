@@ -2,7 +2,7 @@ import logging
 import pandas as pd
 
 class MegaGymDataset:
-    def __init__(self, csv_file="megaGymDataset/megaGymDataset.csv"):
+    def __init__(self, csv_file="dataset/megaGymDataset/megaGymDataset.csv"):
         """
         Inizializza il dataset caricando il file CSV.
         """
@@ -73,9 +73,9 @@ class MegaGymDataset:
     def filter_by_body_part(self, body_part, data=None) -> pd.DataFrame:
         """Filter data by body part."""
         if data is None:
-            ret = self.data[self.data['Body Part'].str.lower() == body_part.lower()]
+            ret = self.data[self.data['BodyPart'].str.lower() == body_part.lower()]
         else:
-            ret = data[data['Body Part'].str.lower() == body_part.lower()]
+            ret = data[data['BodyPart'].str.lower() == body_part.lower()]
 
         return ret
     
@@ -103,25 +103,25 @@ class MegaGymDataset:
 
 # Example
 if __name__ == "__main__":
-    dataset = ExerciseDataset("dataset/megaGymDataset/megaGymDataset.csv")  # Sostituisci con il tuo file
+    dataset = MegaGymDataset("dataset/megaGymDataset/megaGymDataset.csv")  # Sostituisci con il tuo file
     
-    # Mostra tutti gli esercizi
-    print(dataset.get_all_exercises())
+    # # Mostra tutti gli esercizi
+    # print(dataset.get_all_exercises())
     
-    # Filtra per titolo
-    print(dataset.filter_by_title("plank"))
+    # # Filtra per titolo
+    # print(dataset.filter_by_title("plank"))
     
-    # Filtra per livello
-    print(dataset.filter_by_level("Intermediate"))
+    # # Filtra per livello
+    # print(dataset.filter_by_level("Intermediate"))
     
-    # Filtra per tipo
-    print(dataset.filter_by_type("Strength"))
+    # # Filtra per tipo
+    # print(dataset.filter_by_type("Strength"))
     
     # Filtra per parte del corpo
-    print(dataset.filter_by_body_part("Abdominals"))
+    print(dataset.filter_by_body_part(body_part="Chest"))
     
-    # Filtra per attrezzatura
-    print(dataset.filter_by_equipment("Bands"))
+    # # Filtra per attrezzatura
+    # print(dataset.filter_by_equipment("Bands"))
     
-    # Filtra per rating
-    print(dataset.filter_by_rating(min_rating=7, max_rating=10))
+    # # Filtra per rating
+    # print(dataset.filter_by_rating(min_rating=7, max_rating=10))

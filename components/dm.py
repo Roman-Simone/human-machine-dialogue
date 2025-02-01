@@ -120,6 +120,8 @@ class DM():
         
         nba = self.query_model(state_str)
 
+        nba = "confirmation(get_exercise)"
+
         if "confirmation" in nba:
             self.confirmation(nba)
 
