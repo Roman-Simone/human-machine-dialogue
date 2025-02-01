@@ -2,7 +2,8 @@
 import ollama
 import logging
 from utils.history import History
-from abc import ABC, abstractmethod
+from dataset.dataset import MegaGymDataset
+
 
 
 # class StateManager(ABC):
@@ -109,6 +110,7 @@ class DM():
         self.prompt_path = prompt_path
         self.state = []
         self.history = History()
+        self.dataset = MegaGymDataset()
 
     def __call__(self, nlu_input: list) -> str:
 
@@ -123,6 +125,23 @@ class DM():
 
         return nba
     
+
+    def confirmation(self, nba_confirm: str) -> str:
+
+        data_confirm = {}
+        
+        intent_confirm = nba_confirm[nba_confirm.find("(") + 1 : nba_confirm.find(")")]
+
+        for element in self.state:
+            if element.intent == intent_confirm:
+                data_confirm = element
+                break
+        
+        data_selected = self.dataset.filter_by_intent(data_confirm.slots)
+
+        return nba_confirm + "\n" + data_selected
+
+
 
     def get_state_string(self):
         # trasform state to string
