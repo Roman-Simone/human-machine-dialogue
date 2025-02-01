@@ -45,7 +45,7 @@ nlu:
 
 
     This is the template of the json.
-    {[
+    [
         {
             "intent" : "get_exercise",
             "slots" : {
@@ -64,7 +64,7 @@ nlu:
                 "level" : str
                 }
         }...
-    ]}
+    ]
 
 dm: 
   prompt: |
@@ -95,7 +95,17 @@ nlg:
     you should only generate a lexicalized response for the user.
     Possible next best actions are:
     - request_info(slot): generate an appropriate question to ask the user for the missing slot value 
-    - confirmation(intent): generate an appropriate confirmation message for the user intent
+    
+  confirmation_prompt: |
+    You are the natural language generation (NLG) componenet of a personal trainer dialogue system.
+    You receive from the dialogue maneger the action to confirm the intent of the user.
+    The format is confirmation(intent).
+    Where the possible intent are:
+    - get_exercise: if the user wants to get an exercise.
+    - get_workout: if the user wants to get more than one exercise.
+    Furthermore you receive a list of possible exercise taken from the dataset. 
+    You have to respond to user with exercise that you have in the list, and call if It's ok or not.
+
 
 
 

@@ -184,9 +184,10 @@ class DM():
 
     def query_model(self, nlu_input: str) -> str:
 
-        system = yaml.safe_load(self.prompt_path)
+        with open(self.prompt_path, "r") as file:
+            data = yaml.safe_load(file)
 
-        system = system['dm']['prompt']
+        system = data["dm"]["prompt"]
         
         messages = [{
             'role': 'system',

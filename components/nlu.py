@@ -50,9 +50,10 @@ class NLU():
         
     def query_model(self, user_input: str):
 
-        system = yaml.safe_load(self.prompt_path)
+        with open(self.prompt_path, "r") as file:
+            data = yaml.safe_load(file)
 
-        system = system['nlu']['prompt']
+        system = data["nlu"]["prompt"]
         
         messages = [{
             'role': 'system',

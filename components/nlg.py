@@ -24,9 +24,10 @@ class NLG():
         
     def query_model(self, nba_input: str):
 
-        system = yaml.safe_load(self.prompt_path)
+        with open(self.prompt_path, "r") as file:
+            data = yaml.safe_load(file)
 
-        system = system['nlg']['prompt']
+        system = data["nlg"]["prompt"]
         
         messages = [{
             'role': 'system',

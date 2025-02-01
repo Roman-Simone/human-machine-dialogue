@@ -21,10 +21,12 @@ class PreNLU():
 
     def query_model(self, user_input: str):
         
+        with open(self.prompt_path, "r") as file:
+            data = yaml.safe_load(file)
 
-        system = yaml.safe_load(self.prompt_path)
+        system = data["pre_nlu"]["prompt"]
 
-        system = system['pre_nlu']['prompt']
+        
         
         messages = [{
             'role': 'system',
