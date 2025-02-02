@@ -33,11 +33,6 @@ def main():
 
 
     for row in rows:
-
-        if row[7] == "":
-            random_number = random.randint(1, 10)
-            row[7] = str(random_number)  # Replace the empty cell with the random number
-            print(random_number)
         
         if row[2] == "":
 
@@ -55,6 +50,14 @@ def main():
             print("output --> " + output)
             print()
             row[2] = output
+        
+        if row[7] == "":
+            random_number = random.randint(1, 10)
+            row[7] = str(random_number)  # Replace the empty cell with the random number
+            print(random_number)
+
+        if row[8] == "":
+            row[8] = "Average"
 
     # Write the updated rows back to the file
     with open(PATH_DATASET, "w", newline="") as file:

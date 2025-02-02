@@ -1,3 +1,4 @@
+import json
 import logging
 import pandas as pd
 
@@ -35,9 +36,36 @@ class MegaGymDataset:
         if len(data_ret) > 5:
             data_ret = data_ret.sample(5)
 
-        data_ret_str = data_ret.to_json()
+        data_ret_str = self.format_json(data_ret)
         
         return data_ret_str
+    
+
+    def format_json(self, data:pd.DataFrame) -> str:
+        formatted_exercises = []
+
+        original_json = data.to_json()
+
+        for key in original_json["Unnamed: 0"]:
+            exercise = {
+                "id": key,
+                "title": original_json["Title"].get(str(key), ""),
+                "description": original_json["Desc"].get(str(key), ""),
+                "type": original_json["Type"].get(str(key), ""),
+                "body_part": original_json["BodyPart"].get(str(key), ""),
+                "equipment": original_json["Equipment"].get(str(key), ""),
+                "level": original_json["Level"].get(str(key), ""),
+                "rating": original_json["Rating"].get(str(key), 0)
+            }
+        formatted_exercises.append(exercise)
+
+        # Output formatted JSON
+        formatted_json = {"exercises": formatted_exercises}
+
+        # Print result
+        str = json.dumps(formatted_json, indent=4)
+
+        return str
 
     
     def get_all_exercises(self):
