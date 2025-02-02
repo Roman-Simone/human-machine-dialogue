@@ -37,13 +37,13 @@ class exerciseST():
     
     def get_string(self):
         
-        ret = ""
+        ret = "{"
 
         ret += f"Intent: {self.intent},\n"
         ret += "slots: {\n"
         for key, value in self.slots.items():
             ret += f"\t{key}: {value},\n"
-        ret += "}"
+        ret += "}}"
 
         return ret
 
@@ -111,6 +111,7 @@ class DM():
         self.state = []
         self.history = History()
         self.dataset = MegaGymDataset()
+        self.logger = logging.getLogger(__name__)
 
     def __call__(self, nlu_input: list) -> str:
 
@@ -120,10 +121,11 @@ class DM():
         
         nba = self.query_model(state_str)
 
-        nba = "confirmation(get_exercise)"
+        # nba = "confirmation(get_exercise)"
+        self.logger.debug(f"DM: {nba}")
 
         if "confirmation" in nba:
-            self.confirmation(nba)
+            nba = self.confirmation(nba)
 
         return nba
     
@@ -195,7 +197,7 @@ class DM():
         }] #+ self.history.get_history()
 
         messages.append({
-            'role': 'system',
+            'role': 'user',
             'content': nlu_input
         })
 

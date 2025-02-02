@@ -27,7 +27,11 @@ class NLG():
         with open(self.prompt_path, "r") as file:
             data = yaml.safe_load(file)
 
-        system = data["nlg"]["prompt"]
+        if "confirmation" in nba_input:
+            system = data["nlg"]["confirmation_prompt"]
+        else:
+            system = data["nlg"]["prompt"]
+
         
         messages = [{
             'role': 'system',

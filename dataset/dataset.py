@@ -17,24 +17,25 @@ class MegaGymDataset:
             if value is None:
                 continue
             elif isinstance(value, str):
-                continue
-            elif isinstance(value, dict):
-                for slot_key, slot_value in value.items():
-                    if slot_value is not None and slot_value != "null":
-                        if slot_key == "title":
-                            data_ret = self.filter_by_title(slot_value, data=data_ret)
-                        elif slot_key == "level":
-                            data_ret = self.filter_by_level(slot_value, data=data_ret)
-                        elif slot_key == "type":
-                            data_ret = self.filter_by_type(slot_value, data=data_ret)
-                        elif slot_key == "body_part":
-                            data_ret = self.filter_by_body_part(slot_value, data=data_ret)
-                        elif slot_key == "equipment":
-                            data_ret = self.filter_by_equipment(slot_value, data=data_ret)
-                        elif slot_key == "rating":
-                            data_ret = self.filter_by_rating(slot_value[0], slot_value[1], data=data_ret)
+                if value is not None and value != "null":
+                    if key == "title":
+                        data_ret = self.filter_by_title(value, data=data_ret)
+                    elif key == "level":
+                        data_ret = self.filter_by_level(value, data=data_ret)
+                    elif key == "type":
+                        data_ret = self.filter_by_type(value, data=data_ret)
+                    elif key == "body_part":
+                        data_ret = self.filter_by_body_part(value, data=data_ret)
+                    elif key == "equipment":
+                        data_ret = self.filter_by_equipment(value, data=data_ret)
+                    elif key == "rating":
+                        data_ret = self.filter_by_rating(value[0], value[1], data=data_ret)
         
-        data_ret_str = data_ret.to_string()
+
+        if len(data_ret) > 5:
+            data_ret = data_ret.sample(5)
+
+        data_ret_str = data_ret.to_json()
         
         return data_ret_str
 
@@ -82,9 +83,10 @@ class MegaGymDataset:
     def filter_by_equipment(self, equipment, data=None) -> pd.DataFrame:
         """Filter data by equipment."""
         if data is None:
-            ret = self.data[self.data['Equipment'].str.lower() == equipment.lower()]
+            ret = self.data[equipment.lower() in self.data['Equipment'].str.lower()]
         else:
-            ret = data[data['Equipment'].str.lower() == equipment.lower()]
+            ret = data[data['Equipment'].str.lower().str.contains(equipment.lower(), na=False)]
+
 
         return ret
     

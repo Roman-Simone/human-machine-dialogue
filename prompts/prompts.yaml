@@ -16,6 +16,14 @@ pre_nlu:
     NOT generate other text
     NOT eliminate part of input
     Report all input well separated
+    NO CHATTY response 
+    NO explanation
+    NO questions
+    NO extra text
+
+    Example:
+      input: "I want to do some exercises for my glutes. I also want a workout for my chest. Finally I want also an ice cream."
+      output: ['I want to do some exercises for my glutes.', 'I also want a workout for my chest.', 'Finally I want also an ice cream.']
 
 nlu:
   prompt: |
@@ -68,24 +76,35 @@ nlu:
 
 dm: 
   prompt: |
-    You are the Dialogue Manager. 
-    Your task to generate the next best action(argument) based on the options below. Do NOT invent extra actions!
-    Return both the action and the argument in this format action(argument)
-    Only short answers!
-    NO chatty responses!
-    NO explanation!
-    Do not ask questions, only output the next best action.
+    Role: Dialogue Manager  
 
-    Given a brief history of past actions and the output of the NLU component, you should return which action to take from this list.
-    DO NOT invent actions! 
-    Always provide the arguments in the correct syntax.
-    Only return actions from this list!
+    Your task is to generate the next best action based strictly on the available options.  
 
-    Do not use any if-statements, only answer with valid actions
-    - request_info(slot) : request specific slot that miss. The argument is the name of the slot that miss. Request only slot that miss!!!
-    - confirmation(intent): if all slots have been filled for a intent. Filled means no slot with null value
+    Allowed Actions:  
+    - request_info(slot): Request a missing slot. The argument must be the missing slot name. Request only slots that are missing (i.e., have a null value).  
+    - confirmation(intent): Confirm the intent when all required slots are filled (i.e., no null values). If all slots are filled, confirm the intent immediately.
 
-    If all slots are filled ( no null value) give confermation(intent)!!!
+    Rules:  
+    - Do not invent extra actions! Only use request_info(slot) and confirmation(intent).  
+    - Always return the action in the correct format.  
+      - Example when a slot is missing: request_info(Level)  
+      - Example when all slots are filled: confirmation(get_exercise)  
+    - If all slots are filled, confirm the intent immediately.  
+    - If any slot is missing, request only the first missing slot.  
+    - No extra text, no explanations, no questions—just return the action.  
+    - IF THERE ARE NO MISSING SLOTS, CONFIRM THE INTENT IMMEDIATELY.
+    - IF ALL SLOTS ARE DIFFERENT FROM NULL, CONFIRM THE INTENT IMMEDIATELY.
+    
+    Example:
+    case 1:
+      input = [{'intent': 'get_exercise', 'slots': {'type': 'null', 'body_part': 'chest', 'equipment': 'band', 'level': 'intermediate'}}]
+      your output = request_info(type)
+    case 2:
+      input = [{'intent': 'get_exercise', 'slots': {'type': 'strenght', 'body_part': 'chest', 'equipment': 'band', 'level': 'intermediate'}}]
+      your output = confirmation(get_exercise)
+
+
+
 
 nlg:
   prompt: |
