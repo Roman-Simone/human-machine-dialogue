@@ -31,7 +31,7 @@ def main():
         reader = csv.reader(file)
         rows = list(reader)  # Read all rows into memory
 
-
+    count = 0
     for row in rows:
         
         if row[2] == "":
@@ -56,8 +56,9 @@ def main():
             row[7] = str(random_number)  # Replace the empty cell with the random number
             print(random_number)
 
-        if row[8] == "":
-            row[8] = "Average"
+        row.append("")
+        row[9] = str(random.randint(0, 20))
+        
 
     # Write the updated rows back to the file
     with open(PATH_DATASET, "w", newline="") as file:

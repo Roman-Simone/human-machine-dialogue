@@ -14,8 +14,8 @@ class PreNLU():
 
     def __call__(self, user_input = " "):
         
-        
         pre_nlu = self.query_model(user_input)
+        
         return pre_nlu
     
 
@@ -25,8 +25,6 @@ class PreNLU():
             data = yaml.safe_load(file)
 
         system = data["pre_nlu"]["prompt"]
-
-        
         
         messages = [{
             'role': 'system',

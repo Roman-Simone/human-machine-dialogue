@@ -54,24 +54,24 @@ nlu:
 
     This is the template of the json.
     [
-        {
-            "intent" : "get_exercise",
-            "slots" : {
-                "type" : str,
-                "body_part" : str,
-                "equipment" : str,
-                "level" : str
-                }
-        },
-        {
-            "intent" : "get_workout",
-            "slots" : {
-                "type" : str,
-                "n_exercise" : number,
-                "equipment" : str,
-                "level" : str
-                }
-        }...
+      {
+        "intent" : "get_exercise",
+        "slots" : {
+          "type" : str,
+          "body_part" : str,
+          "equipment" : str,
+          "level" : str
+        }
+      },
+      {
+        "intent" : "get_workout",
+        "slots" : {
+          "type" : str,
+          "n_exercise" : number,
+          "equipment" : str,
+          "level" : str
+        }
+      }...
     ]
 
 dm: 
