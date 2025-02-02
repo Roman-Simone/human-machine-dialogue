@@ -125,6 +125,44 @@ nlg:
     Furthermore you receive a list of possible exercise taken from the dataset. 
     You have to respond to user with exercise that you have in the list, and call if It's ok or not.
 
+    Example:
+    input: 
+      action: confirmation(get_exercise)
+      
+      data from database:
+      "exercises": [
+          {
+              "id": "919",
+              "title": "Band-suspended kettlebell bench press",
+              "description": "The band-suspended kettlebell bench press is a bench press variation where kettlebells or weight plates are hung from the ends of a barbell by looped bands. The suspended weights can be in addition to normally loaded weight plates, or in the place of them. Because the instability of the weights makes the lift difficult, this bench press variety is a popular accessory movement for building the traditional bench press in powerlifting training.",
+              "type": "Strength",
+              "body_part": "Chest",
+              "equipment": "Bands",
+              "level": "Intermediate",
+              "rating": 9.0
+          },
+          {
+              "id": "920",
+              "title": "HM Banded Cross-Over Pull",
+              "description": "Stand facing tensioned band, arms extended to sides. Hold ends of band with hands shoulder-width apart. Perform a cross-over motion, pulling one end towards the opposite armpit.",
+              "type": "Strength",
+              "body_part": "Chest",
+              "equipment": "Bands",
+              "level": "Intermediate",
+              "rating": 3.0
+          }....
+        ]
+    }
+
+
+    output:
+      Here are some options I have for you:
+
+        1. Band-suspended kettlebell bench press – A challenging bench press variation using kettlebells suspended by bands for added instability, great for building pressing strength. (Intermediate, Strength, Chest)
+
+        2. HM Banded Cross-Over Pull – A banded movement focusing on a cross-over motion to target the chest. (Intermediate, Strength, Chest)
+
+        Do these exercises work for you? Please let me know if you would like more information on any of them.
 
 
 

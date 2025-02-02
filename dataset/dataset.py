@@ -44,28 +44,28 @@ class MegaGymDataset:
     def format_json(self, data:pd.DataFrame) -> str:
         formatted_exercises = []
 
-        original_json = data.to_json()
+        original_json = data.to_dict()
 
         for key in original_json["Unnamed: 0"]:
             exercise = {
                 "id": key,
-                "title": original_json["Title"].get(str(key), ""),
-                "description": original_json["Desc"].get(str(key), ""),
-                "type": original_json["Type"].get(str(key), ""),
-                "body_part": original_json["BodyPart"].get(str(key), ""),
-                "equipment": original_json["Equipment"].get(str(key), ""),
-                "level": original_json["Level"].get(str(key), ""),
-                "rating": original_json["Rating"].get(str(key), 0)
+                "title": original_json["Title"].get(key),
+                "description": original_json["Desc"].get(key),
+                "type": original_json["Type"].get(key),
+                "body_part": original_json["BodyPart"].get(key),
+                "equipment": original_json["Equipment"].get(key),
+                "level": original_json["Level"].get(key),
+                "rating": original_json["Rating"].get(key)
             }
-        formatted_exercises.append(exercise)
+            formatted_exercises.append(exercise)
 
         # Output formatted JSON
         formatted_json = {"exercises": formatted_exercises}
 
         # Print result
-        str = json.dumps(formatted_json, indent=4)
+        str_ret = json.dumps(formatted_json, indent=4)
 
-        return str
+        return str_ret
 
     
     def get_all_exercises(self):

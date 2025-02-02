@@ -143,7 +143,7 @@ class DM():
         
         data_selected = self.dataset.filter_by_intent(data_confirm.slots)
 
-        return nba_confirm + "\n" + data_selected
+        return f"action: {nba_confirm} \n\n data from database:\n{data_selected}"
 
 
 
