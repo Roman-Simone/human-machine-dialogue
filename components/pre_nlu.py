@@ -13,6 +13,8 @@ class PreNLU():
         self.prompt_path = prompt_path
         self.logger = logging.getLogger(__name__)
         self.history = History()
+        with open(self.prompt_path, "r") as file:
+            self.system_prompt = yaml.safe_load(file)
 
     def __call__(self, user_input = " "):
         
@@ -49,11 +51,8 @@ class PreNLU():
 
 
     def query_model(self, user_input: str):
-        
-        with open(self.prompt_path, "r") as file:
-            data = yaml.safe_load(file)
 
-        system = data["pre_nlu"]["prompt"]
+        system = self.system_prompt['pre_nlu']['prompt']
         
         messages = [{
             'role': 'system',
