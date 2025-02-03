@@ -29,7 +29,12 @@ class PreNLU():
         messages = [{
             'role': 'system',
             'content': system
-        }] + self.history.get_history()
+        }] #+ self.history.get_history()
+
+        messages.append({
+            'role': 'user',
+            'content': f"History User: {self.history.get_history()}"
+        })
 
         messages.append({
             'role': 'user',
@@ -40,5 +45,9 @@ class PreNLU():
 
         response = ollama.chat(model=self.model, messages=messages)
 
-        return response['message']['content']
+        self.logger.debug(f"History: {self.history.get_history()}")
+
+        output =  response['message']['content']
+
+        return output
     

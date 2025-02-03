@@ -20,6 +20,8 @@ class NLU():
 
         nlu_response = self.query_model(user_input)
 
+        self.logger.debug(f"\nNLU llama: {nlu_response}\n")
+
         try:
             nlu_response_json = json.loads(nlu_response)
         except:
@@ -36,18 +38,18 @@ class NLU():
         return ret_nlu_cleaned
 
     def clean_response(self, response: dict) -> dict:
-            final_dict = deepcopy(response)
-            for key, value in response.items():
-                if value == None:
-                    final_dict[key] = "null"
-                elif isinstance(value, dict):
-                    cleaned_dict = self.clean_response(deepcopy(value))
-                    if len(cleaned_dict) == 0:
-                        del final_dict[key]
-                    else:
-                        final_dict[key] = cleaned_dict
-            return final_dict
-        
+        final_dict = deepcopy(response)
+        for key, value in response.items():
+            if value == None:
+                final_dict[key] = "null"
+            elif isinstance(value, dict):
+                cleaned_dict = self.clean_response(deepcopy(value))
+                if len(cleaned_dict) == 0:
+                    del final_dict[key]
+                else:
+                    final_dict[key] = cleaned_dict
+        return final_dict
+    
     def query_model(self, user_input: str):
 
         with open(self.prompt_path, "r") as file:
@@ -70,3 +72,4 @@ class NLU():
         response = ollama.chat(model=self.model, messages=messages)
 
         return response['message']['content']
+    

@@ -1,29 +1,109 @@
 pre_nlu:
   prompt: |
-    You are a preprocessor for the NLU.
-    Break the user input into multiple sentences based on the following intents:
-    - get_exercise, if the user wants to get an exercise.
-    - suggest_workout, if the user wants to get a workout.
-    - out_of_domain, if the input does not match any of the above.
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the part of the system that processes the user's message before it is sent to the NLU (Natural language understanding) component.
+    Your task is to segment sentences into meaningful chunks.
 
-    Only provide the sentences, without the intent in list separated by commas, as follows:
-    ['sentence1', 'sentence2', ...]
+    Rules for chunking:
+    - A chunk is a continuous sequence of words that form a syntactic unit.
+    - You divide sentences based on intents only.
+    - You don't have to invent new intents.
+    - Only provide JSON object.
+    - Preserve original wording while ensuring logical segmentation.
+    - Don't Invent new sentences.
+    - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
+    - Use History only for necessary information. Don't include in the output.
+    - Don't print the history in the output
+    - No CHATTY messages
+    - Return only a valid JSON object. ONLY JSON!
+    - Not include note or explanation.
+    - Not write "Here is the output:"
 
-    Only provide the list.
-    Not invent!!!
-    Not create other text!!!
-    NOT generate other text, you only split the user input!!!
-    NOT generate other text
-    NOT eliminate part of input
-    Report all input well separated
-    NO CHATTY response 
-    NO explanation
-    NO questions
-    NO extra text
+    Intents:
+    - get_exercise: User wants to get information (user doesn't know the name of the exercise) about a specific exercis.
+                    Further information for this intent are: 
+                    - type: type of exercise or workout. Example: strenght, Plyometrics, Stretching, Powerlifting...
+                    - body_part: part of body that user want to train. Example: Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps...
+                    - equipment: stuff that user havo fotr training. Example: Body Only, Cable, Barbell, Medicine Ball, Kettlebells, Machine, band...
+                    - level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
+    - get_information: User whants to get information (like description or execution) about a specific exercise, he know the name of the exercise.
+                    Further information for this intent are: 
+                    - title: name of the exercise
+                    - body_part: part of body that user want to train. Example: Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps...
+    - get_plan: User wants to get a full workout plan (training sheet) so a complete set of exercise for different session
+                    Further information for this intent are: 
+                    - level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
+                    - n_session: number of session per week. Example: 1,2,3...
+                    - min_rating: minimum rating of the exercise. Example: 1,2,3,4,5,6,7,8,9,10
+    - save_exercise: User wants to save a new exercise in the system that he likes.
+                    Further information for this intent are: 
+                    - title: name of the exercise
+                    - description: description of the execution of the exercise
+                    - type: type of exercise or workout. Example: strenght, Plyometrics, Stretching, Powerlifting...
+                    - body_part: part of body that user want to train. Example: Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps...
+                    - equipment: stuff that user havo fotr training. Example: Body Only, Cable, Barbell, Medicine Ball, Kettlebells, Machine, band...
+                    - level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
+                    - duration: duration of the exercise in minutes
+                    - rating: rating of the exercise. Example: 1,2,3,4,5,6,7,8,9,10
+    - out_of_context: User message is out of context and doesn't fit any of the intents above.
 
-    Example:
-      input: "I want to do some exercises for my glutes. I also want a workout for my chest. Finally I want also an ice cream."
-      output: ['I want to do some exercises for my glutes.', 'I also want a workout for my chest.', 'Finally I want also an ice cream.']
+    Note: the difference between get_exercise and get_information is that in the first case the user doesn't know the name of the exercise, in the second case the user knows the name of the exercise.
+
+    Examples:
+    example 1.
+      History: ""
+      input user: "Hi, I want to get some exercise to improve my strength. Can you help me?"
+      Correct output: 
+        [
+          {
+            "intent": "get_exercise", 
+            "text": "Hi, I want to get some exercise to improve my strength. Can you help me?"
+          }
+        ]
+
+    example 2.
+      History: "Hi, I would like to get some information about the exercise called 'Band-suspended kettlebell bench press'."
+      input user: "The part of body that it train is the chest."
+      Correct output: 
+        [
+          {
+            "intent": "get_information", 
+            "text": "Hi, I would like to get some information about the exercise called 'Band-suspended kettlebell bench press'. The part of body that it train is the chest."
+          }
+        ]
+
+    example 3.
+      History: ""
+      input user: "Hi today it's a sunny day and I want to get a workout schedule. I usually train 3 times a week."
+      Correct output: 
+        [
+          {
+            "intent": "out_of_context", 
+            "text": "Hi, today it's a sunny day."
+          },
+          {
+            "intent": "get_plan", 
+            "text": "I want to get a workout schedule. I usually train 3 times a week."
+          }
+        ]
+    example 4.
+      history: "Hi, I would like to get a full workout plan."
+      input user: "I usually train three times a week, and today I eat a pizza"
+      
+      Correct output: 
+        [
+          {
+            "intent": "get_plan", 
+            "text": "Hi, I would like to get a full workout plan. I usually train three times a week."
+          },
+          {
+            "intent": "out_of_context", 
+            "text": "And today I eat a pizza"
+          }
+        ]
+      
+
+
 
 nlu:
   prompt: |
@@ -37,13 +117,14 @@ nlu:
     NO explanation!
 
     Intent options:
-    {'get_exercise', 'suggest_workout'}
+    {'get_exercise', 'get_plan', 'save_exercise'}
     Slots option:
     type: type of exercise or workout. Example: strenght, Plyometrics, Stretching, Powerlifting...
     body_part: part of body that user want to train. Example: Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps...
     equipment: stuff that user havo fotr training. Example: Body Only, Cable, Barbell, Medicine Ball, Kettlebells, Machine, band...
     level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
     n_exercise: number of exercise. Example: 1,2,3...
+    min_rating: minimum rating of the exercise. Example: 1,2,3,4,5,6,7,8,9,10
 
     For each intent select the required slots. If a slot is missing insert null not None. 
 
@@ -53,7 +134,7 @@ nlu:
 
 
     This is the template of the json.
-    [
+    {[
       {
         "intent" : "get_exercise",
         "slots" : {
@@ -64,15 +145,27 @@ nlu:
         }
       },
       {
-        "intent" : "get_workout",
+        "intent" : "get_plan",
         "slots" : {
-          "type" : str,
-          "n_exercise" : number,
-          "equipment" : str,
-          "level" : str
+          "level" : str,
+          "n_exercise" : int
+          "min_rating" : int
         }
-      }...
-    ]
+      },
+      {
+        "intent" : "save_exercise",
+        "slots" : {
+          "title" : str,
+          "description" : str,
+          "type" : str,
+          "body_part" : str,
+          "equipment" : str,
+          "level" : str,
+          "duration" : int,
+          "rating" : int,
+        }
+      }
+    ]}
 
 dm: 
   prompt: |

@@ -18,7 +18,7 @@ class NLG():
         # if "confirmation" in nba_input:
         #     nba_input = nba_input.replace("confermation", "confirmation
 
-        action =  self.query_model(nba_input)
+        action = self.query_model(nba_input)
 
         return action
         
@@ -36,10 +36,10 @@ class NLG():
         messages = [{
             'role': 'system',
             'content': system
-        }] #+ self.history.get_history()
+        }] + self.history.get_history()
 
         messages.append({
-            'role': 'system',
+            'role': 'user',
             'content': nba_input
         })
 

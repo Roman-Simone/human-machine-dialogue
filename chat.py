@@ -6,6 +6,8 @@ from components import (
     NLG
 )
 
+import main
+
 class Chat():
 
     def __init__(self, config):
@@ -34,15 +36,49 @@ class Chat():
 
             self.logger.info(f"User pre_nlu:\n {user_input_pre_nlu}\n\n")
 
-            meaning = self.nlu(user_input_pre_nlu)
+            # meaning = self.nlu(user_input_pre_nlu)
 
-            self.logger.info(f"User nlu:\n {meaning}\n\n")
+            # self.logger.info(f"User nlu:\n {meaning}\n\n")
 
-            nba = self.dm(meaning)
+            # nba = self.dm(meaning)
 
-            self.logger.info(f"User nlu:\n {nba}\n\n")
+            # self.logger.info(f"User nlu:\n {nba}\n\n")
 
-            response = self.nlg(nba)
+            # response = self.nlg(nba)
 
-            print(f"System nlg: {response}")
+            # print(f"System nlg: {response}")
 
+
+
+if __name__ == "__main__":
+    main.main()
+
+
+
+
+
+    # Wrong output with ERROR:  
+    #   [
+    #     {
+    #       "intent": "get_plan", 
+    #       "text": "Hi I want to get a full workout schedule for my training"
+    #     },
+    #     {
+    #       "intent": "out_of_context", 
+    #       "text": "I usually train three times a week, and today I eat a pizza"
+    #     }
+    #   ]
+    #   The error is that put in out of context also I usually train three times a week that is part of the get_plan intent.
+      
+    #   Wrong output with ERROR:
+    #   [
+    #     {
+    #       "intent": "get_plan", 
+    #       "text": "Hi I want to get a full workout schedule for my training"
+    #     },
+    #     {
+    #       "intent": "get_plan", 
+    #       "text": "I usually train three times a week, and today I eat a pizza"
+    #     }
+    #   ]
+    #   The error is that the second intent is get_plan but the user is talking about eating pizza that is out of context.
