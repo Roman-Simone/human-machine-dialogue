@@ -384,113 +384,64 @@ nlu:
         }
   
   prompt_out_of_context: |
-    You are a component for a dialogue system that helps users with their workout routines.
-      You are the NLU (Natural language understanding) component.
-      Before you there is a pre-NLU component that devide the user message in chunks for every intent.
-      Your task is to take the chunk of the message related to the intent out_of_context and extract the slots from it.
-
-      Rules for slot extraction:
-      - Extract the slots from the chunk of the message related to the intent save_exercise.
-      - If a slot is not mentioned in the message, set it to null.
-      - Only output a valid JSON object.
-      - Not include note or explanation.
-      - Not write "Here is the output:"
-      - Don't Invent new sentences.
-      - Return only a valid JSON object. ONLY JSON!
-      - No CHATTY messages
-
-      Now I explain you the intent and slots that you have to extract:
-      - get_information: User wants to save a new exercise in the system that he likes.
-                        Slots are: 
-                        - title: name of the exercise
-                        - description: description of the execution of the exercise
-                        - type: type of exercise or workout. Example: strenght, Plyometrics, Stretching, Powerlifting...
-                        - body_part: part of body that user want to train. Example: Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps...
-                        - equipment: stuff that user havo fotr training. Example: Body Only, Cable, Barbell, Medicine Ball, Kettlebells, Machine, band...
-                        - level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
-                        - duration: duration of the exercise in minutes
-                        - rating: rating of the exercise. Example: 1,2,3,4,5,6,7,8,9,10
-
-      This is the template of the json that you have to return.
-      {
-        "intent" : "save_exercise",
-        "slots" : {
-          "title" : str,
-          "description" : str,
-          "type" : str,
-          "body_part" : str,
-          "equipment" : str,
-          "level" : str,
-          "duration" : int,
-          "rating" : int
-        }
-      }
-
-      Examples:
-      example 1.
-        input: 
-          {'intent': 'get_information', 'text': 'I want to save a new exercise. The name is "Band-suspended kettlebell bench press". It is a bench press variation where kettlebells or weight plates are hung from the ends of a barbell by looped bands. The suspended weights can be in addition to normally loaded weight plates, or in the place of them. Because the instability of the weights makes the lift difficult, this bench press variety is a popular accessory movement for building the traditional bench press in powerlifting training. It is a strength exercise for the chest. I have only a band and my level is intermediate. The duration is 30 minutes and the rating is 9.'}
-        Correct output: 
-          {
-            "intent" : "save_exercise",
-            "slots" : {
-              "title" : "Band-suspended kettlebell bench press",
-              "description" : "The band-suspended kettlebell bench press is a bench press variation where kettlebells or weight plates are hung from the ends of a barbell by looped bands. The suspended weights can be in addition to normally loaded weight plates, or in the place of them. Because the instability of the weights makes the lift difficult, this bench press variety is a popular accessory movement for building the traditional bench press in powerlifting training.",
-              "type" : "strength",
-              "body_part" : "chest",
-              "equipment" : "band",
-              "level" : "intermediate",
-              "duration" : 30,
-              "rating" : 9
-            }
-          }
-      example 2.
-        input: 
-          {'intent': 'get_exercise', 'text': 'I really like this evercise for strnght. You only need a band and 15 minutes.'}
-        Correct output: 
-          {
-            "intent" : "save_exercise",
-            "slots" : {
-              "title" : null,
-              "description" : null,
-              "type" : "strength",
-              "body_part" : null,
-              "equipment" : "band",
-              "level" : null,
-              "duration" : 15,
-              "rating" : null
-            }
-          }
 
 
 dm: 
   prompt: |
-    Role: Dialogue Manager  
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the DM (Dialogue Manager) component.
+    Before you there is a NLU (Natural language understanding) component that extracts the intent and slots from the user message.
+    Your task is to decide the next best action based on the intent and slots extracted by the NLU.
 
-    Your task is to generate the next best action based strictly on the available options.  
+    Rules for deciding the next best action:
+    - Decide the next best action based on the intent and slots extracted by the NLU.
+    - Don't invent new actions.
+    - Only provide the action.
+    - Not include note or explanation.
+    - Not write "Here is the output:"
+    - Return only the valid next action in the right format!
+    - No CHATTY messages
+    - Return only allowed actions!
 
-    Allowed Actions:  
-    - request_info(slot): Request a missing slot. The argument must be the missing slot name. Request only slots that are missing (i.e., have a null value).  
-    - confirmation(intent): Confirm the intent when all required slots are filled (i.e., no null values). If all slots are filled, confirm the intent immediately.
+    This is the template of the action that you have to return.
+    action(param)
 
-    Rules:  
-    - Do not invent extra actions! Only use request_info(slot) and confirmation(intent).  
-    - Always return the action in the correct format.  
-      - Example when a slot is missing: request_info(Level)  
-      - Example when all slots are filled: confirmation(get_exercise)  
-    - If all slots are filled, confirm the intent immediately.  
-    - If any slot is missing, request only the first missing slot.  
-    - No extra text, no explanations, no questions—just return the action.  
-    - IF THERE ARE NO MISSING SLOTS, CONFIRM THE INTENT IMMEDIATELY.
-    - IF ALL SLOTS ARE DIFFERENT FROM NULL, CONFIRM THE INTENT IMMEDIATELY.
+    Allowed Actions are:  
+    - request_info(slot): 
+      Description: Ask the user for the missing slot value. 
+                   Missing slot means that the slot is null.
+                   slot is the name of the missing slot.
+    - confirmation(intent)
+      Description: Confirm the intent of the user. 
+                   Confirm only if all the slots are filled. 
+                   intent is the name of the intent.
     
-    Example:
-    case 1:
-      input = [{'intent': 'get_exercise', 'slots': {'type': 'null', 'body_part': 'chest', 'equipment': 'band', 'level': 'intermediate'}}]
-      your output = request_info(type)
-    case 2:
-      input = [{'intent': 'get_exercise', 'slots': {'type': 'strenght', 'body_part': 'chest', 'equipment': 'band', 'level': 'intermediate'}}]
-      your output = confirmation(get_exercise)
+    Examples:
+    example 1.
+      input: 
+        {
+          "intent" : "get_exercise",
+          "slots" : {
+            "type" : "strength",
+            "body_part" : null,
+            "equipment" : null,
+            "level" : null
+          }
+        }
+      Correct output: 
+        request_info(body_part)
+    example 2.
+      input: 
+        {
+          "intent" : "get_information",
+          "slots" : {
+            "title" : "Band-suspended kettlebell bench press",
+            "body_part" : "Chest"
+          }
+        }
+      Correct output: 
+        confirmation(get_information)
+
 
 
 nlg:
