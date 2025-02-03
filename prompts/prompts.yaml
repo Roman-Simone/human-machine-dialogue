@@ -101,12 +101,17 @@ pre_nlu:
             "text": "And today I eat a pizza"
           }
         ]
-      
-
 
 
 nlu:
-  prompt: |
+  prompt_get_exercise: |
+    You are the NLU (Natural Language Understanding) component of a dialogue system that helps users as personal tr.
+
+
+
+
+
+
     You are the NLU component.
     Given the user message extract the intent of the message and slots according to the instructions.
     Return them in JSON format
@@ -195,8 +200,6 @@ dm:
     case 2:
       input = [{'intent': 'get_exercise', 'slots': {'type': 'strenght', 'body_part': 'chest', 'equipment': 'band', 'level': 'intermediate'}}]
       your output = confirmation(get_exercise)
-
-
 
 
 nlg:

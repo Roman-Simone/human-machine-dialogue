@@ -36,9 +36,9 @@ class Chat():
 
             self.logger.info(f"User pre_nlu:\n {user_input_pre_nlu}\n\n")
 
-            # meaning = self.nlu(user_input_pre_nlu)
+            meaning = self.nlu(user_input_pre_nlu)
 
-            # self.logger.info(f"User nlu:\n {meaning}\n\n")
+            self.logger.info(f"User nlu:\n {meaning}\n\n")
 
             # nba = self.dm(meaning)
 
