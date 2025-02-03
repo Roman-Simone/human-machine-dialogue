@@ -77,7 +77,6 @@ class stateTracker():
     def get_intent(self):
         return self.intent
 
-
 class DM():
 
     def __init__(self, model, prompt_path):
@@ -115,15 +114,30 @@ class DM():
         
         intent_confirm = nba_confirm[nba_confirm.find("(") + 1 : nba_confirm.find(")")]
 
+        find_flag = False
         for element in self.state:
             if element.get_intent() == intent_confirm:
                 data_confirm = element
+                find_flag = True
                 break
         
-        data_selected = self.dataset.filter_by_intent(data_confirm.slots)
+        if not find_flag:
+            self.logger.error(f"Intent {intent_confirm} not found in state")
+            return "Error"
+        
+        if intent_confirm == "get_exercise":
+            data_selected = self.dataset.filter_by_intent(data_confirm.slots)
+        elif intent_confirm == "get_information":
+            data_selected = self.dataset.filter_by_intent(data_confirm.slots)
+        elif intent_confirm == "get_plan":
+            data_selected = self.dataset.get_schedule(data_confirm.slots)
+        elif intent_confirm == "save_exercise":
+            data_selected = self.dataset.save_exercise(data_confirm.slots)
+        else:
+            self.logger.error(f"Intent {intent_confirm} not found")
+            return "Error"
 
         return f"action: {nba_confirm} \n\n data from database:\n{data_selected}"
-
 
 
     def get_state_string(self):
@@ -134,8 +148,8 @@ class DM():
             state_str += state.get_string() + "\n"
 
         return state_str
-    
-    
+
+
     def update_state(self, nlu_input: list):
 
         for intent in nlu_input:
@@ -186,3 +200,4 @@ class DM():
         response = ollama.chat(model=self.model, messages=messages)
 
         return response['message']['content']
+    

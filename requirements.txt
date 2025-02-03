@@ -1,5 +1,6 @@
-kagglehub
-colorama
+pyyaml
 ollama
 pandas
-yaml
+colorama
+kagglehub
+rapidfuzz

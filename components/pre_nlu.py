@@ -18,16 +18,19 @@ class PreNLU():
 
     def __call__(self, user_input = " "):
         
-        pre_nlu_llama = self.query_model(user_input)
+        flag_repeat = True
+        while(flag_repeat):
+            pre_nlu_llama = self.query_model(user_input)
 
-        self.history.add('user', user_input)
+            self.history.add('user', user_input)
 
-        self.logger.debug(f"\nPre NLU llama: \n INPUT-> {self.history.get_history()} \n OUTPUT-> {pre_nlu_llama}\n")
+            self.logger.debug(f"\nPre NLU llama: \n INPUT-> {self.history.get_history()} \n OUTPUT-> {pre_nlu_llama}\n")
 
-        try:
-            pre_nlu_json = json.loads(pre_nlu_llama)
-        except:
-            self.logger.error("Error parsing NLU response")
+            try:
+                pre_nlu_json = json.loads(pre_nlu_llama)
+                flag_repeat = False
+            except:
+                self.logger.error("Error parsing PRE-NLU response")
 
         pre_nlu_clean = self.clean_response(pre_nlu_json)
         

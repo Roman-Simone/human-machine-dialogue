@@ -19,7 +19,9 @@ pre_nlu:
     - Not include note or explanation.
     - Not write "Here is the output:"
     - In the output, I don't want double intents. If there are two same intent put the text in the same intent.
-
+    - Not write "JSON Output:". Return only a valid JSON object. ONLY JSON!
+    - Don't write "JSON Output:"!!!
+    
     Intents:
     - get_exercise: User wants to get information (user doesn't know the name of the exercise) about a specific exercis.
                     Further information for this intent are: 
@@ -114,7 +116,7 @@ pre_nlu:
           }
         ]
       Wrong output (ERROR!!):
-        [
+        JSON Output:[
           {
             "intent": "get_exercise", 
             "text": "Hi I want an exercise for my strength. I want to train my chest"
@@ -416,6 +418,12 @@ dm:
                    Confirm only if all the slots are filled. 
                    intent is the name of the intent.
     
+    Not allowed actions:
+    - request_info(intent): It is an ERROR
+    - confirmation(slot): It is an ERROR
+    - request_info(None): It is an ERROR. If all the slots are filled, you don't have to ask for any missing slot.
+    - confirmation(None): It is an ERROR. If all the slots are filled, you don't have to confirm the intent.
+    
     Examples:
     example 1.
       input: 
@@ -441,6 +449,18 @@ dm:
         }
       Correct output: 
         confirmation(get_information)
+    
+    example 3.
+    {
+      Intent: get_plan,
+      slots: {
+          level: intermediate,
+          n_session: 2,
+          min_rating: 5,
+      }
+    }
+    Correct output:
+      confirmation(get_plan)
 
 
 
