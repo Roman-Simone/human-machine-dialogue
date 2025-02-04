@@ -22,6 +22,7 @@ class Chat():
         self.dm = DM(self.model, self.prompts_path)
         self.nlg = NLG(self.model, self.prompts_path)
 
+
     def run_chat(self):
 
         while(self.RUNNING):
@@ -47,7 +48,6 @@ class Chat():
             response = self.nlg(nba)
 
             print(f"System nlg: {response}")
-
 
 
 if __name__ == "__main__":

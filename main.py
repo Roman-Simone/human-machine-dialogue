@@ -7,8 +7,9 @@ from colorama import Fore, Style, init
 # Initialize colorama for colored logging
 init(autoreset=True)
 
-# Custom log formatter with colors
+
 class CustomFormatter(logging.Formatter):
+    
     COLORS = {
         "DEBUG": Fore.BLUE,
         "INFO": Fore.GREEN,
@@ -18,11 +19,14 @@ class CustomFormatter(logging.Formatter):
     }
 
     def format(self, record):
+
         log_color = self.COLORS.get(record.levelname, "")
         log_msg = super().format(record)
         return f"{log_color}{log_msg}{Style.RESET_ALL}"
 
+
 def parse_args():
+
     parser = argparse.ArgumentParser(description="Chat Application Configuration")
 
     parser.add_argument("--model", type=str, required=False, default="llama3",
@@ -42,7 +46,9 @@ def parse_args():
 
     return config
 
+
 def configure_logging(enable_logging):
+
     """Set up logging with optional color output."""
     logger = logging.getLogger()
     logger.handlers.clear()  # Clear previous handlers
@@ -71,6 +77,7 @@ def main():
 
     chat = Chat(config)
     chat.run_chat()
+
 
 if __name__ == "__main__":
     main()

@@ -7,6 +7,7 @@ from dataset.dataset import MegaGymDataset
 
 
 class stateTracker():
+
     def __init__(self, intent):
         self.intent = intent
         
@@ -48,7 +49,7 @@ class stateTracker():
         
         self.logger = logging.getLogger(__name__)
 
-    
+
     def get_string(self) -> str:
         
         ret = "{"
@@ -75,7 +76,8 @@ class stateTracker():
                         self.slots[slot_key] = slot_value
         
         return self.get_string()
-    
+
+
     def get_intent(self) -> str:
         return self.intent
 
