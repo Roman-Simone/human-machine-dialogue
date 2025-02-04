@@ -44,9 +44,9 @@ class Chat():
 
             self.logger.info(f"User nlu:\n {nba}\n\n")
 
-            # response = self.nlg(nba)
+            response = self.nlg(nba)
 
-            # print(f"System nlg: {response}")
+            print(f"System nlg: {response}")
 
 
 

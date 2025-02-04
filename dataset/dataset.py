@@ -1,14 +1,17 @@
+import csv
 import json
 import logging
 import pandas as pd
 from rapidfuzz import process
 
 class MegaGymDataset:
+
     def __init__(self, csv_file="dataset/megaGymDataset/megaGymDataset.csv"):
         """
         Inizializza il dataset caricando il file CSV.
         """
-        self.data = pd.read_csv(csv_file)
+        self.path_csv = csv_file
+        self.data = pd.read_csv(self.path_csv )
         self.logger = logging.getLogger(__name__)
 
 
@@ -41,7 +44,7 @@ class MegaGymDataset:
         data_ret_str = self.format_json(data_ret)
         
         return data_ret_str
-    
+
 
     def get_schedule(self, intent:dict) -> str:
         
@@ -78,7 +81,35 @@ class MegaGymDataset:
         ret = json.dumps({"sessions": schedule}, indent=4)
 
         return ret
-        
+
+
+    def save_exercise(self, intent: dict) -> str:
+        new_exercise = {
+            "Id": len(self.data),
+            "Title": intent.get("title"),
+            "Desc": intent.get("description"),
+            "Type": intent.get("type"),
+            "BodyPart": intent.get("body_part"),
+            "Equipment": intent.get("equipment"),
+            "Level": intent.get("level"),
+            "Rating": intent.get("rating"),
+            "Duration": intent.get("duration")
+        }
+
+        # Convert dictionary to DataFrame and ensure correct data format
+        new_df = pd.DataFrame([new_exercise])
+
+        # Ensure ID is properly handled
+        if "Id" in self.data.columns:
+            new_df["Id"] = new_df["Id"].fillna(self.data["Id"].max() + 1 if not self.data.empty else 1)
+
+        # Concatenate the new data and reset index
+        self.data = pd.concat([self.data, new_df], ignore_index=True)
+
+        # Save to CSV ensuring correct formatting
+        self.data.to_csv(self.path_csv, index=False, quoting=csv.QUOTE_MINIMAL)  # quoting=1 ensures correct handling of text fields
+
+        return "Exercise saved successfully."
 
 
 
@@ -108,11 +139,11 @@ class MegaGymDataset:
 
         return str_ret
 
-    
+
     def get_all_exercises(self):
         """Return all exercises."""
         return self.data
-    
+
 
     def filter_by_title(self, title, data=None, threshold = 80) -> pd.DataFrame:
         """Filter data by title."""
@@ -124,7 +155,7 @@ class MegaGymDataset:
         ret = data[data['Title'].isin(matched_titles)]
 
         return ret
-    
+
 
     def filter_by_level(self, level, data=None, threshold = 80) -> pd.DataFrame:
         """Filter data bu level."""
@@ -137,7 +168,7 @@ class MegaGymDataset:
         ret = data[data['Level'].isin(matched_levels)]
         
         return ret
-    
+
 
     def filter_by_type(self, exercise_type, data=None, threshold = 80) -> pd.DataFrame:
         """Filter data by type."""
@@ -149,7 +180,7 @@ class MegaGymDataset:
         ret = data[data['Type'].isin(matched_types)]
 
         return ret
-    
+
 
     def filter_by_body_part(self, body_part, data=None, threshold = 80) -> pd.DataFrame:
         """Filter data by body part."""
@@ -161,7 +192,7 @@ class MegaGymDataset:
         ret = data[data['BodyPart'].isin(matched_body_parts)]
 
         return ret
-    
+
 
     def filter_by_equipment(self, equipment, data=None, threshold = 80) -> pd.DataFrame:
         """Filter data by equipment."""
@@ -173,7 +204,7 @@ class MegaGymDataset:
         ret = data[data['Equipment'].isin(matched_equipment)]
 
         return ret
-    
+
 
     def filter_by_rating(self, min_rating=0, data=None) -> pd.DataFrame:
         """Filter data by rating."""

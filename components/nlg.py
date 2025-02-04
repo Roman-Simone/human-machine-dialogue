@@ -11,32 +11,31 @@ class NLG():
         self.prompt_path = prompt_path
         self.history = History()
         self.logger = logging.getLogger(__name__)
+        with open(self.prompt_path, "r") as file:
+            self.system_prompt = yaml.safe_load(file)
     
 
     def __call__(self, nba_input = " "):
 
-        # if "confirmation" in nba_input:
-        #     nba_input = nba_input.replace("confermation", "confirmation
+
+        
 
         action = self.query_model(nba_input)
 
         return action
         
-    def query_model(self, nba_input: str):
-
-        with open(self.prompt_path, "r") as file:
-            data = yaml.safe_load(file)
-
-        if "confirmation" in nba_input:
-            system = data["nlg"]["confirmation_prompt"]
-        else:
-            system = data["nlg"]["prompt"]
+    def query_model(self, nba_input: str, system = " "):
 
         
         messages = [{
             'role': 'system',
             'content': system
-        }] + self.history.get_history()
+        }] 
+
+        messages.append({
+            'role': 'user',
+            'content': f"History User: {self.history.get_history()}"
+        })
 
         messages.append({
             'role': 'user',

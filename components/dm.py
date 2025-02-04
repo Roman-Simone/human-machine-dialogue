@@ -87,26 +87,41 @@ class DM():
         self.history = History()
         self.dataset = MegaGymDataset()
         self.logger = logging.getLogger(__name__)
+
+        self.invalid_nba = ["request_info(None)", "confirmation(None)", "action(confirmation)", "action(request_info)"]
+
         with open(self.prompt_path, "r") as file:
             self.system_prompt = yaml.safe_load(file)
 
+
     def __call__(self, nlu_input: list) -> str:
 
-        self.state = self.update_state(nlu_input)
-
-        state_str = self.get_state_string()
-
-        self.logger.debug(f"State updated: {state_str}")
+        flag_repeat = True
         
-        nba = self.query_model(state_str)
+        while(flag_repeat):
+            self.state = self.update_state(nlu_input)
+
+            state_str = self.get_state_string()
+
+            self.logger.debug(f"State updated: {state_str}")
+            
+            nba = self.query_model(state_str)
+
+            flag_repeat = self.check_nba(nba, nlu_input)
 
         self.logger.debug(f"DM decision: {nba}")
 
+        data = ""
         if "confirmation" in nba:
-            nba = self.confirmation(nba)
+            data = self.confirmation(nba)
+        
+        response = {
+            "nba": nba,
+            "data": data
+        }
 
-        return nba
-    
+        return response
+
 
     def confirmation(self, nba_confirm: str) -> str:
 
@@ -137,7 +152,22 @@ class DM():
             self.logger.error(f"Intent {intent_confirm} not found")
             return "Error"
 
-        return f"action: {nba_confirm} \n\n data from database:\n{data_selected}"
+        return data_selected
+
+
+    def check_nba(self, nba: str, nlu_input: list) -> bool:
+        
+        if nba in self.invalid_nba:
+            self.logger.error(f"Invalid NBA: {nba}")
+            return True
+        
+        intent_or_slot = nba[nba.find("(") + 1 : nba.find(")")]
+
+        if intent_or_slot == "None" or intent_or_slot == "null" or intent_or_slot == "":
+            return True
+
+        return False
+            
 
 
     def get_state_string(self):
@@ -200,4 +230,4 @@ class DM():
         response = ollama.chat(model=self.model, messages=messages)
 
         return response['message']['content']
-    
+
