@@ -2,6 +2,7 @@ import csv
 import json
 import logging
 import pandas as pd
+from copy import deepcopy
 from rapidfuzz import process
 
 class MegaGymDataset:
@@ -13,11 +14,12 @@ class MegaGymDataset:
         self.path_csv = csv_file
         self.data = pd.read_csv(self.path_csv )
         self.logger = logging.getLogger(__name__)
+        self.limit = len(self.data)
 
 
     def filter_by_intent(self, intent:dict, num_max_exercise = 5) -> str:
 
-        data_ret = self.data
+        data_ret = deepcopy(self.data)
 
         for key, value in intent.items():
             if value is None:
@@ -118,7 +120,7 @@ class MegaGymDataset:
 
         original_json = data.to_dict()
 
-        for key in original_json["Unnamed: 0"]:
+        for key in original_json["Id"]:
             exercise = {
                 "id": key,
                 "title": original_json["Title"].get(key),
@@ -150,7 +152,7 @@ class MegaGymDataset:
         if data is None:
             data = self.data
 
-        matches = process.extract(title, data['Title'], score_cutoff=threshold)
+        matches = process.extract(title, data['Title'], score_cutoff=threshold, limit = self.limit)
         matched_titles = [match[0] for match in matches]
         ret = data[data['Title'].isin(matched_titles)]
 
@@ -162,7 +164,7 @@ class MegaGymDataset:
         if data is None:
             data = self.data
         
-        matches = process.extract(level, data['Level'], score_cutoff=threshold)
+        matches = process.extract(level, data['Level'], score_cutoff=threshold, limit = self.limit)
         matched_levels = [match[0] for match in matches]
 
         ret = data[data['Level'].isin(matched_levels)]
@@ -175,7 +177,7 @@ class MegaGymDataset:
         if data is None:
             data = self.data
         
-        matches = process.extract(exercise_type, data['Type'], score_cutoff=threshold)
+        matches = process.extract(exercise_type, data['Type'], score_cutoff=threshold, limit = self.limit)
         matched_types = [match[0] for match in matches]
         ret = data[data['Type'].isin(matched_types)]
 
@@ -187,7 +189,7 @@ class MegaGymDataset:
         if data is None:
             data = self.data
         
-        matches = process.extract(body_part, data['BodyPart'], score_cutoff=threshold)
+        matches = process.extract(body_part, data['BodyPart'], score_cutoff=threshold, limit = self.limit)
         matched_body_parts = [match[0] for match in matches]
         ret = data[data['BodyPart'].isin(matched_body_parts)]
 
@@ -199,7 +201,7 @@ class MegaGymDataset:
         if data is None:
             data = self.data
 
-        matches = process.extract(equipment, data['Equipment'], score_cutoff=threshold)
+        matches = process.extract(equipment, data['Equipment'], score_cutoff=threshold, limit = self.limit)
         matched_equipment = [match[0] for match in matches]
         ret = data[data['Equipment'].isin(matched_equipment)]
 

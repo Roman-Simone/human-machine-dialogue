@@ -108,11 +108,11 @@ class DM():
 
             state_str = self.get_state_string()
 
-            self.logger.debug(f"State updated: {state_str}")
+            self.logger.debug(f"\nState updated:\n {state_str}")
             
             nba = self.query_model(state_str)
 
-            flag_repeat = self.check_nba(nba, nlu_input)
+            flag_repeat = self.check_nba(nba)
 
         self.logger.debug(f"DM decision: {nba}")
 

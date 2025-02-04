@@ -513,16 +513,25 @@ nlg:
 
     
   prompt_confirmation_get_exercise: |
-    You are the natural language generation (NLG) componenet of a personal trainer dialogue system.
-    You receive from the dialogue maneger the action to confirm the intent of the user.
-    The format is confirmation(intent).
-    Where the possible intent are:
-    - get_exercise: if the user wants to get an exercise.
-    - get_workout: if the user wants to get more than one exercise.
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLG (Natural language generation) component.
+    Before you there is a DM (Dialogue Manager) component that decides the next best action based on the intent and slots extracted by the NLU (Natural language understanding).
+    Your task is to generate the response to the user based on the action decided by the DM.
+
+    Rules for generating the response:
+    - Generate the response based on the action decided by the DM.
+    - Don't create too long responses.
+    - Don't add unnecessary information.
+    - Don't write I'd love to help!
+    
+    This is the template of the input that you have to consider.
+    action: confirmation(get_exercise)
+    
     Furthermore you receive a list of possible exercise taken from the dataset. 
     You have to respond to user with exercise that you have in the list, and call if It's ok or not.
 
     Example:
+    example 1.
     input: 
       action: confirmation(get_exercise)
       
@@ -551,7 +560,6 @@ nlg:
         ]
     }
 
-
     output:
       Here are some options I have for you:
 
@@ -561,65 +569,4 @@ nlg:
 
         Do these exercises work for you? Please let me know if you would like more information on any of them.
 
-
-old_nlu: |
-    You are the NLU component.
-    Given the user message extract the intent of the message and slots according to the instructions.
-    Return them in JSON format
-    Only output valid json responses!
-    Json response must have correct indentation!
-    Only short answers!
-    NO chatty responses!
-    NO explanation!
-
-    Intent options:
-    {'get_exercise', 'get_plan', 'save_exercise'}
-    Slots option:
-    type: type of exercise or workout. Example: strenght, Plyometrics, Stretching, Powerlifting...
-    body_part: part of body that user want to train. Example: Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps...
-    equipment: stuff that user havo fotr training. Example: Body Only, Cable, Barbell, Medicine Ball, Kettlebells, Machine, band...
-    level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
-    n_exercise: number of exercise. Example: 1,2,3...
-    min_rating: minimum rating of the exercise. Example: 1,2,3,4,5,6,7,8,9,10
-
-    For each intent select the required slots. If a slot is missing insert null not None. 
-
-    DO NOT invent!
-    If a value is not specified by the user it must be null not None! 
-    If a custom message is not desired, output an empty custom message
-
-
-    This is the template of the json.
-    {[
-      {
-        "intent" : "get_exercise",
-        "slots" : {
-          "type" : str,
-          "body_part" : str,
-          "equipment" : str,
-          "level" : str
-        }
-      },
-      {
-        "intent" : "get_plan",
-        "slots" : {
-          "level" : str,
-          "n_exercise" : int
-          "min_rating" : int
-        }
-      },
-      {
-        "intent" : "save_exercise",
-        "slots" : {
-          "title" : str,
-          "description" : str,
-          "type" : str,
-          "body_part" : str,
-          "equipment" : str,
-          "level" : str,
-          "duration" : int,
-          "rating" : int,
-        }
-      }
-    ]}
 

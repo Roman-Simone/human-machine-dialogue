@@ -44,7 +44,7 @@ class NLU():
 
             nlu_response = self.query_model(pre_nlu_input=str(intent), system_prompt=system_prompt)
 
-            self.logger.debug(f"NLU llama: {nlu_response}")
+            self.logger.debug(f"\nNLU llama:\n {nlu_response}")
 
             try:
                 nlu_response_json = json.loads(nlu_response)

@@ -14,7 +14,7 @@ class NLG():
         self.logger = logging.getLogger(__name__)
         with open(self.prompt_path, "r") as file:
             self.system_prompt_yaml = yaml.safe_load(file)
-    
+
 
     def __call__(self, nba_input: dict) -> str:
         
@@ -30,16 +30,23 @@ class NLG():
         action, argument = self.extract_action_argument(nba)
 
         if action == "request_info":
+            self.logger.debug(f"Action request_info. Slot: {argument}")
             system_prompt = self.system_prompt_yaml["nlg"]["prompt_request_info"]
             response = self.query_model(nba, system_prompt)
+
         elif action == "confirmation":
+            
             if argument == "get_exercise":
+                self.logger.debug("Action confirmation. Intent: get_exercise")
                 system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_get_exercise"]
             elif argument == "get_information":
+                self.logger.debug("Action confirmation. Intent: get_information")
                 system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_get_information"]
             elif argument == "get_plan":
+                self.logger.debug("Action confirmation. Intent: get_plan")
                 system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_get_plan"]
             elif argument == "save_exercise":
+                self.logger.debug("Action confirmation. Intent: save_exercise")
                 system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_save_exercise"]
             else:
                 self.logger.error("Invalid argument for confirmation action")

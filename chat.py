@@ -39,7 +39,7 @@ class Chat():
 
             meaning = self.nlu(output_pre_nlu)
 
-            self.logger.info(f"\n\nUser nlu:\n {meaning}\n\n")
+            self.logger.info(f"\nUser nlu:\n {meaning}\n\n")
 
             nba = self.dm(meaning)
 
@@ -47,7 +47,7 @@ class Chat():
 
             response = self.nlg(nba)
 
-            print(f"System nlg: {response}")
+            print(f"\nSystem nlg:\n {response}\n")
 
 
 if __name__ == "__main__":
