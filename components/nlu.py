@@ -15,7 +15,8 @@ class NLU():
         self.history = History()
         with open(self.prompt_path, "r") as file:
             self.system_prompt = yaml.safe_load(file)
-    
+
+
     def __call__(self, pre_nlu_input: list) -> list:
 
         ret_nlu_cleaned = []
@@ -59,6 +60,7 @@ class NLU():
         
         return ret_nlu_cleaned
 
+
     def clean_response(self, response: dict) -> dict:
         final_dict = deepcopy(response)
         for key, value in response.items():
@@ -71,7 +73,8 @@ class NLU():
                 else:
                     final_dict[key] = cleaned_dict
         return final_dict
-    
+
+
     def query_model(self, pre_nlu_input: str, system_prompt: str) -> str:
 
         with open(self.prompt_path, "r") as file:
@@ -94,4 +97,4 @@ class NLU():
         response = ollama.chat(model=self.model, messages=messages)
 
         return response['message']['content']
-    
+

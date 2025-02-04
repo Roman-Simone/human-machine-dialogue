@@ -466,7 +466,7 @@ dm:
 
 
 nlg:
-  prompt: |
+  prompt_request_info: |
     You are a component for a dialogue system that helps users with their workout routines.
     You are the NLG (Natural language generation) component.
     Before you there is a DM (Dialogue Manager) component that decides the next best action based on the intent and slots extracted by the NLU (Natural language understanding).
@@ -512,7 +512,7 @@ nlg:
         "What is the name of the exercise you want to get information about?"
 
     
-  confirmation_prompt: |
+  prompt_confirmation_get_exercise: |
     You are the natural language generation (NLG) componenet of a personal trainer dialogue system.
     You receive from the dialogue maneger the action to confirm the intent of the user.
     The format is confirmation(intent).

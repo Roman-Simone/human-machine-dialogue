@@ -1,3 +1,4 @@
+import re
 import yaml
 import ollama
 import logging
@@ -48,7 +49,7 @@ class stateTracker():
         self.logger = logging.getLogger(__name__)
 
     
-    def get_string(self):
+    def get_string(self) -> str:
         
         ret = "{"
 
@@ -59,6 +60,7 @@ class stateTracker():
         ret += "}}"
 
         return ret
+
 
     def update_state(self, nlu_response: list) -> str:
 
@@ -74,8 +76,9 @@ class stateTracker():
         
         return self.get_string()
     
-    def get_intent(self):
+    def get_intent(self) -> str:
         return self.intent
+
 
 class DM():
 
@@ -155,7 +158,7 @@ class DM():
         return data_selected
 
 
-    def check_nba(self, nba: str, nlu_input: list) -> bool:
+    def check_nba(self, nba: str) -> bool:
         
         if nba in self.invalid_nba:
             self.logger.error(f"Invalid NBA: {nba}")
@@ -165,12 +168,25 @@ class DM():
 
         if intent_or_slot == "None" or intent_or_slot == "null" or intent_or_slot == "":
             return True
+        
+        action, argument = self.extract_action_argument(nba)
+        if not action or not argument:
+            return True
 
         return False
-            
 
 
-    def get_state_string(self):
+    def extract_action_argument(self, input_str: str) -> tuple:
+
+        match = re.match(r"(request_info|confirmation)\((.*?)\)", input_str)
+        
+        if match:
+            return match.groups()  # Returns (action, argument)
+        
+        return None, None  # Default case if no match is found
+
+
+    def get_state_string(self) -> str:
         # trasform state to string
         state_str = ""
 
@@ -180,7 +196,7 @@ class DM():
         return state_str
 
 
-    def update_state(self, nlu_input: list):
+    def update_state(self, nlu_input: list) -> list:
 
         for intent in nlu_input:
             

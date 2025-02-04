@@ -7,6 +7,7 @@ from utils.history import History
 
 
 class PreNLU():
+
     def __init__(self, model, prompt_path):
         
         self.model = model
@@ -16,7 +17,8 @@ class PreNLU():
         with open(self.prompt_path, "r") as file:
             self.system_prompt = yaml.safe_load(file)
 
-    def __call__(self, user_input = " "):
+
+    def __call__(self, user_input = " ") -> dict:
         
         flag_repeat = True
         while(flag_repeat):
@@ -35,8 +37,8 @@ class PreNLU():
         pre_nlu_clean = self.clean_response(pre_nlu_json)
         
         return pre_nlu_clean
-    
-    
+
+
     def clean_response(self, response: dict) -> dict:
         final_dict = deepcopy(response)
         for element in response:
@@ -52,8 +54,7 @@ class PreNLU():
         return final_dict
 
 
-
-    def query_model(self, user_input: str):
+    def query_model(self, user_input: str) -> str:
 
         system = self.system_prompt['pre_nlu']['prompt']
         
@@ -77,4 +78,4 @@ class PreNLU():
         output =  response['message']['content']
 
         return output
-    
+
