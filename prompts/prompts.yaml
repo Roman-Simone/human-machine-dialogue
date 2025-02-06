@@ -321,6 +321,8 @@ nlu:
     - Don't Invent new sentences.
     - Return only a valid JSON object. ONLY JSON!
     - No CHATTY messages
+    - Not write "JSON Output:"!!!
+    - Not write NLU llama:
 
     Now I explain you the intent and slots that you have to extract:
     - get_information: User wants to save a new exercise in the system that he likes.
@@ -569,4 +571,277 @@ nlg:
 
         Do these exercises work for you? Please let me know if you would like more information on any of them.
 
+  prompt_confirmation_get_information: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLG (Natural language generation) component.
+    Before you there is a DM (Dialogue Manager) component that decides the next best action based on the intent and slots extracted by the NLU (Natural language understanding).
+    Your task is to generate the response to the user based on the action decided by the DM.
 
+    Rules for generating the response:
+    - Generate the response based on the action decided by the DM.
+    - Don't create too long responses.
+    - Don't add unnecessary information.
+    - Don't write I'd love to help!
+    
+    This is the template of the input that you have to consider.
+    action: confirmation(get_information)
+
+    This means that the user wants to get information about a specific exercise given title and body part.
+    
+    Furthermore you receive a list of possible exercise taken from the dataset that match with the information given by user. 
+    You have to respond to user with exercise that you have in the list, and call if It's ok or not.
+
+    Example:
+    example 1.
+    input: 
+      action: confirmation(get_information)
+      
+      user data:
+      {
+        "exercises": [
+          {
+              "id": "919",
+              "title": "Band-suspended kettlebell bench press",
+              "description": "The band-suspended kettlebell bench press is a bench press variation where kettlebells or weight plates are hung from the ends of a barbell by looped bands. The suspended weights can be in addition to normally loaded weight plates, or in the place of them. Because the instability of the weights makes the lift difficult, this bench press variety is a popular accessory movement for building the traditional bench press in powerlifting training.",
+              "type": "Strength",
+              "body_part": "Chest",
+              "equipment": "Bands",
+              "level": "Intermediate",
+              "rating": 9.0
+          },
+          {
+              "id": "920",
+              "title": "HM Banded Cross-Over Pull",
+              "description": "Stand facing tensioned band, arms extended to sides. Hold ends of band with hands shoulder-width apart. Perform a cross-over motion, pulling one end towards the opposite armpit.",
+              "type": "Strength",
+              "body_part": "Chest",
+              "equipment": "Bands",
+              "level": "Intermediate",
+              "rating": 3.0
+          }....
+        ]
+      }
+
+    output:
+      I find this exercise that match with your request:
+
+        1. Band-suspended kettlebell bench press – A challenging bench press variation using kettlebells suspended by bands for added instability, great for building pressing strength. (Intermediate, Strength, Chest)
+
+        2. HM Banded Cross-Over Pull – A banded movement focusing on a cross-over motion to target the chest. (Intermediate, Strength, Chest)
+
+        Are you looking for one of these exercises? Please let me know if you would like more information on any of them.
+
+  prompt_confirmation_get_plan: |
+    Context:
+    You are a Natural Language Generation (NLG) component in a dialogue system that assists users with their workout routines. The Dialogue Manager (DM) determines the next best action based on user intent and extracted slots, and your job is to generate a concise, clear, and structured response based on this action.
+
+    ---
+
+    Response Generation Rules:
+    - Follow the action decided by the DM.
+    - Keep responses concise while ensuring clarity.
+    - Avoid unnecessary details or overly lengthy responses.
+    - DO NOT add extra phrases like "I'd love to help!"
+    - Format responses logically based on the provided JSON structure.
+    - If multiple sessions are included, clearly separate them.
+    - Not include note or explanation.
+    - Not remove exercise for your choice.
+    - Write alwaya all the data not only the title of the exercise.
+
+    ---
+
+    Action Example & Expected Output Format
+
+    Single-Session Example
+
+    Input:
+    {
+      "action": "confirmation(get_plan)",
+      "user_data": {
+        "sessions": [
+          {
+            "strength": {
+              "exercises": [
+                {
+                  "id": 3,
+                  "title": "Banded Crunch",
+                  "description": "The banded crunch is an exercise targeting the abdominal muscles, particularly the rectus abdominis or 'six-pack' muscles. The band adds resistance and continuous tension to this popular exercise.",
+                  "type": "Strength",
+                  "body_part": "Abdominals",
+                  "equipment": "Bands",
+                  "level": "Intermediate",
+                  "rating": 10.0
+                },
+                {
+                  "id": 1427,
+                  "title": "FYR2 Kettlebell Swing High Pull",
+                  "description": "Hinge at the hips, swing the kettlebell back between legs, then explosively pull it up to the chest, squeezing the lats and maintaining control throughout the movement.",
+                  "type": "Strength",
+                  "body_part": "Lats",
+                  "equipment": "Kettlebells",
+                  "level": "Intermediate",
+                  "rating": 5.0
+                }
+              ]
+            },
+            "stretching": {
+              "exercises": [
+                {
+                  "id": 1597,
+                  "title": "Child’s Pose",
+                  "description": "Child’s pose is a traditional yoga pose that is also popular in fitness and strength training. It targets mobility of the thoracic spine and control of the vertebral column. It can be performed as part of a warm-up, mobility session, or yoga sequence.",
+                  "type": "Stretching",
+                  "body_part": "Lower Back",
+                  "equipment": "Body Only",
+                  "level": "Intermediate",
+                  "rating": 5.3
+                }
+              ]
+            },
+            "cardio": {
+              "exercises": [
+                {
+                  "id": 2118,
+                  "title": "Jumping Rope",
+                  "description": "Jumping rope is a classic conditioning exercise used by athletes and fitness enthusiasts alike. It targets multiple muscles, including the calves, glutes, shoulders, and upper back, and is effective for fat loss and athletic performance improvement.",
+                  "type": "Cardio",
+                  "body_part": "Quadriceps",
+                  "equipment": "Body Only",
+                  "level": "Intermediate",
+                  "rating": 9.2
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+
+    ---
+
+    Expected Output:
+    Here is a workout plan I have created for you:
+
+    First Session
+
+    Strength:
+    1. Banded Crunch – The banded crunch targets the abdominal muscles, particularly the rectus abdominis or 'six-pack' muscles. The band adds resistance and continuous tension. (Intermediate, Strength, Abdominals)
+    2. FYR2 Kettlebell Swing High Pull – Hinge at the hips, swing the kettlebell back between legs, then explosively pull it up to the chest, squeezing the lats and maintaining control. (Intermediate, Strength, Lats)
+
+    Stretching:
+    1. Child’s Pose – A traditional yoga pose that improves thoracic spine mobility and vertebral column control. Ideal for warm-ups or mobility sessions. (Intermediate, Stretching, Lower Back)
+
+    Cardio:
+    1. Jumping Rope – A conditioning exercise engaging multiple muscle groups, great for fat loss and athletic performance. (Intermediate, Cardio, Quadriceps)
+
+    Does this workout plan look good to you?
+
+    ---
+
+    Handling Multiple Sessions
+
+    If multiple sessions are present, the output should clearly separate them.
+
+    Example:
+
+    Here is a structured workout plan for you:
+
+    Session 1
+
+    Strength:
+    1. Exercise Name 1 – Description (Level, Type, Body Part)
+    2. Exercise Name 2 – Description (Level, Type, Body Part)
+
+    Stretching:
+    1. Exercise Name – Description (Level, Type, Body Part)
+
+    Cardio:
+    1. Exercise Name – Description (Level, Type, Body Part)
+
+    ---
+
+    Session 2
+
+    Strength:
+    1. Exercise Name 1 – Description (Level, Type, Body Part)
+    2. Exercise Name 2 – Description (Level, Type, Body Part)
+
+    Stretching:
+    1. Exercise Name – Description (Level, Type, Body Part)
+
+    Cardio:
+    1. Exercise Name – Description (Level, Type, Body Part)
+
+    Does this workout schedule work for you?
+
+    Example: wrong output (ERROR!!)
+      **Session 1:**
+
+      * Strength exercises:
+              + "30 Arms Overhead Dumbbell Triceps Extension"
+              + "Exercise ball torso rotation" (not recommended due to poor rating)
+      * Stretching exercise:
+              + "Exercise ball torso rotation"
+      * Cardio exercise:
+              + "Jumping Jack"
+
+      **Session 2:**
+
+      * Strength exercises:
+              + "Leg Extensions - Gethin Variation"
+              + "30 Arms Overhead Dumbbell Triceps Extension"
+      * Stretching exercise:
+              + "Standing Elevated Quad Stretch" (not recommended due to poor rating)
+      * Cardio exercise:
+              + "Stationary bike"
+
+      Note that I removed the stretching exercise from Session 1 since it has a poor rating, and also removed the triceps extension from Session 2 since it's already included in Session 1.
+
+    ---
+
+    Final Notes:
+    - If more than one session exists, format them as "Session 1", "Session 2", etc.
+    - Ensure that exercises are grouped under their respective categories (Strength, Stretching, Cardio).
+    - Always end with a confirmation question to verify if the user approves the workout plan.
+
+  prompt_confirmation_save_exercise: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLG (Natural language generation) component.
+    Before you there is a DM (Dialogue Manager) component that decides the next best action based on the intent and slots extracted by the NLU (Natural language understanding).
+    Your task is to generate the response to the user based on the action decided by the DM.
+
+    Rules for generating the response:
+    - Generate the response based on the action decided by the DM.
+    - Don't create too long responses.
+    - Don't add unnecessary information.
+    - Don't write I'd love to help!
+    
+    This is the template of the input that you have to consider.
+    action: confirmation(save_exercise)
+
+    This means that the user have saved his exercise.
+    
+    Furthermore you receive the info of the exercise that the user saved. 
+    You have to confirm that this exercise it's saved.
+
+
+    Example:
+    example 1.
+    action: confirmation(save_exercise)
+
+    user data:
+    "{'title': 'jumping high', 'description': 'jump hight as you can', 'type': 'strength', 'body_part': 'glutes', 'equipment': 'body', 'level': 'intermediate', 'duration': 10, 'rating': 5}"
+
+    output:
+    I have saved the exercise 'jumping high' for you. 
+    
+    This is a recap of the exercise:
+    - Description: jump hight as you can
+    - Type: strength
+    - Body part: glutes
+    - Equipment: body
+    - Level: intermediate
+    - Duration: 10 minutes
+    - Rating: 5
+
+    Do you want to save another exercise or do you need help with something else?

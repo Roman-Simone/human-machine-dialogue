@@ -153,6 +153,7 @@ class DM():
             data_selected = self.dataset.get_schedule(data_confirm.slots)
         elif intent_confirm == "save_exercise":
             data_selected = self.dataset.save_exercise(data_confirm.slots)
+            data_selected = f"{data_confirm.slots}"
         else:
             self.logger.error(f"Intent {intent_confirm} not found")
             return "Error"

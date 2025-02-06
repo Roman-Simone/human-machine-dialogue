@@ -19,6 +19,7 @@ class NLU():
 
     def __call__(self, pre_nlu_input: list) -> list:
 
+
         ret_nlu_cleaned = []
 
         for intent in pre_nlu_input:
@@ -42,14 +43,17 @@ class NLU():
             else:
                 self.logger.error("Intent not recognized")
 
-            nlu_response = self.query_model(pre_nlu_input=str(intent), system_prompt=system_prompt)
+            flag_repeat = True
+            while flag_repeat:
+                nlu_response = self.query_model(pre_nlu_input=str(intent), system_prompt=system_prompt)
 
-            self.logger.debug(f"\nNLU llama:\n {nlu_response}")
+                self.logger.debug(f"\nNLU llama:\n {nlu_response}")
 
-            try:
-                nlu_response_json = json.loads(nlu_response)
-            except:
-                self.logger.error("Error parsing NLU response")
+                try:
+                    nlu_response_json = json.loads(nlu_response)
+                    flag_repeat = False
+                except:
+                    self.logger.error("Error parsing NLU response")
             
 
             if type(nlu_response_json) is dict:
@@ -79,8 +83,6 @@ class NLU():
 
         with open(self.prompt_path, "r") as file:
             data = yaml.safe_load(file)
-
-        
         
         messages = [{
             'role': 'system',

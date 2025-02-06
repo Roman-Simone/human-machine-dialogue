@@ -74,9 +74,9 @@ class MegaGymDataset:
 
         for _ in range(n_sessions):
             session = {
-                "strength": self.format_json(self.filter_by_type(exercise_type="Strength", data=data_ret).sample(4)),
-                "stretching": self.format_json(self.filter_by_type(exercise_type="Stretching", data=data_ret).sample(2)),
-                "cardio": self.format_json(self.filter_by_type(exercise_type="Cardio", data=data_ret).sample(2))
+                "strength": self.format_json(self.filter_by_type(exercise_type="Strength", data=data_ret).sample(2)),
+                "stretching": self.format_json(self.filter_by_type(exercise_type="Stretching", data=data_ret).sample(1)),
+                "cardio": self.format_json(self.filter_by_type(exercise_type="Cardio", data=data_ret).sample(1))
             }
             schedule.append(session)
 
@@ -114,7 +114,6 @@ class MegaGymDataset:
         return "Exercise saved successfully."
 
 
-
     def format_json(self, data:pd.DataFrame) -> str:
         formatted_exercises = []
 
@@ -147,14 +146,29 @@ class MegaGymDataset:
         return self.data
 
 
-    def filter_by_title(self, title, data=None, threshold = 80) -> pd.DataFrame:
+    def filter_by_title(self, title, data=None, threshold = 70) -> pd.DataFrame:
         """Filter data by title."""
         if data is None:
             data = self.data
 
-        matches = process.extract(title, data['Title'], score_cutoff=threshold, limit = self.limit)
-        matched_titles = [match[0] for match in matches]
-        ret = data[data['Title'].isin(matched_titles)]
+        flag_find = False
+
+        while(not flag_find):
+
+            matches = process.extract(title, data['Title'], score_cutoff=threshold, limit = self.limit)
+            matched_titles = [match[0] for match in matches]
+            ret = data[data['Title'].isin(matched_titles)]
+
+            if len(ret) == 0:
+                if threshold <= 30:
+                    break
+                threshold -= 5
+            elif len(ret) > 5:
+                if threshold >= 100:
+                    break
+                threshold += 3
+            else:
+                flag_find = True
 
         return ret
 
