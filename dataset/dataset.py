@@ -196,7 +196,7 @@ class MegaGymDataset:
         return ret
 
 
-    def filter_by_equipment(self, equipment, data=None, threshold = 80) -> pd.DataFrame:
+    def filter_by_equipment(self, equipment, data=None, threshold = 60) -> pd.DataFrame:
         """Filter data by equipment."""
         if data is None:
             data = self.data

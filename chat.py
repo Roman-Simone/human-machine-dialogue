@@ -47,7 +47,7 @@ class Chat():
 
             response = self.nlg(nba)
 
-            print(f"\nSystem nlg:\n {response}\n")
+            print(f"\nSystem: {response}\n")
 
 
 if __name__ == "__main__":

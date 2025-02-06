@@ -511,7 +511,6 @@ nlg:
       Correct output: 
         "What is the name of the exercise you want to get information about?"
 
-    
   prompt_confirmation_get_exercise: |
     You are a component for a dialogue system that helps users with their workout routines.
     You are the NLG (Natural language generation) component.
@@ -535,8 +534,9 @@ nlg:
     input: 
       action: confirmation(get_exercise)
       
-      data from database:
-      "exercises": [
+      user data:
+      {
+        "exercises": [
           {
               "id": "919",
               "title": "Band-suspended kettlebell bench press",
@@ -558,7 +558,7 @@ nlg:
               "rating": 3.0
           }....
         ]
-    }
+      }
 
     output:
       Here are some options I have for you:

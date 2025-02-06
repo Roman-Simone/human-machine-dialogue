@@ -79,16 +79,19 @@ class NLG():
         #     'role': 'user',
         #     'content': f"History User: {self.history.get_history()}"
         # })
+
+        messages.append({
+            'role': 'user',
+            'content': "action: " + nba_input
+        })
+
         if data != " ":
             messages.append({
                 'role': 'user',
                 'content': "user data: \n" + data
             })
 
-        messages.append({
-            'role': 'user',
-            'content': nba_input
-        })
+        
 
         self.history.add('user', nba_input)
 
