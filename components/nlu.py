@@ -100,3 +100,5 @@ class NLU():
 
         return response['message']['content']
 
+
+

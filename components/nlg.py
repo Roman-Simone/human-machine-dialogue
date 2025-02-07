@@ -32,7 +32,9 @@ class NLG():
         if action == "request_info":
             self.logger.debug(f"Action request_info. Slot: {argument}")
             system_prompt = self.system_prompt_yaml["nlg"]["prompt_request_info"]
-            response = self.query_model(nba, system_prompt)
+            response = self.query_model(nba, system_prompt, data)
+
+            
 
         elif action == "confirmation":
             

@@ -18,10 +18,13 @@ class PreNLU():
             self.system_prompt = yaml.safe_load(file)
 
 
-    def __call__(self, user_input = " ") -> dict:
+    def __call__(self, user_input = " ", system_response = " ") -> dict:
         
         flag_repeat = True
         while(flag_repeat):
+
+            # self.history.add('system', system_response)
+            
             pre_nlu_llama = self.query_model(user_input)
 
             self.history.add('user', user_input)
@@ -35,7 +38,7 @@ class PreNLU():
                 self.logger.error("Error parsing PRE-NLU response")
 
         pre_nlu_clean = self.clean_response(pre_nlu_json)
-        
+
         return pre_nlu_clean
 
 
@@ -67,6 +70,12 @@ class PreNLU():
             'role': 'user',
             'content': f"History User: {self.history.get_history()}"
         })
+
+        # for message in self.history.get_history():
+        #     messages.append({
+        #         'role': message['role'],
+        #         'content': message['content']
+        #     })
 
         messages.append({
             'role': 'user',

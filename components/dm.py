@@ -104,11 +104,14 @@ class DM():
         flag_repeat = True
         
         while(flag_repeat):
+
             self.state = self.update_state(nlu_input)
 
-            state_str = self.get_state_string()
+            states_str = self.get_states_string()
 
-            self.logger.debug(f"\nState updated:\n {state_str}")
+            self.logger.debug(f"\nStates updated:\n {states_str}")
+
+            state_str = self.get_state_string(self.state[0])
             
             nba = self.query_model(state_str)
 
@@ -119,6 +122,11 @@ class DM():
         data = ""
         if "confirmation" in nba:
             data = self.confirmation(nba)
+            self.logger.debug("Intent completed and eliminated from state")
+            self.state.pop(0)
+        
+        if "request_info" in nba:
+            data = f"intent: {self.state[0].intent}"
         
         response = {
             "nba": nba,
@@ -189,12 +197,21 @@ class DM():
         return None, None  # Default case if no match is found
 
 
-    def get_state_string(self) -> str:
+    def get_states_string(self) -> str:
         # trasform state to string
         state_str = ""
 
         for state in self.state:
             state_str += state.get_string() + "\n"
+
+        return state_str
+    
+
+    def get_state_string(self, state) -> str:
+        
+        state_str = ""
+
+        state_str += state.get_string() + "\n"
 
         return state_str
 

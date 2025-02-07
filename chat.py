@@ -25,6 +25,15 @@ class Chat():
 
     def run_chat(self):
 
+        system = """
+        .-.   .-.     .--.  .-.   .-.  .--.  .----..-. .---. 
+        | |   | |    / {} \ |  `.'  | / {} \ | {_  | |{_   _}
+        | `--.| `--./  /\  \| |\ /| |/  /\  \| |   | |  | |  
+        `----'`----'`-'  `-'`-' ` `-'`-'  `-'`-'   `-'  `-'  
+        """
+
+        system_response = ""
+
         while(self.RUNNING):
 
             user_input = input("User: ")
@@ -33,21 +42,23 @@ class Chat():
                 self.logger.info("Exiting chat")
                 break
             
-            output_pre_nlu = self.pre_nlu(user_input)
+            output_pre_nlu = self.pre_nlu(user_input, system_response)
 
             self.logger.info(f"User pre_nlu:\n {output_pre_nlu}\n\n")
 
-            meaning = self.nlu(output_pre_nlu)
+            # system_response = input("System: ")
 
-            self.logger.info(f"\nUser nlu:\n {meaning}\n\n")
+            # meaning = self.nlu(output_pre_nlu)
 
-            nba = self.dm(meaning)
+            # self.logger.info(f"\nUser nlu:\n {meaning}\n\n")
 
-            self.logger.info(f"User nlu:\n {nba}\n\n")
+            # nba = self.dm(meaning)
 
-            response = self.nlg(nba)
+            # self.logger.info(f"User nlu:\n {nba}\n\n")
 
-            print(f"\nSystem: {response}\n")
+            # system_response = self.nlg(nba)
+
+            # print(f"\nSystem: {system_response}\n")
 
 
 if __name__ == "__main__":

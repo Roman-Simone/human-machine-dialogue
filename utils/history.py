@@ -18,12 +18,25 @@ class History():
         })
     
     def get_history(self):
-        # return self.msgs
 
+        # content_ret = ""
+
+        # for msg in self.msgs:
+        #     content_ret += f"{msg['role']}: {msg['content']}\n"
+
+        # return content_ret
+
+        return self.msgs
+    
+    def get_history_str(self):
         content_ret = ""
 
         for msg in self.msgs:
-            content_ret += msg['content'] + " "
+            content_ret += f"{msg['role']}: {msg['content']}\n"
 
         return content_ret
+    
+    def clean(self, text_to_mantain: str):
+        self.msgs = []
+        self.add('user', text_to_mantain)
 

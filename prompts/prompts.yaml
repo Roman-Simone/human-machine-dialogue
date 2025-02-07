@@ -29,7 +29,7 @@ pre_nlu:
                     - body_part: part of body that user want to train. Example: Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps...
                     - equipment: stuff that user havo fotr training. Example: Body Only, Cable, Barbell, Medicine Ball, Kettlebells, Machine, band...
                     - level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
-    - get_information: User whants to get information (like description or execution) about a specific exercise, he know the name of the exercise.
+    - get_information: User wants to get information (like description or execution) about a specific exercise, he know the name of the exercise.
                     Further information for this intent are: 
                     - title: name of the exercise
                     - body_part: part of body that user want to train. Example: Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps...
@@ -481,6 +481,7 @@ nlg:
     - Don't write I'd love to help!
 
     This is the template of the input that you have to consider.
+    data: intent
     action: request_info(slot)
 
     The possible slot are:
@@ -494,24 +495,49 @@ nlg:
     - min_rating: minimum rating of the exercise. Example: 1,2,3,4,5,6,7,8,9,10
     - duration: duration of the exercise in minutes
 
+    The possible intent are:
+    - get_exercise: User wants to get information (user doesn't know the name of the exercise) about a specific exercise.
+    - get_information: User wants to get information (like description or execution) about a specific exercise, he know the name of the exercise.
+    - get_plan: User wants to get a full workout plan (training sheet) so a complete set of exercise for different session.
+    - save_exercise: User wants to save a new exercise in the system that he likes.
+
     Examples:
     example 1.
       input: 
+        intent: get_exercise
         action: request_info(body_part)
+
       Correct output: 
         "Could you please tell me which part of your body you want to train?"
-
+    
     example 2.
       input: 
-        action: request_info(level)
+        intent: get_information
+        action: request_info(body_part)
+
       Correct output: 
-        "Can you please tell me your level of training? Are you a beginner, intermediate or advanced?"
-    
+        "Could you please tell me which part of your body train the exercise that you are searching train?"
+
     example 3.
       input: 
+        intent: get_plan
+        action: request_info(level)
+      Correct output: 
+        "Can you please tell me your level to find best exercises for your schedule? Are you a beginner, intermediate or advanced?"
+    
+    example 4.
+      input: 
+        intent: get_information
         action: request_info(title)
       Correct output: 
         "What is the name of the exercise you want to get information about?"
+
+    example 5.
+      input: 
+        intent: get_exercise
+        action: request_info(level)
+      Correct output: 
+        "Can you please provide me with your level of training? Are you a beginner, intermediate or advanced?"
 
   prompt_confirmation_get_exercise: |
     You are a component for a dialogue system that helps users with their workout routines.
