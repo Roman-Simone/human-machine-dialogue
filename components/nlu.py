@@ -17,12 +17,14 @@ class NLU():
             self.system_prompt = yaml.safe_load(file)
 
 
-    def __call__(self, pre_nlu_input: list) -> list:
-
+    def __call__(self, pre_nlu_input: list, user_input:str, system_response: str) -> list:
 
         ret_nlu_cleaned = []
 
+        self.history.add('system', system_response)
+
         for intent in pre_nlu_input:
+
             if intent.get("intent") == "get_exercise":
                 self.logger.debug("Intent get_exercise")
                 system_prompt = self.system_prompt["nlu"]["prompt_get_exercise"]
@@ -35,6 +37,18 @@ class NLU():
             elif intent.get("intent") == "save_exercise":
                 self.logger.debug("Intent save_exercise")
                 system_prompt = self.system_prompt["nlu"]["prompt_save_exercise"]
+            elif intent.get("intent") == "add_favorite":
+                self.logger.debug("Intent add_favorite")
+                system_prompt = self.system_prompt["nlu"]["prompt_add_favorite"]
+            elif intent.get("intent") == "remove_favorite":
+                self.logger.debug("Intent remove_favorite")
+                system_prompt = self.system_prompt["nlu"]["prompt_remove_favorite"]
+            elif intent.get("intent") == "list_favorite":
+                self.logger.debug("Intent list_favorite")
+                system_prompt = self.system_prompt["nlu"]["prompt_list_favorite"]
+            elif intent.get("intent") == "give_evaluation":
+                self.logger.debug("Intent give_evaluation")
+                system_prompt = self.system_prompt["nlu"]["prompt_give_evaluation"]
             elif intent.get("intent") == "out_of_context":
                 self.logger.debug("Intent out_of_context")
                 if len(pre_nlu_input) == 1:
@@ -62,6 +76,8 @@ class NLU():
             else:
                 self.logger.error("NLU response is not a dictionary")
         
+        self.history.add('user', user_input)
+        
         return ret_nlu_cleaned
 
 
@@ -87,14 +103,18 @@ class NLU():
         messages = [{
             'role': 'system',
             'content': system_prompt
-        }] #+ self.history.get_history()
+        }] 
+
+        for message in self.history.get_history():
+            messages.append({
+                'role': message['role'],
+                'content': f"History {message['role']}: {message['content']}"
+            })
 
         messages.append({
             'role': 'user',
             'content': pre_nlu_input
         })
-
-        self.history.add('user', pre_nlu_input)
 
         response = ollama.chat(model=self.model, messages=messages)
 

@@ -25,14 +25,26 @@ class Chat():
 
     def run_chat(self):
 
-        system = """
+        print("""
         .-.   .-.     .--.  .-.   .-.  .--.  .----..-. .---. 
         | |   | |    / {} \ |  `.'  | / {} \ | {_  | |{_   _}
         | `--.| `--./  /\  \| |\ /| |/  /\  \| |   | |  | |  
         `----'`----'`-'  `-'`-' ` `-'`-'  `-'`-'   `-'  `-'  
-        """
+        🔥 Welcome to LLAMAFIT! 🦙💪 
 
-        system_response = ""
+        Hey there, fitness warrior! I'm Llamafit, your AI-powered personal trainer.
+
+        💥 What I can do for you:  
+        ✅ Custom workout plans tailored to your fitness level  
+        ✅ Exercise description  
+        ✅ Keep your favorite exercises saved
+        ✅ Save your exercise  
+        
+        """)
+
+        system_response = "What can I do for you today?"
+        print(f"{system_response}")
+
 
         while(self.RUNNING):
 
@@ -46,11 +58,11 @@ class Chat():
 
             self.logger.info(f"User pre_nlu:\n {output_pre_nlu}\n\n")
 
-            # system_response = input("System: ")
+            meaning = self.nlu(output_pre_nlu, user_input, system_response)
 
-            # meaning = self.nlu(output_pre_nlu)
+            self.logger.info(f"\nUser nlu:\n {meaning}\n\n")
 
-            # self.logger.info(f"\nUser nlu:\n {meaning}\n\n")
+            system_response = input("System: ")
 
             # nba = self.dm(meaning)
 

@@ -11,9 +11,6 @@ pre_nlu:
     - Only provide JSON object.
     - Preserve original wording while ensuring logical segmentation.
     - Don't Invent new sentences.
-    - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
-    - Use History only for necessary information. Don't include in the output.
-    - Don't print the history in the output
     - No CHATTY messages
     - Return only a valid JSON object. ONLY JSON!
     - Not include note or explanation.
@@ -21,6 +18,15 @@ pre_nlu:
     - In the output, I don't want double intents. If there are two same intent put the text in the same intent.
     - Not write "JSON Output:". Return only a valid JSON object. ONLY JSON!
     - Don't write "JSON Output:"!!!
+
+    History:
+    - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
+    - Use History only for necessary information. 
+    - The history is composed by the iteration between the user and the system.
+    - You receuse dialogue like: user: text, system: text, user: text, ...
+    - Use the history only for context!!!
+    - If user demand you can take information from the history. Only if it is necessary.
+    - Example if user ask for some information related previous message.
     
     Intents:
     - get_exercise: User wants to get information (user doesn't know the name of the exercise) about a specific exercis.
@@ -37,7 +43,6 @@ pre_nlu:
                     Further information for this intent are: 
                     - level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
                     - n_session: number of session per week. Example: 1,2,3...
-                    - min_rating: minimum rating of the exercise. Example: 1,2,3,4,5,6,7,8,9,10
     - save_exercise: User wants to save a new exercise in the system that he likes.
                     Further information for this intent are: 
                     - title: name of the exercise
@@ -47,83 +52,107 @@ pre_nlu:
                     - equipment: stuff that user havo fotr training. Example: Body Only, Cable, Barbell, Medicine Ball, Kettlebells, Machine, band...
                     - level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
                     - duration: duration of the exercise in minutes
-                    - rating: rating of the exercise. Example: 1,2,3,4,5,6,7,8,9,10
-    - out_of_context: User message is out of context and doesn't fit any of the intents above.
+    - add_favorite: User wants to add an exercise to his favorite list.
+                    Further information for this intent are: 
+                    - title: name of the exercise
+    - remove_favorite: User wants to remove an exercise from his favorite list.
+                    Further information for this intent are: 
+                    - title: name of the exercise
+    - list_favorite: User wants to see his favorite list.
+                    No Further information for this intent.
+    - give_evaluation: User wants to give a vote to the entire system.
+                    Further information for this intent are: 
+                    - rating: rating of the system. Example: 1,2,3,4,5,6,7,8,9,10
+                    - comment: comment about the system.
+    - out_of_context: User message is out of context and doesn't fit any of the intents above or that have no important information.
 
     Note: the difference between get_exercise and get_information is that in the first case the user doesn't know the name of the exercise, in the second case the user knows the name of the exercise.
 
     Examples:
     example 1.
-      History: ""
-      input user: "Hi, I want to get some exercise to improve my strength. Can you help me?"
+
+      History: History dialogue: [{'role': 'system', 'content': 'What can I do for you today?'}]
+      Input: Hi I want to get an exercise for strength.
       Correct output: 
         [
           {
             "intent": "get_exercise", 
-            "text": "Hi, I want to get some exercise to improve my strength. Can you help me?"
+            "text": "Hi I want to get an exercise for strength."
+          }
+        ]
+      Wrong output:
+        here is your output:
+        [
+          {
+            "intent": "get_exercise", 
+            "text": "Hi I want to get an exercise for strength."
           }
         ]
 
     example 2.
-      History: "Hi, I would like to get some information about the exercise called 'Band-suspended kettlebell bench press'."
-      input user: "The part of body that it train is the chest."
+      History: History dialogue: [{'role': 'system', 'content': 'What can I do for you today?'}, {'role': 'user', 'content': 'Hi, I would like to get some information about the exercise called "Band-suspended kettlebell bench press".'}, {'role': 'system', 'content': 'Sure, what part of the body does it train?'}]
+      Input: The part of body that it train is the chest.
+
       Correct output: 
         [
           {
             "intent": "get_information", 
-            "text": "Hi, I would like to get some information about the exercise called 'Band-suspended kettlebell bench press'. The part of body that it train is the chest."
+            "text": "The part of body that it train is the chest."
           }
         ]
-
+    
     example 3.
-      History: ""
-      input user: "Hi today it's a sunny day and I want to get a workout schedule. I usually train 3 times a week."
-      Correct output: 
-        [
-          {
-            "intent": "out_of_context", 
-            "text": "Hi, today it's a sunny day."
-          },
-          {
-            "intent": "get_plan", 
-            "text": "I want to get a workout schedule. I usually train 3 times a week."
-          }
-        ]
-    example 4.
-      history: "Hi, I would like to get a full workout plan."
-      input user: "I usually train three times a week, and today I eat a pizza"
-      
-      Correct output: 
-        [
-          {
-            "intent": "get_plan", 
-            "text": "Hi, I would like to get a full workout plan. I usually train three times a week."
-          },
-          {
-            "intent": "out_of_context", 
-            "text": "And today I eat a pizza"
-          }
-        ]
-    example 5.
-      history: "Hi I want an exercise for my strength. I want to train my chest "
-      input user: Oh yes sorry I forget that I have only a band and my level is intermediate. 
+      History: History dialogue: [{'role': 'user', 'content': 'Hi, I would like to get a full workout plan. I usually train 3 times a week.'}, {'role': 'system', 'content': 'Sure, what is your level of training? Are you a beginner, intermediate or advanced?'}]
+      Input: Yes, my level is intermediate, and I also want some information about the exercise called "Band-suspended kettlebell bench press".
 
       Correct output: 
         [
           {
-            "intent": "get_exercise", 
-            "text": "Hi I want an exercise for my strength. I want to train my chest Oh yes sorry I forget that I have only a band and my level is intermediate."
+            "intent": "get_plan", 
+            "text": "Yes, my level is intermediate,"
+          }
+          {
+            "intent": "get_information", 
+            "text": "and I also want some information about the exercise called 'Band-suspended kettlebell bench press'."
           }
         ]
-      Wrong output (ERROR!!):
-        JSON Output:[
+
+    example 4.
+      History: History dialogue: [{'role': 'system', 'content': 'What can I do for you today?'}, {'role': 'user', 'content': 'Hi I want to get an exercise for my strength.'}, {'role': 'system', 'content': 'Ok, what part of your body do you want to train?'}] 
+      Input: I want to train my chest.
+
+      CORRECT OUTPUT:
+      [
+        {
+          "intent": "get_exercise", 
+          "text": "I want to train my chest."
+        }
+      ]
+      WRONG OUTPUT
+      [
+        {
+          "intent": "get_exercise", 
+          "text": "I want to get an exercise for my strength."
+        }
+        {
+          "intent": "get_exercise", 
+          "text": "I want to get an exercise for my strength. Chest"
+        }
+      ]
+    
+    example 5.
+      History: Hystory dialogue: [{'role': 'system', 'content': 'What can I do for you today?'}, {'role': 'user', 'content': 'Hi I want to get a full plan for my schedule workout'}, {'role': 'system', 'content': 'Sure, what is your level of training? Are you a beginner, intermediate or advanced?'}]
+      Input: Hi, I would to take an ice cream. and I want to remove from my favorite the exercise "jump and run".
+
+      Correct output: 
+        [
           {
-            "intent": "get_exercise", 
-            "text": "Hi I want an exercise for my strength. I want to train my chest"
+            "intent": "out_of_context", 
+            "text": "Hi, I would to take an ice cream."
           },
           {
-            "intent": "get_exercise", 
-            "text": "Oh yes sorry I forget that I have only a band and my level is intermediate"
+            "intent": "remove_favorite", 
+            "text": "and I want to remove from my favorite the exercise 'jump and run'."
           }
         ]
 
@@ -144,6 +173,7 @@ nlu:
     - Don't Invent new sentences.
     - Return only a valid JSON object. ONLY JSON!
     - No CHATTY messages
+    - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
 
     Now I explain you the intent and slots that you have to extract:
     - get_exercise: User wants to get information (user doesn't know the name of the exercise) about a specific exercis.
@@ -387,7 +417,276 @@ nlu:
           }
         }
   
+  prompt_add_favorite: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLU (Natural language understanding) component.
+    Before you there is a pre-NLU component that devide the user message in chunks for every intent.
+    Your task is to take the chunk of the message related to the intent add_favorite and extract the slots from it.
+
+    Rules for slot extraction:
+    - Extract the slots from the chunk of the message related to the intent add_favorite.
+    - If a slot is not mentioned in the message, set it to null.
+    - Only output a valid JSON object.
+    - Not include note or explanation.
+    - Not write "Here is the output:"
+    - Don't Invent new sentences.
+    - Return only a valid JSON object. ONLY JSON!
+    - No CHATTY messages
+    - Not write "JSON Output:"!!!
+    - Not write NLU llama:
+
+    Now I explain you the intent and slots that you have to extract:
+    - add_favorite: User wants to add an exercise to his favorite list.
+                    Slots are: 
+                    - title: name of the exercise
+
+    This is the template of the json that you have to return.
+    {
+      "intent" : "add_favorite",
+      "slots" : {
+        "title" : str
+      }
+    }
+
+    Examples:
+    example 1.
+      input: 
+        {'intent': 'add_favorite', 'text': 'I want to add to my favorite the exercise "Band-suspended kettlebell bench press"'}
+      Correct output: 
+        {
+          "intent" : "add_favorite",
+          "slots" : {
+            "title" : "Band-suspended kettlebell bench press"
+          }
+        }
+    example 2.
+      History:I find this exercise that match with your request: \n
+      
+        1. Band-suspended kettlebell bench press – A challenging bench press variation using kettlebells suspended by bands for added instability, great for building pressing strength. (Intermediate, Strength, Chest)
+
+        2. Jump and run – A banded movement focusing on a cross-over motion to target the chest. (Intermediate, Strength, Chest)
+
+        Do you want to add one of these exercises to your favorite list?
+      input: 
+        {'intent': 'add_favorite', 'text': 'yes, I want to add to my favorite exercise the first exercise that you propose me'}
+      Correct output: 
+        {
+          "intent" : "add_favorite",
+          "slots" : {
+            "title" : "Band-suspended kettlebell bench press"
+          }
+        }
+
+  prompt_remove_favorite: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLU (Natural language understanding) component.
+    Before you there is a pre-NLU component that devide the user message in chunks for every intent.
+    Your task is to take the chunk of the message related to the intent remove_favorite and extract the slots from it.
+
+    Rules for slot extraction:
+    - Extract the slots from the chunk of the message related to the intent remove_favorite.
+    - If a slot is not mentioned in the message, set it to null.
+    - Only output a valid JSON object.
+    - Not include note or explanation.
+    - Not write "Here is the output:"
+    - Don't Invent new sentences.
+    - Return only a valid JSON object. ONLY JSON!
+    - No CHATTY messages
+    - Not write "JSON Output:"!!!
+    - Not write NLU llama:
+    - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
+
+    Now I explain you the intent and slots that you have to extract:
+    - remove_favorite: User wants to remove an exercise from his favorite list.
+                    Slots are: 
+                    - title: name of the exercise
+
+    This is the template of the json that you have to return.
+    {
+      "intent" : "remove_favorite",
+      "slots" : {
+        "title" : str
+      }
+    }
+
+    Examples:
+    example 1.
+      input: 
+        {'intent': 'remove_favorite', 'text': 'I want to remove from my favorite the exercise "jump and run"'}
+      Correct output: 
+        {
+          "intent" : "remove_favorite",
+          "slots" : {
+            "title" : "jump and run"
+          }
+        }
+    example 2.
+      History: I find this exercise that match with your request: \n
+      
+        1. Band-suspended kettlebell bench press – A challenging bench press variation using kettlebells suspended by bands for added instability, great for building pressing strength. (Intermediate, Strength, Chest)
+
+        2. Jump and run – A banded movement focusing on a cross-over motion to target the chest. (Intermediate, Strength, Chest)
+
+        Do you want to remove one of these exercises from your favorite list?
+      input: 
+        {'intent': 'remove_favorite', 'text': 'yes, I want to remove from my favorite the second exercise that you propose me'}
+      Correct output: 
+        {
+          "intent" : "remove_favorite",
+          "slots" : {
+            "title" : "jump and run"
+          }
+        }
+
+  prompt_list_favorite: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLU (Natural language understanding) component.
+    Before you there is a pre-NLU component that devide the user message in chunks for every intent.
+    Your task is to take the chunk of the message related to the intent list_favorite and extract the slots from it.
+
+    Rules for slot extraction:
+    - Extract the slots from the chunk of the message related to the intent list_favorite.
+    - If a slot is not mentioned in the message, set it to null.
+    - Only output a valid JSON object.
+    - Not include note or explanation.
+    - Not write "Here is the output:"
+    - Don't Invent new sentences.
+    - Return only a valid JSON object. ONLY JSON!
+    - No CHATTY messages
+    - Not write "JSON Output:"!!!
+    - Not write NLU llama:
+    - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
+
+    Now I explain you the intent and slots that you have to extract:
+    - list_favorite: User wants to see his favorite list.
+                    No Further information for this intent.
+
+    This is the template of the json that you have to return.
+    {
+      "intent" : "list_favorite",
+      "slots" : {}
+    }
+
+    Examples:
+    example 1.
+      input: 
+        {'intent': 'list_favorite', 'text': 'I want to see my favorite list'}
+      Correct output: 
+        {
+          "intent" : "list_favorite",
+          "slots" : {}
+        }
+    example 2.
+      input: 
+        {'intent': 'list_favorite', 'text': 'Can you show me my favorite list?'}
+      Correct output: 
+        {
+          "intent" : "list_favorite",
+          "slots" : {}
+        }
+
+  prompt_give_evaluation: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLU (Natural language understanding) component.
+    Before you there is a pre-NLU component that devide the user message in chunks for every intent.
+    Your task is to take the chunk of the message related to the intent give_evaluation and extract the slots from it.
+
+    Rules for slot extraction:
+    - Extract the slots from the chunk of the message related to the intent give_evaluation.
+    - If a slot is not mentioned in the message, set it to null.
+    - Only output a valid JSON object.
+    - Not include note or explanation.
+    - Not write "Here is the output:"
+    - Don't Invent new sentences.
+    - Return only a valid JSON object. ONLY JSON!
+    - No CHATTY messages
+    - Not write "JSON Output:"!!!
+    - Not write NLU llama:
+    - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
+
+    Now I explain you the intent and slots that you have to extract:
+    - give_evaluation: User wants to give a vote to the entire system.
+                    Slots are: 
+                    - rating: rating of the system. Example: 1,2,3,4,5,6,7,8,9,10
+                    - comment: comment about the system.
+
+    This is the template of the json that you have to return.
+    {
+      "intent" : "give_evaluation",
+      "slots" : {
+        "rating" : int,
+        "comment" : str
+      }
+    }
+
+    Examples:
+    example 1.
+      input: 
+        {'intent': 'give_evaluation', 'text': 'I think that your system is very useful. I give you a 9.'}
+      Correct output: 
+        {
+          "intent" : "give_evaluation",
+          "slots" : {
+            "rating" : 9,
+            "comment" : "I think that your system is very useful."
+          }
+        }
+    example 2.
+      input: 
+        {'intent': 'give_evaluation', 'text': 'I think that your system is very useful. I give you a 9. I think that you can improve the search system.'}
+      Correct output: 
+        {
+          "intent" : "give_evaluation",
+          "slots" : {
+            "rating" : 9,
+            "comment" : "I think that your system is very useful. I think that you can improve the search system."
+          }
+
   prompt_out_of_context: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLU (Natural language understanding) component.
+    Before you there is a pre-NLU component that devide the user message in chunks for every intent.
+    Your task is to take the chunk of the message related to the intent out_of_context and extract the slots from it.
+
+    Rules for slot extraction:
+    - Extract the slots from the chunk of the message related to the intent out_of_context.
+    - If a slot is not mentioned in the message, set it to null.
+    - Only output a valid JSON object.
+    - Not include note or explanation.
+    - Not write "Here is the output:"
+    - Don't Invent new sentences.
+    - Return only a valid JSON object. ONLY JSON!
+    - No CHATTY messages
+    - Not write "JSON Output:"!!!
+    - Not write NLU llama:
+    - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
+
+    Now I explain you the intent and slots that you have to extract:
+    - out_of_context: User message is out of context and doesn't fit any of the intents above or that have no important information.
+
+    This is the template of the json that you have to return.
+    {
+      "intent" : "out_of_context",
+      "slots" : {}
+    }
+
+    Examples:
+    example 1.
+      input: 
+        {'intent': 'out_of_context', 'text': 'I would like to take an ice cream. Can you suggest me a good ice cream shop?'}
+      Correct output: 
+        {
+          "intent" : "out_of_context",
+          "slots" : {}
+        }
+    example 2.
+      input: 
+        {'intent': 'out_of_context', 'text': 'I would like to take an ice cream. Can you suggest me a good ice cream shop?'}
+      Correct output: 
+        {
+          "intent" : "out_of_context",
+          "slots" : {}
+        }
 
 
 dm: 
@@ -651,11 +950,11 @@ nlg:
     output:
       I find this exercise that match with your request:
 
-        1. Band-suspended kettlebell bench press – A challenging bench press variation using kettlebells suspended by bands for added instability, great for building pressing strength. (Intermediate, Strength, Chest)
+        1. Jump and run – A challenging bench press variation using kettlebells suspended by bands for added instability, great for building pressing strength. (Intermediate, Strength, Chest)
 
-        2. HM Banded Cross-Over Pull – A banded movement focusing on a cross-over motion to target the chest. (Intermediate, Strength, Chest)
+        2. Jump and run – A banded movement focusing on a cross-over motion to target the chest. (Intermediate, Strength, Chest)
 
-        Are you looking for one of these exercises? Please let me know if you would like more information on any of them.
+        Do you want to add one of these exercises to your favorite list?
 
   prompt_confirmation_get_plan: |
     Context:

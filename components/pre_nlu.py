@@ -1,3 +1,4 @@
+import re
 import yaml
 import json
 import ollama
@@ -21,28 +22,35 @@ class PreNLU():
     def __call__(self, user_input = " ", system_response = " ") -> dict:
         
         flag_repeat = True
+
+        self.history.add('system', system_response)
+
         while(flag_repeat):
 
-            # self.history.add('system', system_response)
-            
             pre_nlu_llama = self.query_model(user_input)
 
-            self.history.add('user', user_input)
-
-            self.logger.debug(f"\nPre NLU llama: \n INPUT-> {self.history.get_history()} \n OUTPUT-> {pre_nlu_llama}\n")
-
             try:
-                pre_nlu_json = json.loads(pre_nlu_llama)
+                pre_nlu_llama_clean = self.clean_json_string(pre_nlu_llama)
+                pre_nlu_json = json.loads(pre_nlu_llama_clean)
+                pre_nlu_clean = self.clean_response(pre_nlu_json)
                 flag_repeat = False
             except:
                 self.logger.error("Error parsing PRE-NLU response")
 
-        pre_nlu_clean = self.clean_response(pre_nlu_json)
+        self.history.add('user', user_input)
+
+        self.logger.debug(f"\nPre NLU llama: \n INPUT-> {self.history.get_history()} \n OUTPUT-> {pre_nlu_llama}\n")
 
         return pre_nlu_clean
 
 
+    def clean_json_string(self, input_str: str) -> str:
+        # Extract content between the first '[' and the last ']'
+        match = re.search(r'\[.*\]', input_str, re.DOTALL)
+        return match.group(0) if match else input_str
+
     def clean_response(self, response: dict) -> dict:
+
         final_dict = deepcopy(response)
         for element in response:
             for key, value in element.items():
@@ -68,14 +76,8 @@ class PreNLU():
 
         messages.append({
             'role': 'user',
-            'content': f"History User: {self.history.get_history()}"
+            'content': f"History dialogue: {self.history.get_history()}"
         })
-
-        # for message in self.history.get_history():
-        #     messages.append({
-        #         'role': message['role'],
-        #         'content': message['content']
-        #     })
 
         messages.append({
             'role': 'user',
