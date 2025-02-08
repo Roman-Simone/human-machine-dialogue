@@ -7,12 +7,13 @@ from utils.history import History
 
 class NLU():
 
-    def __init__(self, model, prompt_path):
+    def __init__(self, model, prompt_path, useHistory = True):
         
         self.model = model
         self.logger = logging.getLogger(__name__)
         self.prompt_path = prompt_path
         self.history = History()
+        self.useHistory = useHistory
         with open(self.prompt_path, "r") as file:
             self.system_prompt = yaml.safe_load(file)
 
@@ -105,11 +106,12 @@ class NLU():
             'content': system_prompt
         }] 
 
-        for message in self.history.get_history():
-            messages.append({
-                'role': message['role'],
-                'content': f"History {message['role']}: {message['content']}"
-            })
+        if self.useHistory:
+            for message in self.history.get_history():
+                messages.append({
+                    'role': message['role'],
+                    'content': f"History {message['role']}: {message['content']}"
+                })
 
         messages.append({
             'role': 'user',

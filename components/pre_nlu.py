@@ -9,12 +9,13 @@ from utils.history import History
 
 class PreNLU():
 
-    def __init__(self, model, prompt_path):
+    def __init__(self, model, prompt_path, useHistory = True):
         
         self.model = model
         self.prompt_path = prompt_path
         self.logger = logging.getLogger(__name__)
         self.history = History()
+        self.useHistory = useHistory
         with open(self.prompt_path, "r") as file:
             self.system_prompt = yaml.safe_load(file)
 
@@ -74,10 +75,17 @@ class PreNLU():
             'content': system
         }] 
 
-        messages.append({
-            'role': 'user',
-            'content': f"History dialogue: {self.history.get_history()}"
-        })
+        if self.useHistory:
+            for message in self.history.get_history():
+                messages.append({
+                    'role': message['role'],
+                    'content': f"History {message['content']}"
+                })
+        else:
+            messages.append({
+                'role': 'system',
+                'content': "What can I do for you today?"
+            })
 
         messages.append({
             'role': 'user',
