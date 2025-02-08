@@ -16,8 +16,10 @@ pre_nlu:
     - Not include note or explanation.
     - Not write "Here is the output:"
     - In the output, I don't want double intents. If there are two same intent put the text in the same intent.
-    - Not write "JSON Output:". Return only a valid JSON object. ONLY JSON!
-    - Don't write "JSON Output:"!!!
+    - Return only a valid JSON object. ONLY JSON!
+    - Not invent chatty messages.
+    - The user could do a question or a statement. You have to consider both cases.
+
 
     History:
     - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
@@ -66,11 +68,11 @@ pre_nlu:
                     - comment: comment about the system.
     - out_of_context: User message is out of context and doesn't fit any of the intents above or that have no important information.
 
-    Note: the difference between get_exercise and get_information is that in the first case the user doesn't know the name of the exercise, in the second case the user knows the name of the exercise.
+    Remember: the difference between get_exercise and get_information is that in the first case the user doesn't know the name of the exercise, in the second case the user knows the name of the exercise.
+              So if the name of the exercise is mentioned in the message, the intent is get_information.
 
     Examples:
     example 1.
-
       History: History dialogue: [{'role': 'system', 'content': 'What can I do for you today?'}]
       Input: Hi I want to get an exercise for strength.
       Correct output: 
@@ -153,6 +155,30 @@ pre_nlu:
           {
             "intent": "remove_favorite", 
             "text": "and I want to remove from my favorite the exercise 'jump and run'."
+          }
+        ]
+
+    example 6.
+      History: Hystory dialogue: [{'role': 'system', 'content': 'What can I do for you today?'}]
+      Input: Hey what's up? it's a beautiful day.
+
+      Correct output: 
+        [
+          {
+            "intent": "out_of_context", 
+            "text": "Hey what's up? it's a beautiful day."
+          }
+        ]
+    
+    example 7.
+      History: Hystory dialogue: [{'role': 'system', 'content': 'What can I do for you today?'}]
+      Input: Can you give me some details about 'Bulgarian Split Squat'?
+
+      Correct output: 
+        [
+          {
+            "intent": "get_information", 
+            "text": "Can you give me some details about 'Bulgarian Split Squat'?"
           }
         ]
 
@@ -762,18 +788,18 @@ nlu:
       input: 
         {'intent': 'out_of_context', 'text': 'I would like to take an ice cream. Can you suggest me a good ice cream shop?'}
       Correct output: 
-        {
-          "intent" : "out_of_context",
-          "slots" : {}
-        }
+          {
+            "intent" : "out_of_context",
+            "slots" : {}
+          }
     example 2.
       input: 
         {'intent': 'out_of_context', 'text': 'I would like to take an ice cream. Can you suggest me a good ice cream shop?'}
       Correct output: 
-        {
-          "intent" : "out_of_context",
-          "slots" : {}
-        }
+          {
+            "intent" : "out_of_context",
+            "slots" : {}
+          }
 
 
 dm: 
@@ -924,6 +950,8 @@ nlg:
         action: request_info(level)
       Correct output: 
         "Can you please provide me with your level of training? Are you a beginner, intermediate or advanced?"
+    
+
 
   prompt_confirmation_get_exercise: |
     You are a component for a dialogue system that helps users with their workout routines.
