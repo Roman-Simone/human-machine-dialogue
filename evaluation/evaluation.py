@@ -4,7 +4,7 @@ from tqdm import tqdm
 from collections import defaultdict
 from components import PreNLU, NLU
 
-class EvalNLU:
+class Evaluation:
     def __init__(self, config):
         self.model = config['model']
         self.prompts_path = config['prompts_path']
@@ -25,10 +25,9 @@ class EvalNLU:
         total_slots = 0
         correct_slots = 0
         total_segments = 0
-        correct_intents = 0
 
 
-        with open(self.error_log_path, "w") as error_log:
+        with open(self.error_log_path, "a") as error_log:
 
             progress_bar = tqdm(dataset, desc="Evaluating NLU", unit="sample", 
                                 dynamic_ncols=True)
@@ -54,26 +53,24 @@ class EvalNLU:
                     # Find the predicted output that matches the expected output
                     predicted = next((output for output in predicted_outputs if output["intent"] == expected["intent"]), None)
                     if predicted is None:
-                        error_log.write(json.dumps({
-                            "input": user_input,
-                            "expected_intent": expected["intent"],
-                            "predicted_intent": "None",
-                            "expected_slots": expected.get("slots", {}),
-                            "predicted_slots": {}
-                        }) + "\n")
+                        error_log.write("\n--- ERROR: MISSING PREDICTION ---\n")
+                        error_log.write(f"Input: {user_input}\n")
+                        error_log.write(f"Expected Intent: {expected['intent']}\n")
+                        error_log.write(f"Expected Slots: {json.dumps(expected.get('slots', {}), indent=4)}\n")
+                        error_log.write("\n------------------------------\n")
                         error_log.flush()  
                         continue
                     
                     if expected["intent"] == predicted["intent"]:
                         correct_intent_counts[expected["intent"]] += 1
                     else:
-                        error_log.write(json.dumps({
-                            "input": user_input,
-                            "expected_intent": expected["intent"],
-                            "predicted_intent": predicted["intent"],
-                            "expected_slots": expected.get("slots", {}),
-                            "predicted_slots": predicted.get("slots", {})
-                        }) + "\n")
+                        error_log.write("\n--- ERROR: INTENT MISMATCH ---\n")
+                        error_log.write(f"Input: {user_input}\n")
+                        error_log.write(f"Expected Intent: {expected['intent']}\n")
+                        error_log.write(f"Expected Slots: {json.dumps(expected.get('slots', {}), indent=4)}\n")
+                        error_log.write(f"Predicted Intent: {predicted['intent']}\n")
+                        error_log.write(f"Predicted Slots: {json.dumps(predicted.get('slots', {}), indent=4)}\n")
+                        error_log.write("\n------------------------------\n")
                         error_log.flush()  
 
 
@@ -92,14 +89,15 @@ class EvalNLU:
                         if predicted_value == expected_value:
                             correct_slots += 1
                         else:
-                            error_log.write(json.dumps({
-                                "input": user_input,
-                                "expected_intent": expected["intent"],
-                                "predicted_intent": predicted["intent"],
-                                "expected_slots": expected.get("slots", {}),
-                                "predicted_slots": predicted.get("slots", {})
-                            }) + "\n")
-                            error_log.flush()  
+                            error_log.write("\n--- ERROR: SLOT MISMATCH ---\n")
+                            error_log.write(f"Input: {user_input}\n")
+                            error_log.write(f"Expected Intent: {expected['intent']}\n")
+                            error_log.write(f"Expected Slots: {json.dumps(expected.get('slots', {}), indent=4)}\n")
+                            error_log.write(f"Predicted Intent: {predicted['intent']}\n")
+                            error_log.write(f"Predicted Slots: {json.dumps(predicted.get('slots', {}), indent=4)}\n")
+                            error_log.write("\n------------------------------\n")
+                            error_log.flush()
+          
 
                 # Update progress bar with accuracy
                 overall_intent_accuracy = sum(correct_intent_counts.values()) / sum(total_intent_counts.values()) * 100 if sum(total_intent_counts.values()) else 0
@@ -136,7 +134,7 @@ def parse_args():
 
 if __name__ == "__main__":
     config, dataset_path = parse_args()
-    evaluator = EvalNLU(config)
+    evaluator = Evaluation(config)
     evaluator.eval_NLU(dataset_path)
 
 

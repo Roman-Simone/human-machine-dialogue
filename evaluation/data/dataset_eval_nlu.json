@@ -678,19 +678,5 @@
                 }
             }
         ]
-    },
-    {
-        "input": "I need a powerlifting exercise for my legs.",
-        "output": [
-            {
-                "intent": "get_exercise",
-                "slots": {
-                    "type": "powerlifting",
-                    "body_part": "legs",
-                    "equipment": "null",
-                    "level": "null"
-                }
-            }
-        ]
     }
 ]
