@@ -19,6 +19,7 @@ pre_nlu:
     - Return only a valid JSON object. ONLY JSON!
     - Not invent chatty messages.
     - The user could do a question or a statement. You have to consider both cases.
+    - In case of question, answare with a JSON. Not as a human. ONLY JSON!
 
 
     History:
@@ -67,6 +68,8 @@ pre_nlu:
 
     Remember: the difference between get_exercise and get_information is that in the first case the user doesn't know the name of the exercise, in the second case the user knows the name of the exercise.
               So if the name of the exercise is mentioned in the message, the intent is get_information.
+
+    Remember: The user could do a question or a statement. In both cases return a valid JSON object. NOT RESPOND AS A HUMAN. ONLY JSON!
 
     Examples:
     example 1.
@@ -170,6 +173,25 @@ pre_nlu:
             "text": "Can you give me some details about 'Bulgarian Split Squat'?"
           }
         ]
+    
+    example 8.
+      History: Hystory dialogue: [{'role': 'system', 'content': 'What can I do for you today?'}]
+      Input: Can you suggest a workout plan for an advanced level? Also, what is the correct form for squats?
+
+      Correct output: 
+        [
+          {
+            "intent": "get_plan", 
+            "text": "Can you suggest a workout plan for an advanced level?"
+          },
+          {
+            "intent": "get_information", 
+            "text": "Also, what is the correct form for squats?"
+          }
+        ]
+      WRONG OUTPUT:
+      "I'd be happy to help!\n\n**Advanced Workout Plan:**\n\nHere's a sample workout plan for an advanced..." -> ERROR because the output is not a valid JSON object. It's a chatty message.
+
 
 
 nlu:

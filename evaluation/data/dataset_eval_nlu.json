@@ -315,7 +315,7 @@
                 "intent": "get_information",
                 "slots": {
                     "title": "squats",
-                    "body_part": "legs"
+                    "body_part": "null"
                 }
             }
         ]
