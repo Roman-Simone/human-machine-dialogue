@@ -193,7 +193,6 @@ pre_nlu:
       "I'd be happy to help!\n\n**Advanced Workout Plan:**\n\nHere's a sample workout plan for an advanced..." -> ERROR because the output is not a valid JSON object. It's a chatty message.
 
 
-
 nlu:
   prompt_get_exercise: |
     You are a component for a dialogue system that helps users with their workout routines.
@@ -215,7 +214,7 @@ nlu:
     Now I explain you the intent and slots that you have to extract:
     - get_exercise: User wants to get information (user doesn't know the name of the exercise) about a specific exercis.
                     Slots are: 
-                    - type: type of exercise or workout. Example: strenght, Plyometrics, Stretch, Powerlifting...
+                    - type: type of exercise or workout. Example: strenght, Plyometrics, Stretching, Powerlifting...
                     - body_part: part of body that user want to train. Example: Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps...
                     - equipment: stuff that user havo fotr training. Example: Body Only, Cable, Barbell, Medicine Ball, Kettlebells, Machine, band...
                     - level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
@@ -247,12 +246,12 @@ nlu:
         }
     example 2.
       input: 
-        {'intent': 'get_exercise', 'text': 'I want to get an exercise for stretchiong. I want to stretch my glutes.'}
+        {'intent': 'get_exercise', 'text': 'I want to get an exercise for stretching. I want to stretch my glutes.'}
       Correct output: 
         {
           "intent" : "get_exercise",
           "slots" : {
-            "type" : "stretch",
+            "type" : "stretching",
             "body_part" : "glutes",
             "equipment" : null,
             "level" : null

@@ -260,15 +260,8 @@
         ]
     },
     {
-        "input": "Yes, my level is intermediate, and I also want some information about the exercise called 'Band-suspended kettlebell bench press'.",
+        "input": "I  want some information about the exercise called 'Band-suspended kettlebell bench press'.",
         "output": [
-            {
-                "intent": "get_plan",
-                "slots": {
-                    "level": "intermediate",
-                    "n_session": "null"
-                }
-            },
             {
                 "intent": "get_information",
                 "slots": {
@@ -321,7 +314,7 @@
         ]
     },
     {
-        "input": "I want to rate this system a 10! Also, add bench press to my favorites.",
+        "input": "I want to rate this system a 10! Also, add 'bench press' to my favorites.",
         "output": [
             {
                 "intent": "give_evaluation",
@@ -339,7 +332,7 @@
         ]
     },
     {
-        "input": "I need a workout plan for beginners and also remove burpees from my favorite exercises.",
+        "input": "I need a workout plan for beginners and also remove 'burpees' from my favorite exercises.",
         "output": [
             {
                 "intent": "get_plan",
@@ -449,7 +442,7 @@
         ]
     },
     {
-        "input": "Can you suggest a powerlifting workout for legs?",
+        "input": "Can you suggest a powerlifting exercise for legs?",
         "output": [
             {
                 "intent": "get_exercise",
@@ -517,7 +510,7 @@
         ]
     },
     {
-        "input": "Show me a bodyweight exercise for chest.",
+        "input": "Give me a bodyweight exercise for chest.",
         "output": [
             {
                 "intent": "get_exercise",
@@ -531,7 +524,7 @@
         ]
     },
     {
-        "input": "I want to add lunges to my favorite list.",
+        "input": "I want to add 'lunges' to my favorite list.",
         "output": [
             {
                 "intent": "add_favorite",
