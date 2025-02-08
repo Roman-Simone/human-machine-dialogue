@@ -1,207 +1,696 @@
 [
     {
         "input": "Hi, I want to get information about an exercise called 'push-up'.",
-        "output": {
-            "intent": "get_information",
-            "slots": {
-                "title": "push-up",
-                "body_part": "null"
+        "output": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "push-up",
+                    "body_part": "null"
+                }
             }
-        }
+        ]
     },
     {
         "input": "Can you suggest an exercise for my biceps with a barbell?",
-        "output": {
-            "intent": "get_exercise",
-            "slots": {
-                "type": "null",
-                "body_part": "biceps",
-                "equipment": "barbell",
-                "level": "null"
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "null",
+                    "body_part": "biceps",
+                    "equipment": "barbell",
+                    "level": "null"
+                }
             }
-        }
+        ]
     },
     {
         "input": "I need a full training plan for an intermediate level with 3 sessions per week.",
-        "output": {
-            "intent": "get_plan",
-            "slots": {
-                "level": "intermediate",
-                "n_session": 3
+        "output": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "intermediate",
+                    "n_session": 3
+                }
             }
-        }
+        ]
     },
     {
         "input": "Save a new exercise called 'Deadlift'. It’s a strength exercise for the lower back using a barbell.",
-        "output": {
-            "intent": "save_exercise",
-            "slots": {
-                "title": "Deadlift",
-                "description": "null",
-                "type": "strength",
-                "body_part": "lower back",
-                "equipment": "barbell",
-                "level": "null",
-                "duration": "null"
+        "output": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "Deadlift",
+                    "description": "null",
+                    "type": "strength",
+                    "body_part": "lower back",
+                    "equipment": "barbell",
+                    "level": "null",
+                    "duration": "null"
+                }
             }
-        }
+        ]
     },
     {
         "input": "I want to add squats to my favorite list.",
-        "output": {
-            "intent": "add_favorite",
-            "slots": {
-                "title": "squats"
+        "output": [
+            {
+                "intent": "add_favorite",
+                "slots": {
+                    "title": "squats"
+                }
             }
-        }
+        ]
     },
     {
         "input": "Remove lunges from my favorite exercises.",
-        "output": {
-            "intent": "remove_favorite",
-            "slots": {
-                "title": "lunges"
+        "output": [
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": "lunges"
+                }
             }
-        }
+        ]
     },
     {
         "input": "Show me my favorite exercises.",
-        "output": {
-            "intent": "list_favorite",
-            "slots": {}
-        }
+        "output": [
+            {
+                "intent": "list_favorite",
+                "slots": {}
+            }
+        ]
     },
     {
         "input": "I want to rate the system with a 9, it’s really helpful!",
-        "output": {
-            "intent": "give_evaluation",
-            "slots": {
-                "rating": 9,
-                "comment": "it’s really helpful!"
+        "output": [
+            {
+                "intent": "give_evaluation",
+                "slots": {
+                    "rating": 9,
+                    "comment": "it’s really helpful!"
+                }
             }
-        }
+        ]
     },
     {
         "input": "Can you tell me how to properly perform a pull-up?",
-        "output": {
-            "intent": "get_information",
-            "slots": {
-                "title": "pull-up",
-                "body_part": "null"
+        "output": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "pull-up",
+                    "body_part": "null"
+                }
             }
-        }
+        ]
     },
     {
         "input": "Find me a stretching exercise for my hamstrings.",
-        "output": {
-            "intent": "get_exercise",
-            "slots": {
-                "type": "stretching",
-                "body_part": "hamstrings",
-                "equipment": "null",
-                "level": "null"
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "stretching",
+                    "body_part": "hamstrings",
+                    "equipment": "null",
+                    "level": "null"
+                }
             }
-        }
+        ]
     },
     {
         "input": "Can I have a beginner-level full-body workout plan for 4 sessions a week?",
-        "output": {
-            "intent": "get_plan",
-            "slots": {
-                "level": "beginner",
-                "n_session": 4
+        "output": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "beginner",
+                    "n_session": 4
+                }
             }
-        }
+        ]
     },
     {
         "input": "I want to save a new advanced kettlebell exercise called 'Turkish Get-Up'.",
-        "output": {
-            "intent": "save_exercise",
-            "slots": {
-                "title": "Turkish Get-Up",
-                "description": "null",
-                "type": "null",
-                "body_part": "null",
-                "equipment": "kettlebells",
-                "level": "advanced",
-                "duration": "null"
+        "output": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "Turkish Get-Up",
+                    "description": "null",
+                    "type": "null",
+                    "body_part": "null",
+                    "equipment": "kettlebells",
+                    "level": "advanced",
+                    "duration": "null"
+                }
             }
-        }
+        ]
     },
     {
         "input": "Can you add bench press to my favorites?",
-        "output": {
-            "intent": "add_favorite",
-            "slots": {
-                "title": "bench press"
+        "output": [
+            {
+                "intent": "add_favorite",
+                "slots": {
+                    "title": "bench press"
+                }
             }
-        }
+        ]
     },
     {
         "input": "Please remove deadlifts from my favorite list.",
-        "output": {
-            "intent": "remove_favorite",
-            "slots": {
-                "title": "deadlifts"
+        "output": [
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": "deadlifts"
+                }
             }
-        }
+        ]
     },
     {
         "input": "Hey, what’s up?",
-        "output": {
-            "intent": "out_of_context",
-            "slots": {}
-        }
+        "output": [
+            {
+                "intent": "out_of_context",
+                "slots": {}
+            }
+        ]
     },
     {
         "input": "Do you know any good restaurants nearby?",
-        "output": {
-            "intent": "out_of_context",
-            "slots": {}
-        }
+        "output": [
+            {
+                "intent": "out_of_context",
+                "slots": {}
+            }
+        ]
     },
     {
         "input": "I love this fitness app! I’ll rate it 10!",
-        "output": {
-            "intent": "give_evaluation",
-            "slots": {
-                "rating": 10,
-                "comment": "I love this fitness app!"
+        "output": [
+            {
+                "intent": "give_evaluation",
+                "slots": {
+                    "rating": 10,
+                    "comment": "I love this fitness app!"
+                }
             }
-        }
+        ]
     },
     {
         "input": "I need an intermediate plyometrics exercise for my legs.",
-        "output": {
-            "intent": "get_exercise",
-            "slots": {
-                "type": "plyometrics",
-                "body_part": "legs",
-                "equipment": "null",
-                "level": "intermediate"
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "plyometrics",
+                    "body_part": "legs",
+                    "equipment": "null",
+                    "level": "intermediate"
+                }
             }
-        }
+        ]
     },
     {
         "input": "Can you give me some details about 'Bulgarian Split Squat'?",
-        "output": {
-            "intent": "get_information",
-            "slots": {
-                "title": "Bulgarian Split Squat",
-                "body_part": "null"
+        "output": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "Bulgarian Split Squat",
+                    "body_part": "null"
+                }
             }
-        }
+        ]
     },
     {
         "input": "What’s the best powerlifting exercise for back?",
-        "output": {
-            "intent": "get_exercise",
-            "slots": {
-                "type": "powerlifting",
-                "body_part": "back",
-                "equipment": "null",
-                "level": "null"
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "powerlifting",
+                    "body_part": "back",
+                    "equipment": "null",
+                    "level": "null"
+                }
             }
-        }
+        ]
+    },
+    {
+        "input": "Hi, I would like to take an ice cream. And I want to remove from my favorites the exercise 'jump and run'.",
+        "output": [
+            {
+                "intent": "out_of_context",
+                "slots": {}
+            },
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": "jump and run"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Yes, my level is intermediate, and I also want some information about the exercise called 'Band-suspended kettlebell bench press'.",
+        "output": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "intermediate",
+                    "n_session": "null"
+                }
+            },
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "Band-suspended kettlebell bench press",
+                    "body_part": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "I want to add deadlifts to my favorite list and also save a new exercise called 'box jump'.",
+        "output": [
+            {
+                "intent": "add_favorite",
+                "slots": {
+                    "title": "deadlifts"
+                }
+            },
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "box jump",
+                    "description": "null",
+                    "type": "plyometrics",
+                    "body_part": "legs",
+                    "equipment": "null",
+                    "level": "null",
+                    "duration": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Can you suggest a workout plan for an advanced level? Also, what is the correct form for squats?",
+        "output": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "advanced",
+                    "n_session": "null"
+                }
+            },
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "squats",
+                    "body_part": "legs"
+                }
+            }
+        ]
+    },
+    {
+        "input": "I want to rate this system a 10! Also, add bench press to my favorites.",
+        "output": [
+            {
+                "intent": "give_evaluation",
+                "slots": {
+                    "rating": 10,
+                    "comment": "null"
+                }
+            },
+            {
+                "intent": "add_favorite",
+                "slots": {
+                    "title": "bench press"
+                }
+            }
+        ]
+    },
+    {
+        "input": "I need a workout plan for beginners and also remove burpees from my favorite exercises.",
+        "output": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "beginner",
+                    "n_session": "null"
+                }
+            },
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": "burpees"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Can you recommend a stretching exercise for my shoulders? Also, how do I perform a deadlift correctly?",
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "stretching",
+                    "body_part": "shoulders",
+                    "equipment": "null",
+                    "level": "null"
+                }
+            },
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "deadlift",
+                    "body_part": "lower back"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Show me my favorite exercises and tell me more about the execution of push-ups.",
+        "output": [
+            {
+                "intent": "list_favorite",
+                "slots": {}
+            },
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "push-up",
+                    "body_part": "chest"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Hey, how are you? Also, I need a plyometric exercise for my legs.",
+        "output": [
+            {
+                "intent": "out_of_context",
+                "slots": {}
+            },
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "plyometrics",
+                    "body_part": "legs",
+                    "equipment": "null",
+                    "level": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Can you remove 'jump squats' from my favorites? And also, I want to save a new exercise called 'clap push-up'.",
+        "output": [
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": "jump squats"
+                }
+            },
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "clap push-up",
+                    "description": "null",
+                    "type": "plyometrics",
+                    "body_part": "chest",
+                    "equipment": "null",
+                    "level": "null",
+                    "duration": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "What are some beginner-friendly exercises for shoulders?",
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "null",
+                    "body_part": "shoulders",
+                    "equipment": "null",
+                    "level": "beginner"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Can you suggest a powerlifting workout for legs?",
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "powerlifting",
+                    "body_part": "legs",
+                    "equipment": "null",
+                    "level": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "I want to remove 'plank' from my favorites.",
+        "output": [
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": "plank"
+                }
+            }
+        ]
+    },
+    {
+        "input": "How do I properly execute a deadlift?",
+        "output": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "deadlift",
+                    "body_part": "lower back"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Find me a stretching exercise for my quadriceps.",
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "stretching",
+                    "body_part": "quadriceps",
+                    "equipment": "null",
+                    "level": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Can I save a new exercise called 'medicine ball slam'?",
+        "output": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "medicine ball slam",
+                    "description": "null",
+                    "type": "plyometrics",
+                    "body_part": "full body",
+                    "equipment": "medicine ball",
+                    "level": "null",
+                    "duration": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Show me a bodyweight exercise for chest.",
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "bodyweight",
+                    "body_part": "chest",
+                    "equipment": "body only",
+                    "level": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "I want to add lunges to my favorite list.",
+        "output": [
+            {
+                "intent": "add_favorite",
+                "slots": {
+                    "title": "lunges"
+                }
+            }
+        ]
+    },
+    {
+        "input": "How do I do a kettlebell swing correctly?",
+        "output": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "kettlebell swing",
+                    "body_part": "hips"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Please remove 'dumbbell rows' from my favorite exercises.",
+        "output": [
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": "dumbbell rows"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Can I get a workout plan for a beginner with 3 sessions per week?",
+        "output": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "beginner",
+                    "n_session": 3
+                }
+            }
+        ]
+    },
+    {
+        "input": "Tell me more about the execution of pull-ups.",
+        "output": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "pull-ups",
+                    "body_part": "back"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Find me an intermediate resistance band workout for glutes.",
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "resistance",
+                    "body_part": "glutes",
+                    "equipment": "band",
+                    "level": "intermediate"
+                }
+            }
+        ]
+    },
+    {
+        "input": "I need a machine-based exercise for hamstrings.",
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "machine",
+                    "body_part": "hamstrings",
+                    "equipment": "machine",
+                    "level": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "What’s the proper form for squats?",
+        "output": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "squats",
+                    "body_part": "legs"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Can you save a new exercise called 'Bulgarian split squat'?",
+        "output": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "Bulgarian split squat",
+                    "description": "null",
+                    "type": "strength",
+                    "body_part": "legs",
+                    "equipment": "dumbbell",
+                    "level": "null",
+                    "duration": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "I want to rate this system a 7.",
+        "output": [
+            {
+                "intent": "give_evaluation",
+                "slots": {
+                    "rating": 7,
+                    "comment": "null"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Can you add sit-ups to my favorite exercises?",
+        "output": [
+            {
+                "intent": "add_favorite",
+                "slots": {
+                    "title": "sit-ups"
+                }
+            }
+        ]
+    },
+    {
+        "input": "Please remove 'barbell curls' from my favorites.",
+        "output": [
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": "barbell curls"
+                }
+            }
+        ]
+    },
+    {
+        "input": "I need a powerlifting exercise for my legs.",
+        "output": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "powerlifting",
+                    "body_part": "legs",
+                    "equipment": "null",
+                    "level": "null"
+                }
+            }
+        ]
     }
 ]
