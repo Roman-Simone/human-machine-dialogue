@@ -47,7 +47,7 @@ class PreNLU():
                 
             except:
                 #print(pre_nlu_llama)
-                self.logger.error("Error parsing PRE-NLU response")
+                self.logger.error("Error parsing PRE-NLU response \n pre_nlu_llama: {pre_nlu_llama}")
 
         self.history.add('user', user_input)
 

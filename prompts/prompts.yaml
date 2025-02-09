@@ -311,15 +311,13 @@ nlu:
                       Slots are: 
                       - level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
                       - n_session: number of session per week. Example: 1,2,3...
-                      - min_rating: minimum rating of the exercise. Example: 1,2,3,4,5,6,7,8,9,10
 
     This is the template of the json that you have to return.
     {
       "intent" : "get_plan",
       "slots" : {
         "level" : str,
-        "n_session" : int,
-        "min_rating" : int
+        "n_session" : int
       }
     }
 
@@ -332,8 +330,7 @@ nlu:
           "intent" : "get_plan",
           "slots" : {
             "level" : null,
-            "n_session" : 3,
-            "min_rating" : null
+            "n_session" : 3
           }
         }
     example 2.
@@ -344,8 +341,7 @@ nlu:
           "intent" : "get_plan",
           "slots" : {
             "level" : "intermediate",
-            "n_session" : 4,
-            "min_rating" : null
+            "n_session" : 4
           }
         }
     example 3.
@@ -879,7 +875,6 @@ nlg:
     - title: name of the exercise
     - description: description of the execution of the exercise
     - n_session: number of session per week. Example: 1,2,3...
-    - min_rating: minimum rating of the exercise. Example: 1,2,3,4,5,6,7,8,9,10
     - duration: duration of the exercise in minutes
 
     The possible intent are:
@@ -915,6 +910,71 @@ nlg:
         data = intent: get_information
       Correct output: 
         "What body part does the exercise you want information about target? For example, Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps..."
+
+  prompt_check_info: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLG (Natural language generation) component.
+    Before you there is a DM (Dialogue Manager) component that decides the next best action based on the intent and slots extracted by the NLU (Natural language understanding).
+    Your task is to generate the response to the user based on the action decided by the DM.
+
+    Rules for generating the response:
+    - Generate the response based on the action decided by the DM.
+    - Don't create too long responses.
+    - Don't add unnecessary information.
+    - Don't write I'd love to help!
+    
+    This is the template of the input that you have to consider.
+    action: check_info, parameter: intent 
+    data = {}
+
+    In this case the system doesn't find a response for the user request. 
+    The system ask to user to check the information given.
+    The data is the summary of the user request.
+
+    Examples:
+    example 1.
+      input: 
+        action: check_info, parameter: get_exercise 
+        data = {
+          Intent: get_information,
+          slots: {
+            title: moon walk banana,
+            body_part: feet
+          }
+        }
+
+      Correct output: 
+        "I'm sorry, but I couldn't find any information about the exercise called moon walk banana that targets the feet. Could you please check the information and try again?"
+
+    example 2.
+      input: 
+        action: check_info, parameter: get_exercise 
+        data = {
+          Intent: get_exercise,
+          slots: {
+            type: strength,
+            body_part: finger,
+            equipment: bottle of oil,
+            level: magnificent
+          }
+        }
+
+      Correct output: 
+        "I'm sorry but I couldn't find any strength exercise for the finger that requires a bottle of oil and is at a magnificent level. Could you please check the information and try again?"
+
+    example 3.
+      input: 
+        action: check_info, parameter: get_plan 
+        data = {
+          Intent: get_plan,
+          slots: {
+            level: intermediate,
+            n_session: 0
+          }
+        }
+
+      Correct output: 
+        "I'm sorry, but I couldn't find any intermediate-level workout plan for 0 sessions per week. Could you please check the information and try again?"
 
   prompt_confirmation_get_exercise: |
     You are a component for a dialogue system that helps users with their workout routines.

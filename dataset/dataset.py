@@ -39,6 +39,8 @@ class MegaGymDataset:
                     elif key == "rating":
                         data_ret = self.filter_by_rating(value[0], value[1], data=data_ret)
         
+        if len(data_ret) == 0:
+            return False
 
         if len(data_ret) > 5:
             data_ret = data_ret.sample(5)
@@ -79,6 +81,9 @@ class MegaGymDataset:
                 "cardio": self.format_json(self.filter_by_type(exercise_type="Cardio", data=data_ret).sample(1))
             }
             schedule.append(session)
+
+        if len(schedule) == 0:
+            return False
 
         ret = json.dumps({"sessions": schedule}, indent=4)
 

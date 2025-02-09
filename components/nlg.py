@@ -35,7 +35,6 @@ class NLG():
             response = self.query_model(nba, system_prompt, data)
 
         elif action == "confirmation":
-            
             if parameter == "get_exercise":
                 self.logger.debug("Action confirmation. Intent: get_exercise")
                 system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_get_exercise"]
@@ -67,6 +66,11 @@ class NLG():
                 self.logger.error("Invalid argument for confirmation action")
                 return "error"
         
+            response = self.query_model(nba, system_prompt, data)
+        
+        elif action == "check_info":
+            self.logger.debug("Action check_info")
+            system_prompt = self.system_prompt_yaml["nlg"]["prompt_check_info"]
             response = self.query_model(nba, system_prompt, data)
 
 

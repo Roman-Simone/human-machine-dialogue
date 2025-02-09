@@ -136,14 +136,14 @@ class DM():
 
             self.logger.debug(f"\nStates updated:\n {states_str}")
 
-            state_str = self.get_state_string(self.state[0])
+            state_str = self.get_state_string(self.state[-1])
 
             nba_llama = self.query_model(state_str)
 
             try:
                 nba_llama_clean = self.clean_json_string(nba_llama)
                 nba_json = json.loads(nba_llama_clean)
-                flag_repeat = self.check_nba(nba_json, self.state[0])
+                flag_repeat = self.check_nba(nba_json, self.state[-1])
             
             except:
                 self.logger.error("Error parsing NBA response")
@@ -153,11 +153,18 @@ class DM():
         data = ""
         if nba_json["action"] == "confirmation" and not self.eval_mode:
             data = self.confirmation(nba_json)
-            self.logger.debug("Intent completed and eliminated from state")
-            self.state.pop(0)
+            if data:
+                self.logger.debug("Intent completed and eliminated from state")
+                self.state.pop(0)
+            else:
+                nba_json = {
+                    "action": "check_info",
+                    "parameter": nba_json["parameter"],
+                }
+                data = self.state[-1].get_string()
         
         if nba_json["action"] == "request_info":
-            data = f"intent: {self.state[0].intent}"
+            data = f"intent: {self.state[-1].intent}"
         
         response = {
             "action": nba_json["action"],
@@ -205,13 +212,13 @@ class DM():
             if response:
                 data_selected = f"{data_confirm.slots}"
             else:
-                data_selected = "Error"
+                data_selected = False
         elif intent_confirm == "remove_favorite":
             response = self.dataset.remove_favorite(data_confirm.slots)
             if response:
                 data_selected = f"{data_confirm.slots}"
             else:
-                data_selected = "Error"
+                data_selected = False
         elif intent_confirm == "list_favorite":
             data_selected = self.dataset.list_favorite(data_confirm.slots)
         elif intent_confirm == "give_evaluation":
@@ -257,6 +264,9 @@ class DM():
         if empty_flag and action != "confirmation":
             return True
         if not empty_flag and action != "request_info":
+            return True
+        
+        if action == "get-exercise" or action == "get-information" or action == "get-plan" or action == "save-exercise" or action == "add-favorite" or action == "remove-favorite" or action == "list-favorite" or action == "give-evaluation" or action == "out-of-context":
             return True
 
         return False
