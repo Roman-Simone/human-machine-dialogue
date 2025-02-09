@@ -102,7 +102,6 @@ class stateTracker():
     def get_intent(self) -> str:
         return self.intent
 
-
 class DM():
 
     def __init__(self, model, prompt_path, eval_mode=False):
@@ -141,7 +140,7 @@ class DM():
             try:
                 nba_llama_clean = self.clean_json_string(nba_llama)
                 nba_json = json.loads(nba_llama_clean)
-                flag_repeat = self.check_nba(nba_json)
+                flag_repeat = self.check_nba(nba_json, self.state[0])
             
             except:
                 self.logger.error("Error parsing NBA response")
@@ -149,7 +148,7 @@ class DM():
         self.logger.debug(f"DM decision: {nba_json}")
 
         data = ""
-        if nba_json["action"] == "confiermation" and not self.eval_mode:
+        if nba_json["action"] == "confirmation" and not self.eval_mode:
             data = self.confirmation(nba_json)
             self.logger.debug("Intent completed and eliminated from state")
             self.state.pop(0)
@@ -176,7 +175,7 @@ class DM():
 
         data_confirm = {}
         
-        intent_confirm = nba_confirm["argument"]
+        intent_confirm = nba_confirm["parameter"]
 
         find_flag = False
         for element in self.state:
@@ -211,13 +210,9 @@ class DM():
             else:
                 data_selected = "Error"
         elif intent_confirm == "list_favorite":
-            data_selected = self.dataset.list_favorite()
+            data_selected = self.dataset.list_favorite(data_confirm.slots)
         elif intent_confirm == "give_evaluation":
-            response = self.dataset.give_evaluation(data_confirm.slots)
-            if response:
-                data_selected = f"{data_confirm.slots}"
-            else:
-                data_selected = "Error"
+            data_selected = self.give_evaluation(data_confirm.slots)
         else:
             self.logger.error(f"Intent {intent_confirm} not found")
             return "Error"
@@ -225,7 +220,20 @@ class DM():
         return data_selected
 
 
-    def check_nba(self, nba: dict) -> bool:
+    def give_evaluation(self, slots: dict) -> bool:
+        
+        rating = slots["rating"]
+        comment = slots["comment"]
+
+        # save in a file the evaluation
+        with open("dataset/data/evaluation.txt", "a") as file:
+            file.write(f"Rating: {rating}\n")
+            file.write(f"Comment: {comment}\n\n")
+
+        return "Evaluation saved"
+
+
+    def check_nba(self, nba: dict, nlu: dict) -> bool:
 
         action = nba['action']
         parameter = nba['parameter']
@@ -236,8 +244,17 @@ class DM():
         if not (action == "request_info" or action == "confirmation"):
             return True
 
-        return False
+        empty_flag = True
+        for elem in nlu.slots.values():
+            if elem is None:
+                empty_flag = False
+        
+        if empty_flag and action != "confirmation":
+            return True
+        if not empty_flag and action != "request_info":
+            return True
 
+        return False
 
 
     def get_states_string(self) -> str:
@@ -248,7 +265,7 @@ class DM():
             state_str += state.get_string() + "\n"
 
         return state_str
-    
+
 
     def get_state_string(self, state) -> str:
         

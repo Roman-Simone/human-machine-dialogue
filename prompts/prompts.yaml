@@ -8,6 +8,8 @@ pre_nlu:
     - Segment based on intent, ensuring logical segmentation while preserving the original wording.
     - Do not invent new intents, sentences, or phrases. Use only the predefined intent categories.
     - Avoid duplicate intents. If multiple statements fall under the same intent, consolidate them under a single entry.
+    - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
+    - Don't include the history in the output, use it only for context.
 
     Tamplate output:
     [
@@ -116,6 +118,7 @@ pre_nlu:
             "text": "Also, what is the correct form for squats?"
           }
         ]
+
 
 nlu:
   prompt_get_exercise: |
@@ -845,8 +848,6 @@ dm:
     If all slots are present, ask for confirmation.
     Return a valid JSON response with only the required action and parameter.
     Do not add extra text, explanations, or change intent/slots.
-
-
 
 
 nlg:

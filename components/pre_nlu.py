@@ -87,11 +87,15 @@ class PreNLU():
         }] 
 
         if self.useHistory:
-            for message in self.history.get_history():
-                messages.append({
-                    'role': message['role'],
-                    'content': f"History {message['content']}"
-                })
+            # for message in self.history.get_history():
+            #     messages.append({
+            #         'role': message['role'],
+            #         'content': f"History {message['content']}"
+            #     })
+            messages.append({
+                'role': 'system',
+                'content': f"History: {self.history.get_history()}"
+            })
         else:
             messages.append({
                 'role': 'system',

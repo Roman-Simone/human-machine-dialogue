@@ -43,7 +43,7 @@ class Chat():
         """)
 
         system_response = "What can I do for you today?"
-        print(f"{system_response}")
+        print(f"System: {system_response}")
 
 
         while(self.RUNNING):
@@ -62,11 +62,12 @@ class Chat():
 
             self.logger.info(f"\nUser nlu:\n {meaning}\n\n")
 
-            system_response = input("System: ")
-
             nba = self.dm(meaning)
 
             self.logger.info(f"User nlu:\n {nba}\n\n")
+
+
+            system_response = input("System: ")
 
             # system_response = self.nlg(nba)
 

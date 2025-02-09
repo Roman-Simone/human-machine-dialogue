@@ -180,7 +180,7 @@ class MegaGymDataset:
         return flag_find
 
 
-    def find_favorite(self, intent: dict) -> str:
+    def list_favorite(self, intent: dict) -> str:
 
         data = self.data[self.data['Favorite'] == True]
         # filter also by type and body part
@@ -190,7 +190,7 @@ class MegaGymDataset:
             data = self.filter_by_body_part(intent.get("body_part"), data=data)
 
         return self.format_json(data)
-
+    
 
     def format_json(self, data:pd.DataFrame) -> str:
         formatted_exercises = []
