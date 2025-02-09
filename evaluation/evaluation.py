@@ -9,13 +9,15 @@ class Evaluation:
         self.model = config['model']
         self.prompts_path = config['prompts_path']
         self.error_log_path = config['error_log_path']
+        self.dataset_path_nlu = config['dataset_nlu']
+        self.dataset_path_dm = config['dataset_dm']
 
         self.pre_nlu = PreNLU(self.model, self.prompts_path, useHistory=False)
         self.nlu = NLU(self.model, self.prompts_path, useHistory=False)
 
-    def eval_NLU(self, dataset_path):
+    def eval_NLU(self):
         # Load dataset
-        with open(dataset_path, "r") as file:
+        with open(self.dataset_path_nlu, "r") as file:
             dataset = json.load(file)
 
         print(len(dataset))
@@ -110,6 +112,9 @@ class Evaluation:
         print(f"Overall Slot Accuracy: {slot_accuracy:.2f}%")
 
 
+    def eval_DM(self):
+        
+
 def parse_args():
     parser = argparse.ArgumentParser(description="NLU Evaluation Configuration")
 
@@ -117,7 +122,9 @@ def parse_args():
                         help="Specify the model to use for chat.")
     parser.add_argument("--prompts", type=str, required=False, default="prompts/prompts.yaml",
                         help="Specify the path to prompts.")
-    parser.add_argument("--dataset", type=str, required=False, default="evaluation/data/dataset_eval_nlu.json",
+    parser.add_argument("--dataset-nlu", type=str, required=False, default="evaluation/data/dataset_eval_nlu.json",
+                        help="Specify the path to the evaluation dataset JSON file.")
+    parser.add_argument("--dataset-dm", type=str, required=False, default="evaluation/data/dataset_eval_dm.json",
                         help="Specify the path to the evaluation dataset JSON file.")
     parser.add_argument("--error_log", type=str, required=False, default="evaluation/errors.log",
                         help="Specify the path to save incorrect predictions.")
@@ -127,7 +134,9 @@ def parse_args():
     config = {
         "model": args.model,
         "prompts_path": args.prompts,
-        "error_log_path": args.error_log
+        "error_log_path": args.error_log,
+        "dataset_nlu": args.dataset_nlu,
+        "dataset_dm": args.dataset_dm
     }
 
     return config, args.dataset
@@ -138,4 +147,3 @@ if __name__ == "__main__":
     evaluator.eval_NLU(dataset_path)
 
 
-    #23

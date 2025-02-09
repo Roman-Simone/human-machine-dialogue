@@ -64,9 +64,9 @@ class Chat():
 
             system_response = input("System: ")
 
-            # nba = self.dm(meaning)
+            nba = self.dm(meaning)
 
-            # self.logger.info(f"User nlu:\n {nba}\n\n")
+            self.logger.info(f"User nlu:\n {nba}\n\n")
 
             # system_response = self.nlg(nba)
 

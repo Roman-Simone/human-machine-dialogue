@@ -56,8 +56,14 @@ def main():
             row[7] = str(random_number)  # Replace the empty cell with the random number
             print(random_number)
 
-        row.append("")
-        row[9] = str(random.randint(0, 20))
+
+        if row[9] == "":
+            row[9] = str(random.randint(0, 20))
+
+        row.append("")  # Add a new column to the row
+        if row[10] == "":
+            row[10] = "False"
+
         
 
     # Write the updated rows back to the file

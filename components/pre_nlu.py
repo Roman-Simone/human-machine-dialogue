@@ -18,6 +18,8 @@ class PreNLU():
         self.useHistory = useHistory
         with open(self.prompt_path, "r") as file:
             self.system_prompt = yaml.safe_load(file)
+        
+        self.valid_intents = ["get_exercise", "get_plan", "get_information", "save_exercise", "add_favorite", "remove_favorite", "list_favorite", "give_evaluation", "out_of_context"]
 
 
     def __call__(self, user_input = " ", system_response = " ") -> dict:
@@ -33,9 +35,18 @@ class PreNLU():
             try:
                 pre_nlu_llama_clean = self.clean_json_string(pre_nlu_llama)
                 pre_nlu_json = json.loads(pre_nlu_llama_clean)
+                if type(pre_nlu_json) == dict:
+                    pre_nlu_json = [pre_nlu_json]
                 pre_nlu_clean = self.clean_response(pre_nlu_json)
+                
                 flag_repeat = False
+                for intent in pre_nlu_clean:
+                    if intent.get("intent") not in self.valid_intents:
+                        self.logger.error("Intent not recognized")
+                        flag_repeat = True
+                
             except:
+                print(pre_nlu_llama)
                 self.logger.error("Error parsing PRE-NLU response")
 
         self.history.add('user', user_input)

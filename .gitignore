@@ -1,6 +1,5 @@
 venv
 env
-megaGymDataset
 *.pdf
 try.py
 bin

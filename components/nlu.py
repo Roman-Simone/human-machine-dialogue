@@ -57,6 +57,7 @@ class NLU():
                 continue
             else:
                 self.logger.error("Intent not recognized")
+                system_prompt = self.system_prompt["nlu"]["prompt_out_of_context"]
 
             flag_repeat = True
             while flag_repeat:

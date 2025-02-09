@@ -35,8 +35,22 @@ class stateTracker():
             "level",
             "duration",
             "rating"
-
         ]
+        fields_add_favorite = [
+            "title",
+        ]
+        fields_remove_favorite = [
+            "title",
+        ]
+        fields_list_favorite = [
+            "type",
+            "body_part"
+        ]
+        fields_give_evaluation = [
+            "rating",
+            "comment"
+        ]
+
         
         if intent == "get_exercise":
             self.slots = {field: None for field in fields_get_exercise}
@@ -46,6 +60,14 @@ class stateTracker():
             self.slots = {field: None for field in fields_get_plan}
         elif intent == "save_exercise":
             self.slots = {field: None for field in fields_save_exercise}
+        elif intent == "add_favorite":
+            self.slots = {field: None for field in fields_add_favorite}
+        elif intent == "remove_favorite":
+            self.slots = {field: None for field in fields_remove_favorite}
+        elif intent == "list_favorite":
+            self.slots = {field: None for field in fields_list_favorite}
+        elif intent == "give_evaluation":
+            self.slots = {field: None for field in fields_give_evaluation}
         
         self.logger = logging.getLogger(__name__)
 
@@ -162,6 +184,26 @@ class DM():
         elif intent_confirm == "save_exercise":
             data_selected = self.dataset.save_exercise(data_confirm.slots)
             data_selected = f"{data_confirm.slots}"
+        elif intent_confirm == "add_favorite":
+            response = self.dataset.add_favorite(data_confirm.slots)
+            if response:
+                data_selected = f"{data_confirm.slots}"
+            else:
+                data_selected = "Error"
+        elif intent_confirm == "remove_favorite":
+            response = self.dataset.remove_favorite(data_confirm.slots)
+            if response:
+                data_selected = f"{data_confirm.slots}"
+            else:
+                data_selected = "Error"
+        elif intent_confirm == "list_favorite":
+            data_selected = self.dataset.list_favorite()
+        elif intent_confirm == "give_evaluation":
+            response = self.dataset.give_evaluation(data_confirm.slots)
+            if response:
+                data_selected = f"{data_confirm.slots}"
+            else:
+                data_selected = "Error"
         else:
             self.logger.error(f"Intent {intent_confirm} not found")
             return "Error"

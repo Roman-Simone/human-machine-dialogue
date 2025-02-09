@@ -114,6 +114,84 @@ class MegaGymDataset:
         return "Exercise saved successfully."
 
 
+    def add_favorite(self, intent: dict, threshold = 70) -> str:
+        title = intent.get("title")
+
+        data = deepcopy(self.data)
+
+        flag_find = False
+
+        while(not flag_find):
+
+            matches = process.extract(title, data['Title'], score_cutoff=threshold, limit = self.limit)
+            matched_titles = [match[0] for match in matches]
+            ret = data[data['Title'].isin(matched_titles)]
+
+            if len(ret) == 0:
+                if threshold <= 65:
+                    break
+                threshold -= 5
+            elif len(ret) > 5:
+                if threshold >= 100:
+                    break
+                threshold += 3
+            else:
+                flag_find = True
+        
+        if not ret.empty:
+            if not ret.empty:
+                self.data.loc[data['Title'].isin(ret['Title']), 'Favorite'] = True  # Update the original data
+                self.data.to_csv(self.path_csv, index=False)  # Save the updated data
+                self.data = pd.read_csv(self.path_csv)  # Reload the updated data
+            
+        return flag_find
+
+
+    def remove_favorite(self, intent: dict, threshold = 70) -> str:
+        title = intent.get("title")
+
+        data = deepcopy(self.data)
+
+        flag_find = False
+
+        while(not flag_find):
+
+            matches = process.extract(title, data['Title'], score_cutoff=threshold, limit = self.limit)
+            matched_titles = [match[0] for match in matches]
+            ret = data[data['Title'].isin(matched_titles)]
+
+            if len(ret) == 0:
+                if threshold <= 65:
+                    break
+                threshold -= 5
+            elif len(ret) > 5:
+                if threshold >= 100:
+                    break
+                threshold += 3
+            else:
+                flag_find = True
+        
+        if not ret.empty:
+            if not ret.empty:
+                self.data.loc[data['Title'].isin(ret['Title']), 'Favorite'] = False
+                self.data.to_csv(self.path_csv, index=False)  # Save the updated data
+                self.data = pd.read_csv(self.path_csv)  # Reload the updated data
+        
+        return flag_find
+
+
+    def find_favorite(self, intent: dict) -> str:
+
+        data = self.data[self.data['Favorite'] == True]
+        # filter also by type and body part
+        if intent.get("type") is not None:
+            data = self.filter_by_type(intent.get("type"), data=data)
+        if intent.get("body_part") is not None:
+            data = self.filter_by_body_part(intent.get("body_part"), data=data)
+
+        return self.format_json(data)
+
+
     def format_json(self, data:pd.DataFrame) -> str:
         formatted_exercises = []
 
@@ -240,7 +318,7 @@ if __name__ == "__main__":
     # print(dataset.get_all_exercises())
     
     # Filtra per titolo
-    print(dataset.filter_by_title("Roll-Out"))
+    # print(dataset.filter_by_title("Roll-Out"))
     
     # # Filtra per livello
     # print(dataset.filter_by_level("Intermediate"))
@@ -256,3 +334,8 @@ if __name__ == "__main__":
     
     # # Filtra per rating
     # print(dataset.filter_by_rating(min_rating=7, max_rating=10))
+
+
+    # test add_favorite
+    intent = {"title": "oregvfibgviwebvidshvbidsvbsivbsibvsivbisbvdisubvsivbsiuvsi"}
+    print(dataset.add_favorite(intent))

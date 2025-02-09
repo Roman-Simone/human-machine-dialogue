@@ -81,7 +81,10 @@
         "output": [
             {
                 "intent": "list_favorite",
-                "slots": {}
+                "slots": {
+                    "type": "null",
+                    "body_part": "null"
+                }
             }
         ]
     },
@@ -375,7 +378,10 @@
         "output": [
             {
                 "intent": "list_favorite",
-                "slots": {}
+                "slots": {
+                    "type": "null",
+                    "body_part": "null"
+                }
             },
             {
                 "intent": "get_information",
