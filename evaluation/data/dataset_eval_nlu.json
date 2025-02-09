@@ -89,13 +89,13 @@
         ]
     },
     {
-        "input": "I want to rate the system with a 9, it’s really helpful!",
+        "input": "I want to rate the system with a 9, it is really helpful!",
         "output": [
             {
                 "intent": "give_evaluation",
                 "slots": {
                     "rating": 9,
-                    "comment": "it’s really helpful!"
+                    "comment": "it is really helpful!"
                 }
             }
         ]
@@ -288,8 +288,8 @@
                 "slots": {
                     "title": "box jump",
                     "description": "null",
-                    "type": "plyometrics",
-                    "body_part": "legs",
+                    "type": "null",
+                    "body_part": "null",
                     "equipment": "null",
                     "level": "null",
                     "duration": "null"
@@ -368,7 +368,7 @@
                 "intent": "get_information",
                 "slots": {
                     "title": "deadlift",
-                    "body_part": "lower back"
+                    "body_part": "null"
                 }
             }
         ]
@@ -387,7 +387,7 @@
                 "intent": "get_information",
                 "slots": {
                     "title": "push-up",
-                    "body_part": "chest"
+                    "body_part": "null"
                 }
             }
         ]
@@ -424,8 +424,8 @@
                 "slots": {
                     "title": "clap push-up",
                     "description": "null",
-                    "type": "plyometrics",
-                    "body_part": "chest",
+                    "type": "null",
+                    "body_part": "null",
                     "equipment": "null",
                     "level": "null",
                     "duration": "null"
@@ -506,8 +506,8 @@
                 "slots": {
                     "title": "medicine ball slam",
                     "description": "null",
-                    "type": "plyometrics",
-                    "body_part": "full body",
+                    "type": "null",
+                    "body_part": "null",
                     "equipment": "medicine ball",
                     "level": "null",
                     "duration": "null"
@@ -521,7 +521,7 @@
             {
                 "intent": "get_exercise",
                 "slots": {
-                    "type": "bodyweight",
+                    "type": "null",
                     "body_part": "chest",
                     "equipment": "body only",
                     "level": "null"
@@ -547,7 +547,7 @@
                 "intent": "get_information",
                 "slots": {
                     "title": "kettlebell swing",
-                    "body_part": "hips"
+                    "body_part": "null"
                 }
             }
         ]
@@ -588,12 +588,12 @@
         ]
     },
     {
-        "input": "Find me an intermediate resistance band workout for glutes.",
+        "input": "Find me an intermediate cardio band workout for glutes.",
         "output": [
             {
                 "intent": "get_exercise",
                 "slots": {
-                    "type": "resistance",
+                    "type": "cardio",
                     "body_part": "glutes",
                     "equipment": "band",
                     "level": "intermediate"
@@ -607,7 +607,7 @@
             {
                 "intent": "get_exercise",
                 "slots": {
-                    "type": "machine",
+                    "type": "null",
                     "body_part": "hamstrings",
                     "equipment": "machine",
                     "level": "null"
@@ -616,13 +616,13 @@
         ]
     },
     {
-        "input": "What’s the proper form for squats?",
+        "input": "Can you give me more information about squats?",
         "output": [
             {
                 "intent": "get_information",
                 "slots": {
                     "title": "squats",
-                    "body_part": "legs"
+                    "body_part": "null"
                 }
             }
         ]
@@ -635,9 +635,9 @@
                 "slots": {
                     "title": "Bulgarian split squat",
                     "description": "null",
-                    "type": "strength",
-                    "body_part": "legs",
-                    "equipment": "dumbbell",
+                    "type": "null",
+                    "body_part": "null",
+                    "equipment": "null",
                     "level": "null",
                     "duration": "null"
                 }
@@ -657,7 +657,7 @@
         ]
     },
     {
-        "input": "Can you add sit-ups to my favorite exercises?",
+        "input": "Can you add 'sit-ups' to my favorite exercises?",
         "output": [
             {
                 "intent": "add_favorite",
