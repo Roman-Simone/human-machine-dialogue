@@ -60,6 +60,9 @@ class NLG():
             elif parameter == "give_evaluation":
                 self.logger.debug("Action confirmation. Intent: give_evaluation")
                 system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_give_evaluation"]
+            elif parameter == "out_of_context":
+                self.logger.debug("Action confirmation. Intent: out_of_context")
+                system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_out_of_context"]
             else:
                 self.logger.error("Invalid argument for confirmation action")
                 return "error"

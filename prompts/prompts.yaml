@@ -753,14 +753,6 @@ nlu:
             "intent" : "out_of_context",
             "slots" : {}
           }
-    example 2.
-      input: 
-        {'intent': 'out_of_context', 'text': 'I would like to take an ice cream. Can you suggest me a good ice cream shop?'}
-      Correct output: 
-          {
-            "intent" : "out_of_context",
-            "slots" : {}
-          }
 
 
 dm: 
@@ -842,6 +834,18 @@ dm:
           "action": "confirmation", 
           "parameter": "add_favorite" 
         } (All slots are filled, so DM asks for confirmation.)
+      
+      Example 4: Out of Context
+        Input: 
+        { 
+          "intent": "out_of_context", 
+          "slots": {} 
+        } 
+        Correct Output: 
+        { 
+          "action": "confirmation", 
+          "parameter": "out_of_context" 
+        } (All slots are filled, so DM asks for confirmation.)
 
     Key Reminders:
 
@@ -849,7 +853,6 @@ dm:
     If all slots are present, ask for confirmation.
     Return a valid JSON response with only the required action and parameter.
     Do not add extra text, explanations, or change intent/slots.
-
 
 nlg:
   prompt_request_info: |
@@ -1382,3 +1385,35 @@ nlg:
     
     output:
     Thank you for your feedback! Your rating of 9 has been recorded. We appreciate your comment: "I think that your system is very useful."
+
+  prompt_confirmation_out_of_context: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLG (Natural language generation) component.
+    Before you there is a DM (Dialogue Manager) component that decides the next best action based on the intent and slots extracted by the NLU (Natural language understanding).
+    Your task is to generate the response to the user based on the action decided by the DM.
+
+    Rules for generating the response:
+    - Generate the response based on the action decided by the DM.
+    - Don't create too long responses.
+    - Don't add unnecessary information.
+    - Don't write I'd love to help!
+    
+    This is the template of the input that you have to consider.
+    action: confirmation, parameter: out_of_context 
+    data = {}
+
+    This means that the user message is out of context and doesn't fit any of the intents above or that have no important information.
+    
+    You have to confirm that the message is out of context.
+
+    Example:
+    example 1.
+    action: confirmation, parameter: out_of_context
+    data = {Intent out_of_context}
+    
+    output:
+    I'm sorry, I couldn't understand your request.
+    This is what I can do for you:
+    - Get information about a specific exercise
+    - Get a full workout plan
+    - Handle your favorite list

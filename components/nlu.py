@@ -54,7 +54,8 @@ class NLU():
                 self.logger.debug("Intent out_of_context")
                 if len(pre_nlu_input) == 1:
                     system_prompt = self.system_prompt["nlu"]["prompt_out_of_context"]
-                continue
+                else:
+                    continue
             else:
                 self.logger.error("Intent not recognized")
                 system_prompt = self.system_prompt["nlu"]["prompt_out_of_context"]

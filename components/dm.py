@@ -49,6 +49,7 @@ class stateTracker():
             "rating",
             "comment"
         ]
+        fields_out_of_context = []
 
         
         if intent == "get_exercise":
@@ -67,6 +68,8 @@ class stateTracker():
             self.slots = {field: None for field in fields_list_favorite}
         elif intent == "give_evaluation":
             self.slots = {field: None for field in fields_give_evaluation}
+        else:
+            self.slots = {field: None for field in fields_out_of_context}
         
         self.logger = logging.getLogger(__name__)
 
@@ -213,6 +216,8 @@ class DM():
             data_selected = self.dataset.list_favorite(data_confirm.slots)
         elif intent_confirm == "give_evaluation":
             data_selected = self.give_evaluation(data_confirm.slots)
+        elif intent_confirm == "out_of_context":
+            data_selected = "Intent out_of_context"
         else:
             self.logger.error(f"Intent {intent_confirm} not found")
             return "Error"
@@ -312,6 +317,9 @@ class DM():
                     self.state[-1].update_state(intent)
                 elif intent["intent"] == "give_evaluation":
                     self.state.append(stateTracker("give_evaluation"))
+                    self.state[-1].update_state(intent)
+                elif intent["intent"] == "out_of_context":
+                    self.state.append(stateTracker("out_of_context"))
                     self.state[-1].update_state(intent)
                 else:
                     self.logger.error(f"Intent {intent['intent']} not found")
