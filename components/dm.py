@@ -155,7 +155,7 @@ class DM():
             data = self.confirmation(nba_json)
             if data:
                 self.logger.debug("Intent completed and eliminated from state")
-                self.state.pop(0)
+                self.state.pop()
             else:
                 nba_json = {
                     "action": "check_info",
