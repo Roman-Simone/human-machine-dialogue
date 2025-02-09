@@ -46,7 +46,7 @@ class PreNLU():
                         flag_repeat = True
                 
             except:
-                print(pre_nlu_llama)
+                #print(pre_nlu_llama)
                 self.logger.error("Error parsing PRE-NLU response")
 
         self.history.add('user', user_input)

@@ -67,11 +67,11 @@ class Chat():
             self.logger.info(f"User nlu:\n {nba}\n\n")
 
 
-            system_response = input("System: ")
+            # system_response = input("System: ")
 
-            # system_response = self.nlg(nba)
+            system_response = self.nlg(nba)
 
-            # print(f"\nSystem: {system_response}\n")
+            print(f"\nSystem: {system_response}\n")
 
 
 if __name__ == "__main__":

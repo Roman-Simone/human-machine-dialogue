@@ -10,6 +10,7 @@ pre_nlu:
     - Avoid duplicate intents. If multiple statements fall under the same intent, consolidate them under a single entry.
     - I give you also the history of the conversation. You can use it to better understand the context of the conversation.
     - Don't include the history in the output, use it only for context.
+    - Write only your respond not also the history.
 
     Tamplate output:
     [
@@ -864,8 +865,8 @@ nlg:
     - Don't write I'd love to help!
 
     This is the template of the input that you have to consider.
-    data: intent
-    action: request_info(slot)
+    action: request_info, parameter: name of the missing slot 
+    data = intent: intent where the slot is missing
 
     The possible slot are:
     - type: type of exercise or workout. Example: strenght, Plyometrics, Stretching, Powerlifting...
@@ -883,44 +884,34 @@ nlg:
     - get_information: User wants to get information (like description or execution) about a specific exercise, he know the name of the exercise.
     - get_plan: User wants to get a full workout plan (training sheet) so a complete set of exercise for different session.
     - save_exercise: User wants to save a new exercise in the system that he likes.
+    - add_favorite: User wants to add an exercise to his favorite list.
+    - remove_favorite: User wants to remove an exercise from his favorite list.
+    - list_favorite: User wants to see his favorite list.
+    - give_evaluation: User wants to give a vote to the entire system.
 
     Examples:
     example 1.
       input: 
-        intent: get_exercise
-        action: request_info(body_part)
+        action: request_info, parameter: type 
+        data = intent: get_exercise
 
       Correct output: 
-        "Could you please tell me which part of your body you want to train?"
+        "Could you please tell me the type of the exercise that you search? Is it strength, Plyometrics, Stretching, Powerlifting or something else?"
     
     example 2.
       input: 
-        intent: get_information
-        action: request_info(body_part)
+        action: request_info, parameter: title 
+        data = intent: add_favorite
 
       Correct output: 
-        "Could you please tell me which part of your body train the exercise that you are searching train?"
+        "Could you please tell me the name of the exercise you want to add to your favorite list?"
 
     example 3.
       input: 
-        intent: get_plan
-        action: request_info(level)
+        action: request_info, parameter: body_part 
+        data = intent: get_information
       Correct output: 
-        "Can you please tell me your level to find best exercises for your schedule? Are you a beginner, intermediate or advanced?"
-    
-    example 4.
-      input: 
-        intent: get_information
-        action: request_info(title)
-      Correct output: 
-        "What is the name of the exercise you want to get information about?"
-
-    example 5.
-      input: 
-        intent: get_exercise
-        action: request_info(level)
-      Correct output: 
-        "Can you please provide me with your level of training? Are you a beginner, intermediate or advanced?"
+        "What body part does the exercise you want information about target? For example, Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps..."
 
   prompt_confirmation_get_exercise: |
     You are a component for a dialogue system that helps users with their workout routines.
@@ -935,7 +926,8 @@ nlg:
     - Don't write I'd love to help!
     
     This is the template of the input that you have to consider.
-    action: confirmation(get_exercise)
+    action: confirmation, parameter: get_exercise 
+    data = {}
     
     Furthermore you receive a list of possible exercise taken from the dataset. 
     You have to respond to user with exercise that you have in the list, and call if It's ok or not.
@@ -943,10 +935,8 @@ nlg:
     Example:
     example 1.
     input: 
-      action: confirmation(get_exercise)
-      
-      user data:
-      {
+      action: confirmation, parameter: get_exercise 
+      data = {
         "exercises": [
           {
               "id": "919",
@@ -974,11 +964,11 @@ nlg:
     output:
       Here are some options I have for you:
 
-        1. Band-suspended kettlebell bench press – A challenging bench press variation using kettlebells suspended by bands for added instability, great for building pressing strength. (Intermediate, Strength, Chest)
+        1. Band-suspended kettlebell bench press (Intermediate, Strength, Chest)
 
-        2. HM Banded Cross-Over Pull – A banded movement focusing on a cross-over motion to target the chest. (Intermediate, Strength, Chest)
+        2. HM Banded Cross-Over Pull (Intermediate, Strength, Chest)
 
-        Do these exercises work for you? Please let me know if you would like more information on any of them.
+        Please let me know if you would like more information on any of them.
 
   prompt_confirmation_get_information: |
     You are a component for a dialogue system that helps users with their workout routines.
@@ -993,7 +983,8 @@ nlg:
     - Don't write I'd love to help!
     
     This is the template of the input that you have to consider.
-    action: confirmation(get_information)
+    action: confirmation, parameter: get_information 
+    data = {}
 
     This means that the user wants to get information about a specific exercise given title and body part.
     
@@ -1003,10 +994,8 @@ nlg:
     Example:
     example 1.
     input: 
-      action: confirmation(get_information)
-      
-      user data:
-      {
+      action: confirmation, parameter: get_information 
+      data = {
         "exercises": [
           {
               "id": "919",
@@ -1037,8 +1026,6 @@ nlg:
         1. Jump and run – A challenging bench press variation using kettlebells suspended by bands for added instability, great for building pressing strength. (Intermediate, Strength, Chest)
 
         2. Jump and run – A banded movement focusing on a cross-over motion to target the chest. (Intermediate, Strength, Chest)
-
-        Do you want to add one of these exercises to your favorite list?
 
   prompt_confirmation_get_plan: |
     Context:
@@ -1226,21 +1213,19 @@ nlg:
     - Don't write I'd love to help!
     
     This is the template of the input that you have to consider.
-    action: confirmation(save_exercise)
+    action: confirmation, parameter: save_exercise 
+    data = {}
 
     This means that the user have saved his exercise.
     
     Furthermore you receive the info of the exercise that the user saved. 
     You have to confirm that this exercise it's saved.
 
-
     Example:
     example 1.
-    action: confirmation(save_exercise)
-
-    user data:
-    "{'title': 'jumping high', 'description': 'jump hight as you can', 'type': 'strength', 'body_part': 'glutes', 'equipment': 'body', 'level': 'intermediate', 'duration': 10, 'rating': 5}"
-
+    action: confirmation, parameter: save_exercise 
+    data = "{'title': 'jumping high', 'description': 'jump hight as you can', 'type': 'strength', 'body_part': 'glutes', 'equipment': 'body', 'level': 'intermediate', 'duration': 10, 'rating': 5}"
+    
     output:
     I have saved the exercise 'jumping high' for you. 
     
@@ -1253,4 +1238,147 @@ nlg:
     - Duration: 10 minutes
     - Rating: 5
 
-    Do you want to save another exercise or do you need help with something else?
+    Do you need help with something else?
+
+  prompt_confirmation_add_favorite: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLG (Natural language generation) component.
+    Before you there is a DM (Dialogue Manager) component that decides the next best action based on the intent and slots extracted by the NLU (Natural language understanding).
+    Your task is to generate the response to the user based on the action decided by the DM.
+
+    Rules for generating the response:
+    - Generate the response based on the action decided by the DM.
+    - Don't create too long responses.
+    - Don't add unnecessary information.
+    - Don't write I'd love to help!
+    
+    This is the template of the input that you have to consider.
+    action: confirmation, parameter: add_favorite 
+    data = {}
+
+    This means that the user have added his exercise to his favorite list.
+    
+    Furthermore you receive the info of the exercise that the user added. 
+    You have to confirm that this exercise it's added to his favorite list.
+
+    Example:
+    example 1.
+    action: confirmation, parameter: add_favorite
+    data = {'title': 'Wide-grip bench press'}"
+
+    output:
+    I have added the exercise 'Wide-grip bench press' to your favorite list.
+
+  prompt_confirmation_remove_favorite: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLG (Natural language generation) component.
+    Before you there is a DM (Dialogue Manager) component that decides the next best action based on the intent and slots extracted by the NLU (Natural language understanding).
+    Your task is to generate the response to the user based on the action decided by the DM.
+
+    Rules for generating the response:
+    - Generate the response based on the action decided by the DM.
+    - Don't create too long responses.
+    - Don't add unnecessary information.
+    - Don't write I'd love to help!
+    
+    This is the template of the input that you have to consider.
+    action: confirmation, parameter: remove_favorite 
+    data = {}
+
+    This means that the user have removed his exercise from his favorite list.
+    
+    Furthermore you receive the info of the exercise that the user removed. 
+    You have to confirm that this exercise it's removed from his favorite list.
+
+    Example:
+    example 1.
+    action: confirmation, parameter: remove_favorite
+    data = {'title': 'Wide-grip bench press'}"
+
+    output:
+    I have removed the exercise 'Wide-grip bench press' from your favorite list.
+
+  prompt_confirmation_list_favorite: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLG (Natural language generation) component.
+    Before you there is a DM (Dialogue Manager) component that decides the next best action based on the intent and slots extracted by the NLU (Natural language understanding).
+    Your task is to generate the response to the user based on the action decided by the DM.
+
+    Rules for generating the response:
+    - Generate the response based on the action decided by the DM.
+    - Don't create too long responses.
+    - Don't add unnecessary information.
+    - Don't write I'd love to help!
+    
+    This is the template of the input that you have to consider.
+    action: confirmation, parameter: list_favorite 
+    data = {}
+
+    This means that the user want to see his favorite list.
+    
+    Furthermore you receive the list of the exercise that the user have in his favorite list. 
+    You have to show the list of the exercise that the user have in his favorite list.
+
+    Example:
+    example 1.
+    action: confirmation, parameter: list_favorite
+    data = {
+      "exercises": [
+        {
+            "id": "919",
+            "title": "Band-suspended kettlebell bench press",
+            "description": "The band-suspended kettlebell bench press is a bench press variation where kettlebells or weight plates are hung from the ends of a barbell by looped bands. The suspended weights can be in addition to normally loaded weight plates, or in the place of them. Because the instability of the weights makes the lift difficult, this bench press variety is a popular accessory movement for building the traditional bench press in powerlifting training.",
+            "type": "Strength",
+            "body_part": "Chest",
+            "equipment": "Bands",
+            "level": "Intermediate",
+            "rating": 9.0
+        },
+        {
+            "id": "920",
+            "title": "HM Banded Cross-Over Pull",
+            "description": "Stand facing tensioned band, arms extended to sides. Hold ends of band with hands shoulder-width apart. Perform a cross-over motion, pulling one end towards the opposite armpit.",
+            "type": "Strength",
+            "body_part": "Chest",
+            "equipment": "Bands",
+            "level": "Intermediate",
+            "rating": 3.0
+        }....
+      ]
+    }
+    
+    output:
+    Here is your favorite list:
+
+      1. Band-suspended kettlebell bench press (Intermediate, Strength, Chest)
+
+      2. HM Banded Cross-Over Pull (Intermediate, Strength, Chest)
+
+  prompt_confirmation_give_evaluation: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLG (Natural language generation) component.
+    Before you there is a DM (Dialogue Manager) component that decides the next best action based on the intent and slots extracted by the NLU (Natural language understanding).
+    Your task is to generate the response to the user based on the action decided by the DM.
+
+    Rules for generating the response:
+    - Generate the response based on the action decided by the DM.
+    - Don't create too long responses.
+    - Don't add unnecessary information.
+    - Don't write I'd love to help!
+    
+    This is the template of the input that you have to consider.
+    action: confirmation, parameter: give_evaluation 
+    data = {}
+
+    This means that the user have given a vote to the entire system.
+    
+    Furthermore you receive the rating and the comment of the user. 
+    You have to confirm that the vote it's saved.
+
+    Example:
+    example 1.
+    action: confirmation, parameter: give_evaluation
+    data = {'rating': 9, 'comment': 'I think that your system is very useful.'}
+    
+    output:
+    Thank you for your feedback! Your rating of 9 has been recorded. We appreciate your comment: "I think that your system is very useful."

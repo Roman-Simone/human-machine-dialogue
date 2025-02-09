@@ -1,4 +1,3 @@
-import re
 import yaml
 import ollama
 import logging
@@ -24,32 +23,43 @@ class NLG():
             self.logger.error("Input must be a dictionary")
             return "error"
         
-        nba = nba_input['nba']
+        nba = f"action: {nba_input['action']}, parameter: {nba_input['parameter']}"
         data = nba_input['data']
 
-        action, argument = self.extract_action_argument(nba)
+        action = nba_input['action']
+        parameter = nba_input['parameter']
 
         if action == "request_info":
-            self.logger.debug(f"Action request_info. Slot: {argument}")
+            self.logger.debug(f"Action request_info. Slot: {parameter}")
             system_prompt = self.system_prompt_yaml["nlg"]["prompt_request_info"]
             response = self.query_model(nba, system_prompt, data)
 
-            
-
         elif action == "confirmation":
             
-            if argument == "get_exercise":
+            if parameter == "get_exercise":
                 self.logger.debug("Action confirmation. Intent: get_exercise")
                 system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_get_exercise"]
-            elif argument == "get_information":
+            elif parameter == "get_information":
                 self.logger.debug("Action confirmation. Intent: get_information")
                 system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_get_information"]
-            elif argument == "get_plan":
+            elif parameter == "get_plan":
                 self.logger.debug("Action confirmation. Intent: get_plan")
                 system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_get_plan"]
-            elif argument == "save_exercise":
+            elif parameter == "save_exercise":
                 self.logger.debug("Action confirmation. Intent: save_exercise")
                 system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_save_exercise"]
+            elif parameter == "add_favorite":
+                self.logger.debug("Action confirmation. Intent: add_favorite")
+                system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_add_favorite"]
+            elif parameter == "remove_favorite":
+                self.logger.debug("Action confirmation. Intent: remove_favorite")
+                system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_remove_favorite"]
+            elif parameter == "list_favorite":
+                self.logger.debug("Action confirmation. Intent: list_favorite")
+                system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_list_favorite"]
+            elif parameter == "give_evaluation":
+                self.logger.debug("Action confirmation. Intent: give_evaluation")
+                system_prompt = self.system_prompt_yaml["nlg"]["prompt_confirmation_give_evaluation"]
             else:
                 self.logger.error("Invalid argument for confirmation action")
                 return "error"
@@ -58,16 +68,6 @@ class NLG():
 
 
         return response
-
-
-    def extract_action_argument(self, nba: str) -> tuple:
-
-        match = re.match(r"(request_info|confirmation)\((.*?)\)", nba)
-        
-        if match:
-            return match.groups()  # Returns (action, argument)
-        
-        return None, None  # Default case if no match is found
 
 
     def query_model(self, nba_input: str, system: str, data=" ")-> str:
@@ -82,18 +82,18 @@ class NLG():
         #     'content': f"History User: {self.history.get_history()}"
         # })
 
+        user_input = f"{nba_input} \ndata = {data}"
+
         messages.append({
             'role': 'user',
-            'content': "action: " + nba_input
+            'content': user_input
         })
 
-        if data != " ":
-            messages.append({
-                'role': 'user',
-                'content': "user data: \n" + data
-            })
-
-        
+        # if data != " ":
+        #     messages.append({
+        #         'role': 'user',
+        #         'content': "user data: \n" + data
+        #     })
 
         self.history.add('user', nba_input)
 
