@@ -36,10 +36,10 @@ class stateTracker():
             "duration"
         ]
         fields_add_favorite = [
-            "title",
+            "title"
         ]
         fields_remove_favorite = [
-            "title",
+            "title"
         ]
         fields_list_favorite = [
             "type",
@@ -230,7 +230,7 @@ class DM():
         action = nba['action']
         parameter = nba['parameter']
         
-        if parameter == "None" or parameter == "null" or parameter == "":
+        if parameter == "None" or parameter == "null" or parameter == "" or parameter == "none":
             return True
         
         if not (action == "request_info" or action == "confirmation"):
@@ -283,6 +283,18 @@ class DM():
                     self.state[-1].update_state(intent)
                 elif intent["intent"] == "save_exercise":
                     self.state.append(stateTracker("save_exercise"))
+                    self.state[-1].update_state(intent)
+                elif intent["intent"] == "add_favorite":
+                    self.state.append(stateTracker("add_favorite"))
+                    self.state[-1].update_state(intent)
+                elif intent["intent"] == "remove_favorite":
+                    self.state.append(stateTracker("remove_favorite"))
+                    self.state[-1].update_state(intent)
+                elif intent["intent"] == "list_favorite":
+                    self.state.append(stateTracker("list_favorite"))
+                    self.state[-1].update_state(intent)
+                elif intent["intent"] == "give_evaluation":
+                    self.state.append(stateTracker("give_evaluation"))
                     self.state[-1].update_state(intent)
                 else:
                     self.logger.error(f"Intent {intent['intent']} not found")

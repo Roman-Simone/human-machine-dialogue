@@ -137,5 +137,745 @@
             "action": "confirmation",
             "parameter": "get_plan"
         }
+    },
+    {
+        "input": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "Push-ups",
+                    "description": null,
+                    "type": "strength",
+                    "body_part": "chest",
+                    "equipment": "bodyweight",
+                    "level": "beginner",
+                    "duration": 10
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "description"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "Jump Squats",
+                    "description": "Explosive leg exercise",
+                    "type": "strength",
+                    "body_part": "legs",
+                    "equipment": "bodyweight",
+                    "level": null,
+                    "duration": 15
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "add_favorite",
+                "slots": {
+                    "title": "Pull-ups"
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "add_favorite"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "title"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "list_favorite",
+                "slots": {
+                    "type": null,
+                    "body_part": "legs"
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "type"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "give_evaluation",
+                "slots": {
+                    "rating": 5,
+                    "comment": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "comment"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "give_evaluation",
+                "slots": {
+                    "rating": null,
+                    "comment": "Great workout!"
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "rating"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "cardio",
+                    "body_part": "legs",
+                    "equipment": null,
+                    "level": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "equipment",
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "strength",
+                    "body_part": "shoulders",
+                    "equipment": "dumbbells",
+                    "level": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "flexibility",
+                    "body_part": null,
+                    "equipment": "resistance bands",
+                    "level": "beginner"
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "body_part"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "Plank",
+                    "body_part": "Core"
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "get_information"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "Bench Press",
+                    "body_part": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "body_part"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "advanced",
+                    "n_session": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "n_session"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "Lunges",
+                    "description": "Lower body workout",
+                    "type": "strength",
+                    "body_part": "legs",
+                    "equipment": null,
+                    "level": "intermediate",
+                    "duration": 15
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "equipment"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": null,
+                    "description": "A full-body strength move",
+                    "type": "strength",
+                    "body_part": "full body",
+                    "equipment": "barbell",
+                    "level": "advanced",
+                    "duration": 20
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "title"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "add_favorite",
+                "slots": {
+                    "title": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "title"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": "Burpees"
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "remove_favorite"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "list_favorite",
+                "slots": {
+                    "type": "strength",
+                    "body_part": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "body_part"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "give_evaluation",
+                "slots": {
+                    "rating": null,
+                    "comment": "Very effective exercise!"
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "rating"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "give_evaluation",
+                "slots": {
+                    "rating": 3,
+                    "comment": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "comment"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "mobility",
+                    "body_part": "hips",
+                    "equipment": null,
+                    "level": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "equipment",
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "Kettlebell Swing",
+                    "body_part": "Full Body"
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "get_information"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": null,
+                    "n_session": 4
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "beginner",
+                    "n_session": 6
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "get_plan"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "Squats",
+                    "description": "Great lower-body workout",
+                    "type": "strength",
+                    "body_part": "legs",
+                    "equipment": "barbell",
+                    "level": "advanced",
+                    "duration": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "duration"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "title"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "yoga",
+                    "body_part": null,
+                    "equipment": "mat",
+                    "level": "beginner"
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "body_part"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "cardio",
+                    "body_part": "full body",
+                    "equipment": "jump rope",
+                    "level": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "Barbell Row",
+                    "body_part": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "body_part"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "Mountain Climbers",
+                    "body_part": "Core"
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "get_information"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "intermediate",
+                    "n_session": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "n_session"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "Pull-ups",
+                    "description": null,
+                    "type": "strength",
+                    "body_part": "back",
+                    "equipment": "bar",
+                    "level": "advanced",
+                    "duration": 10
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "description"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "save_exercise",
+                "slots": {
+                    "title": "Crunches",
+                    "description": "Core strengthening exercise",
+                    "type": "strength",
+                    "body_part": "core",
+                    "equipment": null,
+                    "level": "beginner",
+                    "duration": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "duration"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "add_favorite",
+                "slots": {
+                    "title": "Kettlebell Deadlift"
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "add_favorite"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "remove_favorite",
+                "slots": {
+                    "title": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "title"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "list_favorite",
+                "slots": {
+                    "type": null,
+                    "body_part": "chest"
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "type"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "give_evaluation",
+                "slots": {
+                    "rating": 5,
+                    "comment": "Loved this workout!"
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "give_evaluation"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "give_evaluation",
+                "slots": {
+                    "rating": null,
+                    "comment": "Very challenging, but great!"
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "rating"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "calisthenics",
+                    "body_part": "arms",
+                    "equipment": "parallel bars",
+                    "level": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "advanced",
+                    "n_session": 3
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "get_plan"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "Triceps Dips",
+                    "body_part": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "body_part"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "strength",
+                    "body_part": "legs",
+                    "equipment": "kettlebell",
+                    "level": "intermediate"
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "get_exercise"
+        }
     }
 ]

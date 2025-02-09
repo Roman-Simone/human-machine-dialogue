@@ -196,7 +196,7 @@ def parse_args():
     config = {
         "model": args.model,
         "prompts_path": args.prompts,
-        "error_log_path": args.error_log,
+        "error_log_nlu": args.error_log_nlu,
         "error_log_dm": args.error_log_dm,
         "dataset_nlu": args.dataset_nlu,
         "dataset_dm": args.dataset_dm
@@ -210,4 +210,4 @@ if __name__ == "__main__":
     # evaluator.eval_NLU()
     evaluator.eval_DM()
 
-
+    print()
