@@ -841,8 +841,7 @@ dm:
       Intent: get_plan,
       slots: {
           level: intermediate,
-          n_session: 2,
-          min_rating: 5,
+          n_session: 2
       }
     }
     Correct output:

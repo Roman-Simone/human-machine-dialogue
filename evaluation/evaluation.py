@@ -1,26 +1,30 @@
-import argparse
 import json
+import argparse
 from tqdm import tqdm
 from collections import defaultdict
-from components import PreNLU, NLU
+from components import (
+    PreNLU,
+    NLU,
+    DM
+)
 
 class Evaluation:
     def __init__(self, config):
         self.model = config['model']
         self.prompts_path = config['prompts_path']
-        self.error_log_path = config['error_log_path']
+        self.error_log_path_nlu = config['error_log_nlu']
+        self.error_log_path_dm = config['error_log_dm']
         self.dataset_path_nlu = config['dataset_nlu']
         self.dataset_path_dm = config['dataset_dm']
 
         self.pre_nlu = PreNLU(self.model, self.prompts_path, useHistory=False)
         self.nlu = NLU(self.model, self.prompts_path, useHistory=False)
+        self.DM = DM(self.model, self.prompts_path, eval_mode=True)
 
     def eval_NLU(self):
         # Load dataset
         with open(self.dataset_path_nlu, "r") as file:
             dataset = json.load(file)
-
-        print(len(dataset))
 
         total_intent_counts = defaultdict(int)
         correct_intent_counts = defaultdict(int)
@@ -29,7 +33,7 @@ class Evaluation:
         total_segments = 0
 
 
-        with open(self.error_log_path, "a") as error_log:
+        with open(self.error_log_path_nlu, "w") as error_log:
 
             progress_bar = tqdm(dataset, desc="Evaluating NLU", unit="sample", 
                                 dynamic_ncols=True)
@@ -113,6 +117,62 @@ class Evaluation:
 
 
     def eval_DM(self):
+        # Load dataset
+        with open(self.dataset_path_dm, "r") as file:
+            dataset = json.load(file)
+
+        total_actions = 0
+        correct_actions = 0
+        correct_arguments = 0
+
+        with open(self.error_log_path_dm, "w") as error_log:
+
+            progress_bar = tqdm(dataset, desc="Evaluating DM", unit="sample", dynamic_ncols=True)
+            for sample in progress_bar:
+
+                nlu_input = sample["input"]
+
+
+                expected_output = sample["output"]
+
+                # Get DM predictions
+                dm_prediction = self.DM(nlu_input)
+
+                total_actions += 1
+
+                if expected_output["action"] == dm_prediction["action"]:
+                    correct_actions += 1
+                else:
+                    error_log.write("\n--- ERROR: DM MISMATCH ---\n")
+                    error_log.write(f"NLU input: {json.dumps(nlu_input, indent=4)}\n")
+                    error_log.write(f"Expected DM Output: {json.dumps(expected_output, indent=4)}\n")
+                    error_log.write(f"Predicted DM Output: {json.dumps(dm_prediction, indent=4)}\n")
+                    error_log.write("\n------------------------------\n")
+                    error_log.flush()
+                
+                # Compare parameter predictions
+                if dm_prediction["parameter"] in expected_output["parameter"]:
+                    correct_arguments += 1
+                else:
+                    error_log.write("\n--- ERROR: PARAMETER MISMATCH ---\n")
+                    error_log.write(f"NLU input: {json.dumps(nlu_input, indent=4)}\n")
+                    error_log.write(f"Expected DM Output: {json.dumps(expected_output, indent=4)}\n")
+                    error_log.write(f"Predicted DM Output: {json.dumps(dm_prediction, indent=4)}\n")
+                    error_log.write("\n------------------------------\n")
+                    error_log.flush()
+
+                # Update progress bar with accuracy
+                action_accuracy = (correct_actions / total_actions) * 100 if total_actions else 0
+                parameter_accuracy = (correct_arguments / total_actions) * 100 if total_actions else 0
+            
+                progress_bar.set_postfix({"Action Acc": f"{action_accuracy:.2f}%", "Parameter Acc": f"{parameter_accuracy:.2f}%"})
+
+
+
+        # Print final results
+        print("\nDM Evaluation Results:")
+        print(f"Overall Action Accuracy: {action_accuracy:.2f}%")
+
         
 
 def parse_args():
@@ -126,7 +186,9 @@ def parse_args():
                         help="Specify the path to the evaluation dataset JSON file.")
     parser.add_argument("--dataset-dm", type=str, required=False, default="evaluation/data/dataset_eval_dm.json",
                         help="Specify the path to the evaluation dataset JSON file.")
-    parser.add_argument("--error_log", type=str, required=False, default="evaluation/errors.log",
+    parser.add_argument("--error_log_nlu", type=str, required=False, default="evaluation/errors_nlu.log",
+                        help="Specify the path to save incorrect predictions.")
+    parser.add_argument("--error_log_dm", type=str, required=False, default="evaluation/errors_dm.log",
                         help="Specify the path to save incorrect predictions.")
     
     args = parser.parse_args()
@@ -135,15 +197,17 @@ def parse_args():
         "model": args.model,
         "prompts_path": args.prompts,
         "error_log_path": args.error_log,
+        "error_log_dm": args.error_log_dm,
         "dataset_nlu": args.dataset_nlu,
         "dataset_dm": args.dataset_dm
     }
 
-    return config, args.dataset
+    return config
 
 if __name__ == "__main__":
-    config, dataset_path = parse_args()
+    config = parse_args()
     evaluator = Evaluation(config)
-    evaluator.eval_NLU(dataset_path)
+    # evaluator.eval_NLU()
+    evaluator.eval_DM()
 
 

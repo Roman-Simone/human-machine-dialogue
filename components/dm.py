@@ -1,5 +1,6 @@
 import re
 import yaml
+import json
 import ollama
 import logging
 from utils.history import History
@@ -23,8 +24,7 @@ class stateTracker():
         ]
         fields_get_plan = [
             "level",
-            "n_session",
-            "min_rating"
+            "n_session"
         ]
         fields_save_exercise = [
             "title",
@@ -33,8 +33,7 @@ class stateTracker():
             "body_part",
             "equipment",
             "level",
-            "duration",
-            "rating"
+            "duration"
         ]
         fields_add_favorite = [
             "title",
@@ -106,7 +105,7 @@ class stateTracker():
 
 class DM():
 
-    def __init__(self, model, prompt_path):
+    def __init__(self, model, prompt_path, eval_mode=False):
         
         self.model = model
         self.prompt_path = prompt_path
@@ -114,14 +113,16 @@ class DM():
         self.history = History()
         self.dataset = MegaGymDataset()
         self.logger = logging.getLogger(__name__)
-
-        self.invalid_nba = ["request_info(None)", "confirmation(None)", "action(confirmation)", "action(request_info)"]
+        self.eval_mode = eval_mode
 
         with open(self.prompt_path, "r") as file:
             self.system_prompt = yaml.safe_load(file)
 
 
     def __call__(self, nlu_input: list) -> str:
+
+        if self.eval_mode:
+            self.state = []
 
         flag_repeat = True
         
@@ -134,35 +135,48 @@ class DM():
             self.logger.debug(f"\nStates updated:\n {states_str}")
 
             state_str = self.get_state_string(self.state[0])
+
+            nba_llama = self.query_model(state_str)
+
+            try:
+                nba_llama_clean = self.clean_json_string(nba_llama)
+                nba_json = json.loads(nba_llama_clean)
+                flag_repeat = self.check_nba(nba_json)
             
-            nba = self.query_model(state_str)
+            except:
+                self.logger.error("Error parsing NBA response")
 
-            flag_repeat = self.check_nba(nba)
-
-        self.logger.debug(f"DM decision: {nba}")
+        self.logger.debug(f"DM decision: {nba_json}")
 
         data = ""
-        if "confirmation" in nba:
-            data = self.confirmation(nba)
+        if nba_json["action"] == "confiermation" and not self.eval_mode:
+            data = self.confirmation(nba_json)
             self.logger.debug("Intent completed and eliminated from state")
             self.state.pop(0)
         
-        if "request_info" in nba:
+        if nba_json["action"] == "request_info":
             data = f"intent: {self.state[0].intent}"
         
         response = {
-            "nba": nba,
+            "action": nba_json["action"],
+            "parameter": nba_json["parameter"],
             "data": data
         }
 
         return response
 
 
-    def confirmation(self, nba_confirm: str) -> str:
+    def clean_json_string(self, input_str: str) -> str:
+        # Extract content between the first '[' and the last ']'
+        match = re.search(r'\{}.*\}', input_str, re.DOTALL)
+        return match.group(0) if match else input_str
+
+
+    def confirmation(self, nba_confirm: dict) -> str:
 
         data_confirm = {}
         
-        intent_confirm = nba_confirm[nba_confirm.find("(") + 1 : nba_confirm.find(")")]
+        intent_confirm = nba_confirm["argument"]
 
         find_flag = False
         for element in self.state:
@@ -211,32 +225,19 @@ class DM():
         return data_selected
 
 
-    def check_nba(self, nba: str) -> bool:
-        
-        if nba in self.invalid_nba:
-            self.logger.error(f"Invalid NBA: {nba}")
-            return True
-        
-        intent_or_slot = nba[nba.find("(") + 1 : nba.find(")")]
+    def check_nba(self, nba: dict) -> bool:
 
-        if intent_or_slot == "None" or intent_or_slot == "null" or intent_or_slot == "":
+        action = nba['action']
+        parameter = nba['parameter']
+        
+        if parameter == "None" or parameter == "null" or parameter == "":
             return True
         
-        action, argument = self.extract_action_argument(nba)
-        if not action or not argument:
+        if not (action == "request_info" or action == "confirmation"):
             return True
 
         return False
 
-
-    def extract_action_argument(self, input_str: str) -> tuple:
-
-        match = re.match(r"(request_info|confirmation)\((.*?)\)", input_str)
-        
-        if match:
-            return match.groups()  # Returns (action, argument)
-        
-        return None, None  # Default case if no match is found
 
 
     def get_states_string(self) -> str:

@@ -1,0 +1,141 @@
+[
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "cardio",
+                    "body_part": null,
+                    "equipment": null,
+                    "level": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "body_part",
+                "equipment",
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "strength",
+                    "body_part": "glutes",
+                    "equipment": null,
+                    "level": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "equipment",
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_exercise",
+                "slots": {
+                    "type": "stretching",
+                    "body_part": "back",
+                    "equipment": "bands",
+                    "level": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "Deadlift",
+                    "body_part": "Back"
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "get_information"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_information",
+                "slots": {
+                    "title": "Jump Rope",
+                    "body_part": "Full Body"
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "get_information"
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": null,
+                    "n_session": 3
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "level"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "beginner",
+                    "n_session": null
+                }
+            }
+        ],
+        "output": {
+            "action": "request_info",
+            "parameter": [
+                "n_session"
+            ]
+        }
+    },
+    {
+        "input": [
+            {
+                "intent": "get_plan",
+                "slots": {
+                    "level": "advanced",
+                    "n_session": 5
+                }
+            }
+        ],
+        "output": {
+            "action": "confirmation",
+            "parameter": "get_plan"
+        }
+    }
+]
