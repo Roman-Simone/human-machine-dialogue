@@ -112,7 +112,6 @@ class Evaluation:
                 # Update progress bar with accuracy
                 overall_intent_accuracy = sum(correct_intent_counts.values()) / sum(total_intent_counts.values()) * 100 if sum(total_intent_counts.values()) else 0
                 slot_accuracy = (correct_slots / total_slots) * 100 if total_slots else 0
-                precision, recall, f1, _ = precision_recall_fscore_support(action_true, action_pred, average='macro', zero_division=0)
 
                 progress_bar.set_postfix({"Intent Acc": f"{overall_intent_accuracy:.2f}%", "Slot Acc": f"{slot_accuracy:.2f}%"})
 
