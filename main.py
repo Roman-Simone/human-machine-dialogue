@@ -33,7 +33,7 @@ def parse_args():
                         help="Specify the model to use for chat.")
     parser.add_argument("--prompts", type=str, required=False, default="prompts/prompts.yaml",
                         help="Specify the path to prompts.")
-    parser.add_argument("--enable_logging", type=bool, default=True,
+    parser.add_argument("--enable_logging", type=bool, default=False,
                         help="Enable logging output. If not specified, logging will be disabled.")
     
     args = parser.parse_args()

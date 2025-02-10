@@ -256,7 +256,7 @@ class MegaGymDataset:
         return ret
 
 
-    def filter_by_level(self, level, data=None, threshold = 80) -> pd.DataFrame:
+    def filter_by_level(self, level, data=None, threshold = 95) -> pd.DataFrame:
         """Filter data bu level."""
         if data is None:
             data = self.data
@@ -269,7 +269,7 @@ class MegaGymDataset:
         return ret
 
 
-    def filter_by_type(self, exercise_type, data=None, threshold = 80) -> pd.DataFrame:
+    def filter_by_type(self, exercise_type, data=None, threshold = 90) -> pd.DataFrame:
         """Filter data by type."""
         if data is None:
             data = self.data
@@ -281,7 +281,7 @@ class MegaGymDataset:
         return ret
 
 
-    def filter_by_body_part(self, body_part, data=None, threshold = 80) -> pd.DataFrame:
+    def filter_by_body_part(self, body_part, data=None, threshold = 90) -> pd.DataFrame:
         """Filter data by body part."""
         if data is None:
             data = self.data

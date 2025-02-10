@@ -143,7 +143,10 @@ class DM():
             try:
                 nba_llama_clean = self.clean_json_string(nba_llama)
                 nba_json = json.loads(nba_llama_clean)
-                flag_repeat = self.check_nba(nba_json, self.state[-1])
+                if not self.eval_mode:
+                    flag_repeat = self.check_nba(nba_json, self.state[-1])
+                else:
+                    flag_repeat = False
             
             except:
                 self.logger.error("Error parsing NBA response")

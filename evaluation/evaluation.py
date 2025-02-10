@@ -28,6 +28,7 @@ class Evaluation:
 
         total_intent_counts = defaultdict(int)
         correct_intent_counts = defaultdict(int)
+        predicted_intent_counts = defaultdict(int)
         total_slots = 0
         correct_slots = 0
         total_segments = 0
@@ -67,6 +68,8 @@ class Evaluation:
                         error_log.flush()  
                         continue
                     
+                    predicted_intent_counts[predicted["intent"]] += 1
+
                     if expected["intent"] == predicted["intent"]:
                         correct_intent_counts[expected["intent"]] += 1
                     else:
@@ -79,6 +82,7 @@ class Evaluation:
                         error_log.write("\n------------------------------\n")
                         error_log.flush()  
 
+                    
 
                     # Compare slot predictions
                     expected_slots = expected.get("slots", {})
@@ -108,12 +112,40 @@ class Evaluation:
                 # Update progress bar with accuracy
                 overall_intent_accuracy = sum(correct_intent_counts.values()) / sum(total_intent_counts.values()) * 100 if sum(total_intent_counts.values()) else 0
                 slot_accuracy = (correct_slots / total_slots) * 100 if total_slots else 0
+                precision, recall, f1, _ = precision_recall_fscore_support(action_true, action_pred, average='macro', zero_division=0)
+
                 progress_bar.set_postfix({"Intent Acc": f"{overall_intent_accuracy:.2f}%", "Slot Acc": f"{slot_accuracy:.2f}%"})
 
+        # Compute final metrics per intent
+        intent_metrics = {}
+        for intent in total_intent_counts:
+            tp = correct_intent_counts[intent]
+            fp = predicted_intent_counts[intent] - tp
+            fn = total_intent_counts[intent] - tp
+
+            precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+            recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+            f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+            
+            intent_metrics[intent] = {
+                "precision": precision,
+                "recall": recall,
+                "f1": f1
+            }
+            
         # Print final results
         print("\nNLU Evaluation Results:")
+        overall_intent_accuracy = sum(correct_intent_counts.values()) / sum(total_intent_counts.values()) * 100 if sum(total_intent_counts.values()) else 0
+        slot_accuracy = (correct_slots / total_slots) * 100 if total_slots else 0
         print(f"Overall Intent Accuracy: {overall_intent_accuracy:.2f}%")
         print(f"Overall Slot Accuracy: {slot_accuracy:.2f}%")
+        print("\nIntent-wise Performance:")
+        for intent, metrics in intent_metrics.items():
+            print(f"Intent: {intent}")
+            print(f"  Precision: {metrics['precision']:.2f}")
+            print(f"  Recall: {metrics['recall']:.2f}")
+            print(f"  F1-score: {metrics['f1']:.2f}")
+            print()
 
 
     def eval_DM(self):
@@ -123,7 +155,11 @@ class Evaluation:
 
         total_actions = 0
         correct_actions = 0
-        correct_arguments = 0
+        correct_parameters = 0
+        total_parameters = 0
+        predicted_actions = defaultdict(int)
+        correct_predictions = defaultdict(int)
+        total_expected_actions = defaultdict(int)
 
         with open(self.error_log_path_dm, "w") as error_log:
 
@@ -140,8 +176,12 @@ class Evaluation:
 
                 total_actions += 1
 
+                predicted_actions[dm_prediction["action"]] += 1
+                total_expected_actions[expected_output["action"]] += 1
+
                 if expected_output["action"] == dm_prediction["action"]:
                     correct_actions += 1
+                    correct_predictions[expected_output["action"]] += 1
                 else:
                     error_log.write("\n--- ERROR: DM MISMATCH ---\n")
                     error_log.write(f"NLU input: {json.dumps(nlu_input, indent=4)}\n")
@@ -151,8 +191,9 @@ class Evaluation:
                     error_log.flush()
                 
                 # Compare parameter predictions
+                total_parameters+=1
                 if dm_prediction["parameter"] in expected_output["parameter"]:
-                    correct_arguments += 1
+                    correct_parameters += 1
                 else:
                     error_log.write("\n--- ERROR: PARAMETER MISMATCH ---\n")
                     error_log.write(f"NLU input: {json.dumps(nlu_input, indent=4)}\n")
@@ -161,13 +202,24 @@ class Evaluation:
                     error_log.write("\n------------------------------\n")
                     error_log.flush()
 
-                # Update progress bar with accuracy
+                precision = sum(correct_predictions[action] / predicted_actions[action] if predicted_actions[action] > 0 else 0 for action in predicted_actions) / len(predicted_actions) if predicted_actions else 0
+                recall = sum(correct_predictions[action] / total_expected_actions[action] if total_expected_actions[action] > 0 else 0 for action in total_expected_actions) / len(total_expected_actions) if total_expected_actions else 0
+                f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
                 action_accuracy = (correct_actions / total_actions) * 100 if total_actions else 0
-                parameter_accuracy = (correct_arguments / total_actions) * 100 if total_actions else 0
-            
-                progress_bar.set_postfix({"Action Acc": f"{action_accuracy:.2f}%", "Parameter Acc": f"{parameter_accuracy:.2f}%"})
+                parameter_accuracy = (correct_parameters / total_parameters) * 100 if total_parameters else 0
 
+                progress_bar.set_postfix({
+                    "Action Acc": f"{action_accuracy:.2f}%,", 
+                    "Param Acc": f"{parameter_accuracy:.2f}%", 
+                    "Precision": f"{precision:.2f}",
+                    "Recall": f"{recall:.2f}",
+                    "F1-score": f"{f1:.2f}"
+                })
 
+        print(f1)
+        print(precision)
+        print(recall)
+        
 
         # Print final results
         print("\nDM Evaluation Results:")
