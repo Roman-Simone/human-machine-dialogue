@@ -31,7 +31,7 @@
 
 # Project description
 
-**LLamaFit** is a human-machine dialogue system designed to help users plan and manage their workout programs. It provides **personalized training schedules, exercise recommendations, and favorite exercise management**, acting as a virtual personal trainer.
+**LLamaFit** is a human-machine dialogue system designed to help users plan and manage their workout programs. It provides **personalized training schedules, exercise recommendations, and favorite exercise management**, acting as a virtual personal trainer. You can find the demo of the video in this <a href="https://www.youtube.com/watch?v=zCRVmeRVNLE">link</a>.
 
 ---
 
