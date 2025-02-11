@@ -24,7 +24,6 @@
   - [🚀 Features](#-features)
   - [⚙️ How It Works](#️-how-it-works)
 - [Installation](#installation)
-  - [To run LLamaFit locally, follow these steps:](#to-run-llamafit-locally-follow-these-steps)
 
 ----------
 
@@ -53,9 +52,14 @@ LLamaFit is built using **LLama 3**, running locally with **Ollama**, and follow
 ---
 
 # Installation
+  > [!NOTE]
+> For all project we use python 3.10
 
 To run LLamaFit locally, follow these steps:
-- 
+- Clone the repo: 
+    ```bash
+    git clone https://github.com/Roman-Simone/human-machine-dialogue
+    ```
 
 
 
