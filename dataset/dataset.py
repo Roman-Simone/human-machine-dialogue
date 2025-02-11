@@ -103,23 +103,29 @@ class MegaGymDataset:
             "Duration": intent.get("duration")
         }
 
-        # Convert dictionary to DataFrame and ensure correct data format
+        # Convert dictionary to DataFrame
         new_df = pd.DataFrame([new_exercise])
 
-        # Ensure ID is properly handled
-        if "Id" in self.data.columns:
-            new_df["Id"] = new_df["Id"].fillna(self.data["Id"].max() + 1 if not self.data.empty else 1)
+        # Drop all-NA columns from new_df to avoid FutureWarning
+        new_df = new_df.dropna(axis=1, how='all')
 
-        # Concatenate the new data and reset index
-        self.data = pd.concat([self.data, new_df], ignore_index=True)
+        # Ensure ID is properly assigned
+        if not self.data.empty and "Id" in self.data.columns:
+            new_df["Id"] = self.data["Id"].max() + 1
+        else:
+            new_df["Id"] = 1  # Assign ID 1 if data is empty
+
+        # Ensure there is data to concatenate
+        if not new_df.empty:
+            self.data = pd.concat([self.data, new_df], ignore_index=True)
 
         # Save to CSV ensuring correct formatting
-        self.data.to_csv(self.path_csv, index=False, quoting=csv.QUOTE_MINIMAL)  # quoting=1 ensures correct handling of text fields
+        self.data.to_csv(self.path_csv, index=False, quoting=csv.QUOTE_MINIMAL)
 
         return "Exercise saved successfully."
 
 
-    def add_favorite(self, intent: dict, threshold = 70) -> str:
+    def add_favorite(self, intent: dict, threshold = 95) -> str:
         title = intent.get("title")
 
         data = deepcopy(self.data)
@@ -229,7 +235,7 @@ class MegaGymDataset:
         return self.data
 
 
-    def filter_by_title(self, title, data=None, threshold = 70) -> pd.DataFrame:
+    def filter_by_title(self, title, data=None, threshold = 97) -> pd.DataFrame:
         """Filter data by title."""
         if data is None:
             data = self.data
@@ -256,7 +262,7 @@ class MegaGymDataset:
         return ret
 
 
-    def filter_by_level(self, level, data=None, threshold = 95) -> pd.DataFrame:
+    def filter_by_level(self, level, data=None, threshold = 80) -> pd.DataFrame:
         """Filter data bu level."""
         if data is None:
             data = self.data
@@ -269,7 +275,7 @@ class MegaGymDataset:
         return ret
 
 
-    def filter_by_type(self, exercise_type, data=None, threshold = 90) -> pd.DataFrame:
+    def filter_by_type(self, exercise_type, data=None, threshold = 80) -> pd.DataFrame:
         """Filter data by type."""
         if data is None:
             data = self.data
@@ -281,7 +287,7 @@ class MegaGymDataset:
         return ret
 
 
-    def filter_by_body_part(self, body_part, data=None, threshold = 90) -> pd.DataFrame:
+    def filter_by_body_part(self, body_part, data=None, threshold = 80) -> pd.DataFrame:
         """Filter data by body part."""
         if data is None:
             data = self.data

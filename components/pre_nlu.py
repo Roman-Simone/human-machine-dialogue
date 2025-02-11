@@ -15,11 +15,12 @@ class PreNLU():
         self.prompt_path = prompt_path
         self.logger = logging.getLogger(__name__)
         self.history = History()
+        self.history.limit = 5
         self.useHistory = useHistory
         with open(self.prompt_path, "r") as file:
             self.system_prompt = yaml.safe_load(file)
         
-        self.valid_intents = ["get_exercise", "get_plan", "get_information", "save_exercise", "add_favorite", "remove_favorite", "list_favorite", "give_evaluation", "out_of_context"]
+        self.valid_intents = ["get_exercise", "get_plan", "get_information", "save_exercise", "add_favorite", "remove_favorite", "list_favorite", "give_evaluation", "out_of_context", "terminate_system"]
 
 
     def __call__(self, user_input = " ", system_response = " ") -> dict:

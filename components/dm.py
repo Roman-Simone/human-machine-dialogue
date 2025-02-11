@@ -121,61 +121,88 @@ class DM():
             self.system_prompt = yaml.safe_load(file)
 
 
-    def __call__(self, nlu_input: list) -> str:
+    def __call__(self, nlu_input: list) -> list:
+
+        idx_to_remove = []
 
         if self.eval_mode:
             self.state = []
 
-        flag_repeat = True
-        
-        while(flag_repeat):
+        if nlu_input[0] == "terminate_system":
+            return "terminate_system"
 
-            self.state = self.update_state(nlu_input)
+        self.state = self.update_state(nlu_input)
 
+        actions_ret = []
+
+        for state in self.state:
+            self.logger.debug(f"State: {state.get_string()}")
+
+            flag_repeat = True
             states_str = self.get_states_string()
 
             self.logger.debug(f"\nStates updated:\n {states_str}")
 
-            state_str = self.get_state_string(self.state[-1])
-
-            nba_llama = self.query_model(state_str)
-
-            try:
-                nba_llama_clean = self.clean_json_string(nba_llama)
-                nba_json = json.loads(nba_llama_clean)
-                if not self.eval_mode:
-                    flag_repeat = self.check_nba(nba_json, self.state[-1])
-                else:
-                    flag_repeat = False
+            state_str = self.get_state_string(state)
             
-            except:
-                self.logger.error("Error parsing NBA response")
+            while(flag_repeat):
 
-        self.logger.debug(f"DM decision: {nba_json}")
+                nba_llama = self.query_model(state_str)
 
-        data = ""
-        if nba_json["action"] == "confirmation" and not self.eval_mode:
-            data = self.confirmation(nba_json)
-            if data:
-                self.logger.debug("Intent completed and eliminated from state")
-                self.state.pop()
-            else:
-                nba_json = {
-                    "action": "check_info",
-                    "parameter": nba_json["parameter"],
-                }
-                data = self.state[-1].get_string()
+                try:
+                    nba_llama_clean = self.clean_json_string(nba_llama)
+                    nba_json = json.loads(nba_llama_clean)
+                    if not self.eval_mode:
+                        flag_repeat = self.check_nba(nba_json, state)
+                    else:
+                        flag_repeat = False
+                
+                except:
+                    self.logger.error("Error parsing NBA response")
+
+            self.logger.debug(f"DM decision: {nba_json}")
+
+            data = ""
+            if nba_json["action"] == "confirmation" and not self.eval_mode:
+                data = self.confirmation(nba_json)
+                if data or True:
+                    self.logger.debug("Intent completed and eliminated from state")
+                    for idx, element in enumerate(self.state):
+                        if element.get_intent() == state.intent:
+                            idx_to_remove.append(idx)
+                # else:
+                #     nba_json = {
+                #         "action": "check_info",
+                #         "parameter": nba_json["parameter"],
+                #     }
+                #     data = state.get_string()
+            
+            if nba_json["action"] == "request_info":
+                data = f"intent: {state.intent}"
+            
+            response = {
+                "action": nba_json["action"],
+                "parameter": nba_json["parameter"],
+                "data": data
+            }
+
+            actions_ret.append(response)
+
+        if self.eval_mode:
+            return actions_ret[0]
         
-        if nba_json["action"] == "request_info":
-            data = f"intent: {self.state[-1].intent}"
-        
-        response = {
-            "action": nba_json["action"],
-            "parameter": nba_json["parameter"],
-            "data": data
-        }
+        state_back = []
 
-        return response
+        for idx, element in enumerate(self.state):
+            if idx not in idx_to_remove:
+                state_back.append(element)
+        
+        self.state = []
+
+        for element in state_back:
+            self.state.append(element)
+
+        return actions_ret
 
 
     def clean_json_string(self, input_str: str) -> str:
@@ -212,7 +239,7 @@ class DM():
             data_selected = f"{data_confirm.slots}"
         elif intent_confirm == "add_favorite":
             response = self.dataset.add_favorite(data_confirm.slots)
-            if response:
+            if not response.empty:
                 data_selected = f"{data_confirm.slots}"
             else:
                 data_selected = False

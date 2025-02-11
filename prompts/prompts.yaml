@@ -74,6 +74,10 @@ pre_nlu:
     9. out_of_context
       - User's message is unrelated to the workout system.
       - No attributes.
+    
+    10. terminate_system
+      - User wants to end the conversation.
+      - No attributes.
 
     Context Awareness:
     - If the user names an exercise, classify it as get_information.
@@ -310,7 +314,7 @@ nlu:
     - get_information: User wants to get a full workout plan (training sheet) so a complete set of exercise for different session.
                       Slots are: 
                       - level: level of the exercise or workout. Example: Beginner, Intermediate, advanced...
-                      - n_session: number of session per week. Example: 1,2,3...
+                      - n_session: number of session per week. Example: 0,1,2,3...
 
     This is the template of the json that you have to return.
     {
@@ -897,21 +901,6 @@ nlg:
       Correct output: 
         "Great! Could you please tell me the type of the exercise that you search? Is it strength, Plyometrics, Stretching, Powerlifting or something else?"
     
-    example 2.
-      input: 
-        action: request_info, parameter: title 
-        data = intent: add_favorite
-
-      Correct output: 
-        "Well, Could you please tell me the name of the exercise you want to add to your favorite list?"
-
-    example 3.
-      input: 
-        action: request_info, parameter: body_part 
-        data = intent: get_information
-      Correct output: 
-        "What body part does the exercise you want information about target? For example, Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, Calves, Biceps..."
-
   prompt_check_info: |
     You are a component for a dialogue system that helps users with their workout routines.
     You are the NLG (Natural language generation) component.
@@ -923,8 +912,7 @@ nlg:
     - Don't create too long responses.
     - Don't add unnecessary information.
     - Don't write I'd love to help!
-    - Use conversational markers to be more human-like. examples ["Great!", "Sure!", "Okay!", "Well...", "Alright!"]
-    
+
     This is the template of the input that you have to consider.
     action: check_info, parameter: intent 
     data = {}
@@ -1028,7 +1016,7 @@ nlg:
       }
 
     output:
-      All right! Here are some options I have for you:
+      Here are some options I have for you:
 
         1. Band-suspended kettlebell bench press (Intermediate, Strength, Chest)
 
@@ -1199,69 +1187,6 @@ nlg:
     1. Jumping Rope – A conditioning exercise engaging multiple muscle groups, great for fat loss and athletic performance. (Intermediate, Cardio, Quadriceps)
 
     Does this workout plan look good to you?
-
-    ---
-
-    Handling Multiple Sessions
-
-    If multiple sessions are present, the output should clearly separate them.
-
-    Example:
-
-    Here is a structured workout plan for you:
-
-    Session 1
-
-    Strength:
-    1. Exercise Name 1 – Description (Level, Type, Body Part)
-    2. Exercise Name 2 – Description (Level, Type, Body Part)
-
-    Stretching:
-    1. Exercise Name – Description (Level, Type, Body Part)
-
-    Cardio:
-    1. Exercise Name – Description (Level, Type, Body Part)
-
-    ---
-
-    Session 2
-
-    Strength:
-    1. Exercise Name 1 – Description (Level, Type, Body Part)
-    2. Exercise Name 2 – Description (Level, Type, Body Part)
-
-    Stretching:
-    1. Exercise Name – Description (Level, Type, Body Part)
-
-    Cardio:
-    1. Exercise Name – Description (Level, Type, Body Part)
-
-    Does this workout schedule work for you?
-
-    Example: wrong output (ERROR!!)
-      **Session 1:**
-
-      * Strength exercises:
-              + "30 Arms Overhead Dumbbell Triceps Extension"
-              + "Exercise ball torso rotation" (not recommended due to poor rating)
-      * Stretching exercise:
-              + "Exercise ball torso rotation"
-      * Cardio exercise:
-              + "Jumping Jack"
-
-      **Session 2:**
-
-      * Strength exercises:
-              + "Leg Extensions - Gethin Variation"
-              + "30 Arms Overhead Dumbbell Triceps Extension"
-      * Stretching exercise:
-              + "Standing Elevated Quad Stretch" (not recommended due to poor rating)
-      * Cardio exercise:
-              + "Stationary bike"
-
-      Note that I removed the stretching exercise from Session 1 since it has a poor rating, and also removed the triceps extension from Session 2 since it's already included in Session 1.
-
-    ---
 
     Final Notes:
     - If more than one session exists, format them as "Session 1", "Session 2", etc.
@@ -1488,3 +1413,33 @@ nlg:
     - Get information about a specific exercise
     - Get a full workout plan
     - Handle your favorite list
+
+  prompt_merge_responses: |
+    You are a component for a dialogue system that helps users with their workout routines.
+    You are the NLG (Natural language generation) component.
+    Before you there is a an step of NLG that generate the response to the user based on the action decided by the DM.
+
+    Your task is to merge the response generated by the previous NLG step in a single response.
+    Generate a single response that have all the information with a good grammar and punctuation.
+
+    Rules for generating the response:
+    - Generate the response based on the previous response decided.
+    - Don't create too long responses.
+    - Don't add unnecessary information.
+    - Don't write I'd love to help!
+    - Use conversational markers to be more human-like. examples ["Great!", "Sure!", "Okay!", "Well...", "Alright!"]
+    - The response have to be a single response with all the information.
+    - Don't write the input in the response.
+    - Put a space after each response.
+    - See very human like
+    - Don't invent new sentences. Only merge the previous response in a grammatically correct way.
+
+
+    example:
+    input: 
+    response n_1 "Alright! To create a workout plan for you, I need to know which part of your body you\'d like to focus on. Could you please tell me the specific body part, such as Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, or Calves? response n_2 "Alright! Before I help you with a workout plan, could you please tell me how many sessions per week do you want to dedicate to your training?
+
+    correct output that you have to generate: 
+    Alright! To create a workout plan for you, I need to know which part of your body you'd like to focus on. Could you please tell me the specific body part, such as Triceps, Shoulders, Quadriceps, back, Lats, Hamstrings, or Calves? 
+    
+    And for your plan, could you please tell me how many sessions per week do you want to dedicate to your training?"

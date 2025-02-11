@@ -6,8 +6,6 @@ from components import (
     NLG
 )
 
-import main
-
 class Chat():
 
     def __init__(self, config):
@@ -43,16 +41,13 @@ class Chat():
         """)
 
         system_response = "What can I do for you today?"
-        print(f"System: {system_response}")
+        print(f"System: {system_response}\n")
+
 
 
         while(self.RUNNING):
 
             user_input = input("User: ")
-            if user_input.lower() == "exit":
-                self.RUNNING = False
-                self.logger.info("Exiting chat")
-                break
             
             output_pre_nlu = self.pre_nlu(user_input, system_response)
 
@@ -64,6 +59,12 @@ class Chat():
 
             nba = self.dm(meaning)
 
+            if type(nba) == str:
+                if nba == "terminate_system":
+                    self.logger.info("Terminating system.")
+                    print("System: Goodbye! 💪🦙")
+                    break
+
             self.logger.info(f"User nlu:\n {nba}\n\n")
 
             system_response = self.nlg(nba)
@@ -72,4 +73,5 @@ class Chat():
 
 
 if __name__ == "__main__":
+    import main
     main.main()

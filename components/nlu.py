@@ -13,6 +13,7 @@ class NLU():
         self.logger = logging.getLogger(__name__)
         self.prompt_path = prompt_path
         self.history = History()
+        self.history.limit = 5
         self.useHistory = useHistory
         with open(self.prompt_path, "r") as file:
             self.system_prompt = yaml.safe_load(file)
@@ -54,6 +55,12 @@ class NLU():
                 self.logger.debug("Intent out_of_context")
                 if len(pre_nlu_input) == 1:
                     system_prompt = self.system_prompt["nlu"]["prompt_out_of_context"]
+                else:
+                    continue
+            elif intent.get("intent") == "terminate_system":
+                self.logger.debug("Intent terminate_system")
+                if len(pre_nlu_input) == 1:
+                    return ["terminate_system"]
                 else:
                     continue
             else:
