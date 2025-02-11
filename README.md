@@ -24,6 +24,8 @@
   - [🚀 Features](#-features)
   - [⚙️ How It Works](#️-how-it-works)
 - [Installation](#installation)
+- [How to run](#how-to-run)
+- [Contact](#contact)
 
 ----------
 
@@ -60,6 +62,36 @@ To run LLamaFit locally, follow these steps:
     ```bash
     git clone https://github.com/Roman-Simone/human-machine-dialogue
     ```
+
+- Install ollama follow the instruction in this <a href="https://ollama.com/download">link</a>
+- Install LLama3 with this command:
+    ```bash
+    ollama run llama3
+    ```
+
+# How to run
+
+In order to run the chat with LLamafit launch:
+```bash
+    python3 main.py
+```
+
+# Contact
+For any inquiries, feel free to contact:
+
+- Simone Roman - [simone.roman@studenti.unitn.it](mailto:simone.roman@studenti.unitn.it)
+
+- Christian Moiola - [christian.moiola@studenti.unitn.it](mailto:christian.moiola@studenti.unitn.it)
+
+
+
+<br>
+
+<div>
+    <a href="https://www.unitn.it/">
+        <img src="https://ing-gest.disi.unitn.it/wp-content/uploads/2022/11/marchio_disi_bianco_vert_eng-1024x295.png" width="400px">
+    </a>
+</div>
 
 
 
