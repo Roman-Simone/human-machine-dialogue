@@ -1,6 +1,10 @@
 <div align="center">
   <img src="https://img.shields.io/badge/python-3670A0?style=flat&logo=python&logoColor=ffdd54" alt="Python"/>
+  <img src="https://img.shields.io/badge/Ollama-222222?style=flat&logo=ollama&logoColor=white" alt="ollama">
+  <img src="https://img.shields.io/badge/LLaMA%203-FF4500?style=flat&logo=meta&logoColor=white">
+
 </div>
+
 
 <p align='center'>
     <h1 align="center">LLamaFit</h1>
