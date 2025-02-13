@@ -1,6 +1,5 @@
 venv
 env
-*.pdf
 try.py
 bin
 # Byte-compiled / optimized / DLL files
