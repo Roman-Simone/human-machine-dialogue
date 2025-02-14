@@ -6,20 +6,37 @@ from copy import deepcopy
 from utils.history import History
 
 class NLU():
+    '''
+    class NLU to handle the NLU slot filling task
+    '''
 
-    def __init__(self, model, prompt_path, useHistory = True):
+    def __init__(self, model, prompt_path, eval_mode = True):
+        '''
+        NLU class constructor
+        '''
         
         self.model = model
         self.logger = logging.getLogger(__name__)
         self.prompt_path = prompt_path
         self.history = History()
         self.history.limit = 5
-        self.useHistory = useHistory
+        self.eval_mode = eval_mode
         with open(self.prompt_path, "r") as file:
             self.system_prompt = yaml.safe_load(file)
 
 
     def __call__(self, pre_nlu_input: list, user_input:str, system_response: str) -> list:
+        '''
+        take the intents of the request and return the NLU slot filling of the request in a list of dictionaries.
+        
+        Args:
+            pre_nlu_input (list): intents of the request in a dictionary format.
+            user_input (str): user input request (natural language).
+            system_response (str): system response. Dictionary.
+            
+        Returns:
+            ret_nlu_cleaned (list): list of dictionaries with the NLU slot filling of the request.
+        '''
 
         ret_nlu_cleaned = []
 
@@ -92,6 +109,15 @@ class NLU():
 
 
     def clean_response(self, response: dict) -> dict:
+        '''
+        Function to clean the response dictionary.
+
+        Args:
+            response (dict): response dictionary.
+        
+        Returns:
+            final_dict (dict): cleaned response dictionary
+        '''
         final_dict = deepcopy(response)
         for key, value in response.items():
             if value == None:
@@ -106,6 +132,16 @@ class NLU():
 
 
     def query_model(self, pre_nlu_input: str, system_prompt: str) -> str:
+        '''
+        Function to query the model with the pre_nlu input and the system prompt.
+        
+        Args:
+            pre_nlu_input (str): pre_nlu input.
+            system_prompt (str): system prompt.
+            
+        Returns:
+            output (str): response from the model.
+        '''
 
         with open(self.prompt_path, "r") as file:
             data = yaml.safe_load(file)
@@ -115,7 +151,7 @@ class NLU():
             'content': system_prompt
         }] 
 
-        if self.useHistory:
+        if self.eval_mode:
             for message in self.history.get_history():
                 messages.append({
                     'role': message['role'],
@@ -134,7 +170,7 @@ class NLU():
 
         response = ollama.chat(model=self.model, messages=messages)
 
-        return response['message']['content']
+        output =  response['message']['content']
 
-
+        return output
 

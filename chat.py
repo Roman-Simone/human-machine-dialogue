@@ -9,6 +9,9 @@ from components import (
 class Chat():
 
     def __init__(self, config):
+        """
+        Chat class constructor.
+        """
 
         self.RUNNING = True
         self.logger = logging.getLogger(__name__)
@@ -22,6 +25,9 @@ class Chat():
 
 
     def run_chat(self):
+        """
+        Run the chat system.
+        """
 
         print("""
         .-.   .-.     .--.  .-.   .-.  .--.  .----..-. .---. 
@@ -44,11 +50,10 @@ class Chat():
         print(f"System: {system_response}\n")
 
 
-
         while(self.RUNNING):
 
             user_input = input("User: ")
-            
+
             output_pre_nlu = self.pre_nlu(user_input, system_response)
 
             self.logger.info(f"User pre_nlu:\n {output_pre_nlu}\n\n")

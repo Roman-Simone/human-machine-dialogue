@@ -9,7 +9,9 @@ init(autoreset=True)
 
 
 class CustomFormatter(logging.Formatter):
-    
+    """
+    Custom formatter to add colors and styles to log messages.
+    """
     COLORS = {
         "DEBUG": Fore.BLUE,
         "INFO": Fore.GREEN,
@@ -26,6 +28,9 @@ class CustomFormatter(logging.Formatter):
 
 
 def parse_args():
+    """
+    Parse command line arguments.
+    """
 
     parser = argparse.ArgumentParser(description="Chat Application Configuration")
 
@@ -48,7 +53,6 @@ def parse_args():
 
 
 def configure_logging(enable_logging):
-
     """Set up logging with optional color output."""
     logger = logging.getLogger()
     logger.handlers.clear()  # Clear previous handlers
@@ -72,6 +76,9 @@ def configure_logging(enable_logging):
 
 
 def main():
+    """
+    Main function to run the chat application
+    """
     config = parse_args()
     configure_logging(config["enable_logging"])
 

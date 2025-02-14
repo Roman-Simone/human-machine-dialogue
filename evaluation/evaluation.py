@@ -9,6 +9,10 @@ from components import (
 )
 
 class Evaluation:
+    '''
+    Class to perform intrinsic evaluation of the NLU and DM components.
+    '''
+
     def __init__(self, config):
         self.model = config['model']
         self.prompts_path = config['prompts_path']
@@ -17,12 +21,15 @@ class Evaluation:
         self.dataset_path_nlu = config['dataset_nlu']
         self.dataset_path_dm = config['dataset_dm']
 
-        self.pre_nlu = PreNLU(self.model, self.prompts_path, useHistory=False)
-        self.nlu = NLU(self.model, self.prompts_path, useHistory=False)
+        self.pre_nlu = PreNLU(self.model, self.prompts_path, eval_mode=False)
+        self.nlu = NLU(self.model, self.prompts_path, eval_mode=False)
         self.DM = DM(self.model, self.prompts_path, eval_mode=True)
 
     def eval_NLU(self):
-        # Load dataset
+        '''
+        Method to evaluate the NLU component. Take example from dataset and compare the expected output with the predicted output.
+        Calculate the intent accuracy, slot accuracy, and intent-wise performance (precision, recall, f1-score).
+        '''
         with open(self.dataset_path_nlu, "r") as file:
             dataset = json.load(file)
 
@@ -148,7 +155,10 @@ class Evaluation:
 
 
     def eval_DM(self):
-        # Load dataset
+        '''
+        Method to evaluate the DM component. Take example from dataset and compare the expected output with the predicted output.
+        Calculate the action accuracy, parameter accuracy, and action-wise performance (precision, recall, f1-score).
+        '''
         with open(self.dataset_path_dm, "r") as file:
             dataset = json.load(file)
 
@@ -224,9 +234,11 @@ class Evaluation:
         print("\nDM Evaluation Results:")
         print(f"Overall Action Accuracy: {action_accuracy:.2f}%")
 
-        
 
 def parse_args():
+    '''
+    Function to parse command line arguments.
+    '''
     parser = argparse.ArgumentParser(description="NLU Evaluation Configuration")
 
     parser.add_argument("--model", type=str, required=False, default="llama3",
@@ -258,7 +270,7 @@ def parse_args():
 if __name__ == "__main__":
     config = parse_args()
     evaluator = Evaluation(config)
-    # evaluator.eval_NLU()
+    evaluator.eval_NLU()
     evaluator.eval_DM()
 
     print()

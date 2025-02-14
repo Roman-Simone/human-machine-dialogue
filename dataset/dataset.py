@@ -6,10 +6,13 @@ from copy import deepcopy
 from rapidfuzz import process
 
 class MegaGymDataset:
+    '''
+    MegaGymDataset class to handle the dataset of exercises.
+    '''
 
     def __init__(self, csv_file="dataset/megaGymDataset/megaGymDataset.csv"):
         """
-        Inizializza il dataset caricando il file CSV.
+        MegaGymDataset class constructor
         """
         self.path_csv = csv_file
         self.data = pd.read_csv(self.path_csv )
@@ -18,6 +21,16 @@ class MegaGymDataset:
 
 
     def filter_by_intent(self, intent:dict, num_max_exercise = 5) -> str:
+        '''
+        General filter function to filter the dataset by the intent.
+        
+        Args:
+            intent (dict): dictionary with the intent to filter the dataset.
+            num_max_exercise (int): maximum number of exercises to return.
+        
+        Returns:
+            data_ret_str (str): string with the filtered exercises in JSON format.
+        '''
 
         data_ret = deepcopy(self.data)
 
@@ -51,6 +64,16 @@ class MegaGymDataset:
 
 
     def get_schedule(self, intent:dict) -> str:
+        '''
+        Function to get a workout schedule. 
+        Return 4 exercises: 2 strength, 1 stretching, 1 cardio.
+        
+        Args:
+            intent (dict): dictionary with the intent to filter the dataset.
+        
+        Returns:
+            ret (str): string with the workout schedule in JSON format.
+        '''
         
         data_ret = self.data
 
@@ -91,6 +114,16 @@ class MegaGymDataset:
 
 
     def save_exercise(self, intent: dict) -> str:
+        '''
+        Function to save an exercise in the dataset.
+        
+        Args:
+            intent (dict): dictionary with the intent to save the exercise.
+            
+        Returns:
+            str: string with the result of the operation.
+        '''
+
         new_exercise = {
             "Id": len(self.data),
             "Title": intent.get("title"),
@@ -103,29 +136,33 @@ class MegaGymDataset:
             "Duration": intent.get("duration")
         }
 
-        # Convert dictionary to DataFrame
         new_df = pd.DataFrame([new_exercise])
 
-        # Drop all-NA columns from new_df to avoid FutureWarning
         new_df = new_df.dropna(axis=1, how='all')
 
-        # Ensure ID is properly assigned
         if not self.data.empty and "Id" in self.data.columns:
             new_df["Id"] = self.data["Id"].max() + 1
         else:
             new_df["Id"] = 1  # Assign ID 1 if data is empty
 
-        # Ensure there is data to concatenate
         if not new_df.empty:
             self.data = pd.concat([self.data, new_df], ignore_index=True)
 
-        # Save to CSV ensuring correct formatting
         self.data.to_csv(self.path_csv, index=False, quoting=csv.QUOTE_MINIMAL)
 
         return "Exercise saved successfully."
 
 
     def add_favorite(self, intent: dict, threshold = 95) -> str:
+        '''
+        Function to add an exercise to the favorite list.
+
+        Args:
+            intent (dict): dictionary with the intent to add the exercise to the favorite list.
+
+        Returns:
+            str: string with the result of the operation.
+        '''
         title = intent.get("title")
 
         data = deepcopy(self.data)
@@ -159,6 +196,16 @@ class MegaGymDataset:
 
 
     def remove_favorite(self, intent: dict, threshold = 70) -> str:
+        '''
+        Function to remove an exercise from the favorite list.
+        
+        Args:
+            intent (dict): dictionary with the intent to remove the exercise from the favorite list.
+        
+        Returns:
+            str: string with the result of the operation.
+        '''
+
         title = intent.get("title")
 
         data = deepcopy(self.data)
@@ -192,6 +239,15 @@ class MegaGymDataset:
 
 
     def list_favorite(self, intent: dict) -> str:
+        '''
+        Function to list the favorite exercises.
+        
+        Args:
+            intent (dict): dictionary with the intent to list the favorite exercises.
+        
+        Returns:
+            str: string with the favorite exercises in JSON format.
+        '''
 
         data = self.data[self.data['Favorite'] == True]
         # filter also by type and body part
@@ -204,6 +260,16 @@ class MegaGymDataset:
     
 
     def format_json(self, data:pd.DataFrame) -> str:
+        '''
+        Function to format the dataset in JSON format.
+        
+        Args:  
+            data (pd.DataFrame): dataset to format.
+        
+        Returns:
+            str: string with the formatted dataset in JSON format.
+        '''
+
         formatted_exercises = []
 
         original_json = data.to_dict()

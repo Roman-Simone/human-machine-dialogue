@@ -3,13 +3,18 @@ import yaml
 import json
 import ollama
 import logging
-from utils.history import History
 from dataset.dataset import MegaGymDataset
 
 
 class stateTracker():
+    '''
+    class stateTracker to handle the state of the conversation
+    '''
 
     def __init__(self, intent):
+        '''
+        stateTracker class constructor
+        '''
         self.intent = intent
         
         fields_get_exercise = [
@@ -75,6 +80,9 @@ class stateTracker():
 
 
     def get_string(self) -> str:
+        '''
+        get the state as a string
+        '''
         
         ret = "{"
 
@@ -88,6 +96,15 @@ class stateTracker():
 
 
     def update_state(self, nlu_response: list) -> str:
+        '''
+        update the state with the nlu response
+        
+        Args:
+            nlu_response (list): nlu response
+            
+        Returns:
+            str: state as a string
+        '''
 
         for key, value in nlu_response.items():
             if value is None:
@@ -105,14 +122,21 @@ class stateTracker():
     def get_intent(self) -> str:
         return self.intent
 
+
+
 class DM():
+    '''
+    DM class to handle the dialogue manager
+    '''
 
     def __init__(self, model, prompt_path, eval_mode=False):
+        '''
+        DM class constructor
+        '''
         
         self.model = model
         self.prompt_path = prompt_path
         self.state = []
-        self.history = History()
         self.dataset = MegaGymDataset()
         self.logger = logging.getLogger(__name__)
         self.eval_mode = eval_mode
@@ -122,6 +146,21 @@ class DM():
 
 
     def __call__(self, nlu_input: list) -> list:
+        '''
+        DM class call function, receive the nlu input and return the next best action to 
+        be performed with the parameter (slot or intent) and the data from the database if needed.
+        
+        Args:
+            nlu_input (list): nlu input
+            
+        Returns:
+            actions_ret (list): list of dictionaries with the DM output
+            dictionary format:
+            {
+                "action": str, -> action to be performed
+                "parameter": str, -> parameter of the action
+                "data": str -> further data from the database
+        '''
 
         idx_to_remove = []
 
@@ -165,17 +204,17 @@ class DM():
             data = ""
             if nba_json["action"] == "confirmation" and not self.eval_mode:
                 data = self.confirmation(nba_json)
-                if data or True:
+                if data:
                     self.logger.debug("Intent completed and eliminated from state")
                     for idx, element in enumerate(self.state):
                         if element.get_intent() == state.intent:
                             idx_to_remove.append(idx)
-                # else:
-                #     nba_json = {
-                #         "action": "check_info",
-                #         "parameter": nba_json["parameter"],
-                #     }
-                #     data = state.get_string()
+                else:
+                    nba_json = {
+                        "action": "check_info",
+                        "parameter": nba_json["parameter"],
+                    }
+                    data = state.get_string()
             
             if nba_json["action"] == "request_info":
                 data = f"intent: {state.intent}"
@@ -206,12 +245,25 @@ class DM():
 
 
     def clean_json_string(self, input_str: str) -> str:
-        # Extract content between the first '[' and the last ']'
+        '''
+        Function to clean the json string, return only the part of string with dictionary.
+        '''
         match = re.search(r'\{}.*\}', input_str, re.DOTALL)
         return match.group(0) if match else input_str
 
 
     def confirmation(self, nba_confirm: dict) -> str:
+        '''
+        Function to handle the confirmation action, 
+        perform the action to the database and
+        return the data to be confirmed from the data
+        
+        Args:
+            nba_confirm (dict): nba confirmation action
+            
+        Returns:
+            data_selected (str): data to be confirmed
+        '''
 
         data_confirm = {}
         
@@ -276,6 +328,16 @@ class DM():
 
 
     def check_nba(self, nba: dict, nlu: dict) -> bool:
+        '''
+        Function to check the response from the model
+        
+        Args:
+            nba (dict): response from the model
+            nlu (dict): nlu states
+            
+        Returns:
+            bool: True if the model response is correct, False otherwise
+        '''
 
         action = nba['action']
         parameter = nba['parameter']
@@ -303,7 +365,9 @@ class DM():
 
 
     def get_states_string(self) -> str:
-        # trasform state to string
+        ''' 
+        get the total states as a string 
+        '''
         state_str = ""
 
         for state in self.state:
@@ -313,7 +377,9 @@ class DM():
 
 
     def get_state_string(self, state) -> str:
-        
+        '''
+        get the single state as a string
+        '''
         state_str = ""
 
         state_str += state.get_string() + "\n"
@@ -322,7 +388,15 @@ class DM():
 
 
     def update_state(self, nlu_input: list) -> list:
-
+        '''
+        update the state with the nlu input and return the updated state
+        
+        Args:
+            nlu_input (list): nlu input from nlu component
+        
+        Returns:
+            self.state (list): list of the states updated
+        '''
         for intent in nlu_input:
             
             flag_find = False
@@ -368,6 +442,15 @@ class DM():
 
 
     def query_model(self, nlu_input: str) -> str:
+        '''
+        query the model with the nlu input and return the response from the model
+        
+        Args:
+            nlu_input (str): nlu input updated with state tracker
+
+        Returns:
+            str: response from the model
+        '''
 
         system = self.system_prompt["dm"]["prompt"]
         
